@@ -1,19 +1,19 @@
 <template>
-    <default-field :field="field" :errors="errors">
+    <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
             
             <div class="relative mb-4" v-if="value"></div>
 
             <div class="z-20 relative" v-if="layouts">
-                <div class="relative">
-                    <div 
-                        v-if="isLayoutsDropdownOpen"
+                <div class="relative" v-if="layouts.length > 1">
+                    <div v-if="isLayoutsDropdownOpen"
                         class="overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
                     >
                         <div>
                             <ul class="list-reset">
                                 <li v-for="layout in layouts" class="border-b border-40">
-                                    <a class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
+                                    <a  @click="addLayout(layout)"
+                                        class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
                                         <div><p class="text-90">{{ layout.title }}</p></div>
                                     </a>
                                 </li>
@@ -25,7 +25,7 @@
                     type="button"
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative"
-                    @click="toggleLayoutsDropdown"
+                    @click="toggleLayoutsDropdownOrAddDefault"
                 >
                     <span>{{ button }}</span>
                 </button>
@@ -82,11 +82,22 @@ export default {
         },
 
         /**
-         * Display or hide the layouts choice dropdown
+         * Display or hide the layouts choice dropdown if there are multiple layouts
+         * or directly add the only available layout.
          */
-        toggleLayoutsDropdown(event) {
-            event.preventDefault();
+        toggleLayoutsDropdownOrAddDefault(event) {
+            if(this.layouts.length === 1) {
+                return this.addLayout(this.layouts[0]);
+            }
             this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+        },
+
+        /**
+         * Append the given layout to flexible content's list
+         */
+        addLayout(layout) {
+            console.log(layout);
+            this.isLayoutsDropdownOpen = false;
         },
     },
 }

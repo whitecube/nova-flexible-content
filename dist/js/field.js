@@ -496,11 +496,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
         /**
-         * Display or hide the layouts choice dropdown
+         * Display or hide the layouts choice dropdown if there are multiple layouts
+         * or directly add the only available layout.
          */
-        toggleLayoutsDropdown: function toggleLayoutsDropdown(event) {
-            event.preventDefault();
+        toggleLayoutsDropdownOrAddDefault: function toggleLayoutsDropdownOrAddDefault(event) {
+            if (this.layouts.length === 1) {
+                return this.addLayout(this.layouts[0]);
+            }
             this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+        },
+
+
+        /**
+         * Append the given layout to flexible content's list
+         */
+        addLayout: function addLayout(layout) {
+            console.log(layout);
+            this.isLayoutsDropdownOpen = false;
         }
     }
 });
@@ -10723,55 +10735,70 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "default-field",
-    { attrs: { field: _vm.field, errors: _vm.errors } },
+    {
+      attrs: {
+        field: _vm.field,
+        errors: _vm.errors,
+        "full-width-content": true
+      }
+    },
     [
       _c("template", { slot: "field" }, [
         _vm.value ? _c("div", { staticClass: "relative mb-4" }) : _vm._e(),
         _vm._v(" "),
         _vm.layouts
           ? _c("div", { staticClass: "z-20 relative" }, [
-              _c("div", { staticClass: "relative" }, [
-                _vm.isLayoutsDropdownOpen
-                  ? _c(
-                      "div",
-                      {
-                        staticClass:
-                          "overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
-                      },
-                      [
-                        _c("div", [
-                          _c(
-                            "ul",
-                            { staticClass: "list-reset" },
-                            _vm._l(_vm.layouts, function(layout) {
-                              return _c(
-                                "li",
-                                { staticClass: "border-b border-40" },
-                                [
-                                  _c(
-                                    "a",
-                                    {
-                                      staticClass:
-                                        "cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20"
-                                    },
+              _vm.layouts.length > 1
+                ? _c("div", { staticClass: "relative" }, [
+                    _vm.isLayoutsDropdownOpen
+                      ? _c(
+                          "div",
+                          {
+                            staticClass:
+                              "overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                          },
+                          [
+                            _c("div", [
+                              _c(
+                                "ul",
+                                { staticClass: "list-reset" },
+                                _vm._l(_vm.layouts, function(layout) {
+                                  return _c(
+                                    "li",
+                                    { staticClass: "border-b border-40" },
                                     [
-                                      _c("div", [
-                                        _c("p", { staticClass: "text-90" }, [
-                                          _vm._v(_vm._s(layout.title))
-                                        ])
-                                      ])
+                                      _c(
+                                        "a",
+                                        {
+                                          staticClass:
+                                            "cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20",
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.addLayout(layout)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("div", [
+                                            _c(
+                                              "p",
+                                              { staticClass: "text-90" },
+                                              [_vm._v(_vm._s(layout.title))]
+                                            )
+                                          ])
+                                        ]
+                                      )
                                     ]
                                   )
-                                ]
+                                }),
+                                0
                               )
-                            }),
-                            0
-                          )
-                        ])
-                      ]
-                    )
-                  : _vm._e()
-              ]),
+                            ])
+                          ]
+                        )
+                      : _vm._e()
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _c(
                 "button",
@@ -10779,7 +10806,7 @@ var render = function() {
                   staticClass:
                     "btn btn-default btn-primary inline-flex items-center relative",
                   attrs: { type: "button", tabindex: "0" },
-                  on: { click: _vm.toggleLayoutsDropdown }
+                  on: { click: _vm.toggleLayoutsDropdownOrAddDefault }
                 },
                 [_c("span", [_vm._v(_vm._s(_vm.button))])]
               )
