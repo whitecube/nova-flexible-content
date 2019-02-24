@@ -81,7 +81,8 @@ class Layout implements LayoutInterface, JsonSerializable
     {
         return [
             'name' => $this->name(),
-            'title' => $this->title()
+            'title' => $this->title(),
+            'fields' => $this->fields()
         ];
     }
 }

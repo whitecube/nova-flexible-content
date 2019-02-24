@@ -185,94 +185,16 @@ module.exports = __webpack_require__(13);
 /***/ (function(module, exports, __webpack_require__) {
 
 Nova.booting(function (Vue, router, store) {
-    Vue.component('index-nova-flexible-content', __webpack_require__(3));
+    // Vue.component('index-nova-flexible-content', require('./components/IndexField'))
     Vue.component('detail-nova-flexible-content', __webpack_require__(6));
     Vue.component('form-nova-flexible-content', __webpack_require__(9));
+    Vue.component('form-nova-flexible-content-group', __webpack_require__(21));
 });
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(0)
-/* script */
-var __vue_script__ = __webpack_require__(4)
-/* template */
-var __vue_template__ = __webpack_require__(5)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/IndexField.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-9e63f81a", Component.options)
-  } else {
-    hotAPI.reload("data-v-9e63f81a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['resourceName', 'field']
-});
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("span", [_vm._v(_vm._s(_vm.field.value))])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-9e63f81a", module.exports)
-  }
-}
-
-/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -455,18 +377,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -476,9 +386,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['resourceName', 'resourceId', 'field'],
 
     computed: {
-        button: function button() {
-            return this.field.button || '+';
-        },
         layouts: function layouts() {
             return this.field.layouts || false;
         }
@@ -486,7 +393,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            isLayoutsDropdownOpen: false
+            isLayoutsDropdownOpen: false,
+            groups: []
         };
     },
 
@@ -497,6 +405,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         setInitialValue: function setInitialValue() {
             this.value = this.field.value || [];
+
+            this.populateGroups();
         },
 
 
@@ -504,7 +414,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Fill the given FormData object with the field's internal value.
          */
         fill: function fill(formData) {
-            formData.append(this.field.attribute, this.value || []);
+            this.value = [];
+
+            for (var i = 0; i < this.groups.length; i++) {
+                this.value.push(this.groups[i].serialize());
+            }
+
+            formData.append(this.field.attribute, JSON.stringify(this.value));
         },
 
 
@@ -513,6 +429,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         handleChange: function handleChange(value) {
             this.value = value;
+
+            this.populateGroups();
         },
 
 
@@ -522,21 +440,66 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         toggleLayoutsDropdownOrAddDefault: function toggleLayoutsDropdownOrAddDefault(event) {
             if (this.layouts.length === 1) {
-                return this.addLayout(this.layouts[0]);
+                return this.addGroup(this.layouts[0]);
             }
+
             this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+        },
+
+
+        /**
+         * Set the displayed layouts from the field's current value
+         */
+        populateGroups: function populateGroups() {
+            this.groups = [];
+
+            for (var i = 0; i < this.value.length; i++) {
+                this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes);
+            }
+        },
+
+
+        /**
+         * Retrieve layout definition from its name
+         */
+        getLayout: function getLayout(name) {
+            if (!this.layouts) return;
+
+            for (var i = this.layouts.length - 1; i >= 0; i--) {
+                if (this.layouts[i].name !== name) continue;
+                return this.layouts[i];
+            }
+        },
+
+
+        /**
+         * Clone fields and inject values from given attributes
+         */
+        getFreshFieldsWithValues: function getFreshFieldsWithValues(fields, attributes) {
+            fields = JSON.parse(JSON.stringify(fields));
+
+            if (!attributes) return fields;
+
+            for (var i = fields.length - 1; i >= 0; i--) {
+                fields[i].value = attributes[fields[i].attribute] || null;
+            }
+
+            return fields;
         },
 
 
         /**
          * Append the given layout to flexible content's list
          */
-        addLayout: function addLayout(layout) {
-            this.value.push({
-                layout: layout.name,
+        addGroup: function addGroup(layout, attributes) {
+            if (!layout) return;
+
+            this.groups.push({
+                name: layout.name,
                 title: layout.title,
-                id: 'test_' + layout.name
+                fields: this.getFreshFieldsWithValues(layout.fields, attributes)
             });
+
             this.isLayoutsDropdownOpen = false;
         }
     }
@@ -10769,84 +10732,21 @@ var render = function() {
     },
     [
       _c("template", { slot: "field" }, [
-        _vm.value.length > 0
+        _vm.groups.length > 0
           ? _c(
               "div",
-              _vm._l(_vm.value, function(group) {
-                return _c(
-                  "div",
-                  { staticClass: "relative bg-white pl-8 mb-4" },
-                  [
-                    _c("div", { staticClass: "w-full" }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "border-t border-r border-60 rounded-tr-lg"
-                        },
-                        [
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "border-b border-40 leading-normal py-2 px-8"
-                            },
-                            [
-                              _c("p", { staticClass: "text-80" }, [
-                                _vm._v(_vm._s(group.title))
-                              ])
-                            ]
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "border-b border-r border-l border-60 rounded-b-lg p-8"
-                        },
-                        [
-                          _c("input", {
-                            attrs: {
-                              type: "hidden",
-                              name: group.id + "_layout"
-                            },
-                            domProps: { value: group.layout }
-                          })
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8"
-                      },
-                      [
-                        _c("button", {
-                          staticClass: "btn border-r border-40 w-8 h-8 block",
-                          attrs: { title: "Move up" }
-                        }),
-                        _vm._v(" "),
-                        _c("button", {
-                          staticClass:
-                            "btn border-t border-r border-40 w-8 h-8 block",
-                          attrs: { title: "Move down" }
-                        }),
-                        _vm._v(" "),
-                        _c("button", {
-                          staticClass:
-                            "btn border-t border-r border-40 w-8 h-8 block",
-                          attrs: { title: "Delete" }
-                        })
-                      ]
-                    )
-                  ]
-                )
+              _vm._l(_vm.groups, function(group, index) {
+                return _c("form-nova-flexible-content-group", {
+                  key: index,
+                  attrs: {
+                    group: group,
+                    "resource-name": _vm.resourceName,
+                    "resource-id": _vm.resourceId,
+                    resource: _vm.resource
+                  }
+                })
               }),
-              0
+              1
             )
           : _vm._e(),
         _vm._v(" "),
@@ -10878,7 +10778,7 @@ var render = function() {
                                             "cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20",
                                           on: {
                                             click: function($event) {
-                                              return _vm.addLayout(layout)
+                                              return _vm.addGroup(layout)
                                             }
                                           }
                                         },
@@ -10912,7 +10812,7 @@ var render = function() {
                   attrs: { type: "button", tabindex: "0" },
                   on: { click: _vm.toggleLayoutsDropdownOrAddDefault }
                 },
-                [_c("span", [_vm._v(_vm._s(_vm.button))])]
+                [_c("span", [_vm._v(_vm._s(_vm.field.button))])]
               )
             ])
           : _vm._e()
@@ -10936,6 +10836,228 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(22)
+/* template */
+var __vue_template__ = __webpack_require__(23)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/FormGroup.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-07bf0e80", Component.options)
+  } else {
+    hotAPI.reload("data-v-07bf0e80", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['resourceName', 'resourceId', 'group'],
+
+    /**
+     * Mount the component.
+     */
+    mounted: function mounted() {
+        this.initializeComponent();
+    },
+
+
+    methods: {
+        initializeComponent: function initializeComponent() {
+            this.group.serialize = this.serialize;
+        },
+
+
+        /**
+         * Retrieve the layout's filled FormData
+         */
+        values: function values() {
+            var formData = new FormData();
+
+            for (var i = 0; i < this.group.fields.length; i++) {
+                this.group.fields[i].fill(formData);
+            }
+
+            return formData;
+        },
+
+
+        /**
+         * Retrieve the layout's filled object
+         */
+        serialize: function serialize() {
+            var data = { layout: this.group.name, attributes: {} };
+
+            this.values().forEach(function (value, key) {
+                data.attributes[key] = value;
+            });
+
+            return data;
+        }
+    }
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "relative bg-white pl-8 mb-4" }, [
+    _c("div", { staticClass: "w-full" }, [
+      _c("div", { staticClass: "border-t border-r border-60 rounded-tr-lg" }, [
+        _c(
+          "div",
+          { staticClass: "border-b border-40 leading-normal py-2 px-8" },
+          [
+            _c("p", { staticClass: "text-80" }, [
+              _vm._v(_vm._s(_vm.group.title))
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "border-b border-r border-l border-60 rounded-b-lg" },
+        _vm._l(_vm.group.fields, function(field, index) {
+          return _c("form-" + field.component, {
+            key: index,
+            tag: "component",
+            class: {
+              "remove-bottom-border": index == _vm.group.fields.length - 1
+            },
+            attrs: {
+              errors: _vm.validationErrors,
+              "resource-id": _vm.resourceId,
+              "resource-name": _vm.resourceName,
+              field: field
+            }
+          })
+        }),
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _vm._m(0)
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8"
+      },
+      [
+        _c("button", {
+          staticClass: "btn border-r border-40 w-8 h-8 block",
+          attrs: { title: "Move up" }
+        }),
+        _vm._v(" "),
+        _c("button", {
+          staticClass: "btn border-t border-r border-40 w-8 h-8 block",
+          attrs: { title: "Move down" }
+        }),
+        _vm._v(" "),
+        _c("button", {
+          staticClass: "btn border-t border-r border-40 w-8 h-8 block",
+          attrs: { title: "Delete" }
+        })
+      ]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-07bf0e80", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

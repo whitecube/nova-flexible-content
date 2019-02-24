@@ -2,27 +2,15 @@
     <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
             
-            <div v-if="value.length > 0">
-                <div class="relative bg-white pl-8 mb-4" v-for="group in value">
-                    <div class="w-full">
-                        <div class="border-t border-r border-60 rounded-tr-lg">
-                            <div class="border-b border-40 leading-normal py-2 px-8">
-                                <p class="text-80">{{ group.title }}</p>
-                            </div>
-                        </div>
-                        <div class="border-b border-r border-l border-60 rounded-b-lg p-8">
-                            <input type="hidden"
-                                :name="group.id + '_layout'"
-                                :value="group.layout" 
-                            />
-                        </div>
-                    </div>
-                    <div class="absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8">
-                        <button class="btn border-r border-40 w-8 h-8 block" title="Move up"></button>
-                        <button class="btn border-t border-r border-40 w-8 h-8 block" title="Move down"></button>
-                        <button class="btn border-t border-r border-40 w-8 h-8 block" title="Delete"></button>
-                    </div>
-                </div>
+            <div v-if="groups.length > 0">
+                <form-nova-flexible-content-group 
+                    v-for="(group, index) in groups"
+                    :key="index"
+                    :group="group"
+                    :resource-name="resourceName"
+                    :resource-id="resourceId"
+                    :resource="resource"
+                />
             </div>
 
             <div class="z-20 relative" v-if="layouts">
@@ -33,7 +21,7 @@
                         <div>
                             <ul class="list-reset">
                                 <li v-for="layout in layouts" class="border-b border-40">
-                                    <a  @click="addLayout(layout)"
+                                    <a  @click="addGroup(layout)"
                                         class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
                                         <div><p class="text-90">{{ layout.title }}</p></div>
                                     </a>
@@ -48,7 +36,7 @@
                     class="btn btn-default btn-primary inline-flex items-center relative"
                     @click="toggleLayoutsDropdownOrAddDefault"
                 >
-                    <span>{{ button }}</span>
+                    <span>{{ field.button }}</span>
                 </button>
             </div>
 
@@ -65,18 +53,15 @@ export default {
     props: ['resourceName', 'resourceId', 'field'],
 
     computed: {
-        button() {
-            return this.field.button || '+'
-        },
         layouts() {
             return this.field.layouts || false
         }
     },
 
-
     data() {
         return {
             isLayoutsDropdownOpen: false,
+            groups: [],
         };
     },
 
@@ -85,21 +70,31 @@ export default {
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
-            this.value = this.field.value || []
+            this.value = this.field.value || [];
+
+            this.populateGroups();
         },
 
         /**
          * Fill the given FormData object with the field's internal value.
          */
         fill(formData) {
-            formData.append(this.field.attribute, this.value || [])
+            this.value = [];
+
+            for (var i = 0; i < this.groups.length; i++) {
+                this.value.push(this.groups[i].serialize());
+            }
+
+            formData.append(this.field.attribute, JSON.stringify(this.value));
         },
 
         /**
          * Update the field's internal value.
          */
         handleChange(value) {
-            this.value = value
+            this.value = value;
+
+            this.populateGroups();
         },
 
         /**
@@ -108,20 +103,65 @@ export default {
          */
         toggleLayoutsDropdownOrAddDefault(event) {
             if(this.layouts.length === 1) {
-                return this.addLayout(this.layouts[0]);
+                return this.addGroup(this.layouts[0]);
             }
+
             this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+        },
+
+        /**
+         * Set the displayed layouts from the field's current value
+         */
+        populateGroups() {
+            this.groups = [];
+
+            for (var i = 0; i < this.value.length; i++) {
+                this.addGroup(
+                    this.getLayout(this.value[i].layout),
+                    this.value[i].attributes
+                );
+            }
+        },
+
+        /**
+         * Retrieve layout definition from its name
+         */
+        getLayout(name) {
+            if(!this.layouts) return;
+
+            for (var i = this.layouts.length - 1; i >= 0; i--) {
+                if(this.layouts[i].name !== name) continue;
+                return this.layouts[i];
+            }
+        },
+
+        /**
+         * Clone fields and inject values from given attributes
+         */
+        getFreshFieldsWithValues(fields, attributes) {
+            fields = JSON.parse(JSON.stringify(fields));
+
+            if(!attributes) return fields;
+
+            for (var i = fields.length - 1; i >= 0; i--) {
+                fields[i].value = attributes[fields[i].attribute] || null;
+            }
+
+            return fields;
         },
 
         /**
          * Append the given layout to flexible content's list
          */
-        addLayout(layout) {
-            this.value.push({
-                layout: layout.name,
+        addGroup(layout, attributes) {
+            if(!layout) return;
+
+            this.groups.push({
+                name: layout.name,
                 title: layout.title,
-                id: 'test_' + layout.name
+                fields: this.getFreshFieldsWithValues(layout.fields, attributes)
             });
+
             this.isLayoutsDropdownOpen = false;
         },
     },
