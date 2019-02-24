@@ -446,6 +446,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -475,7 +496,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Set the initial, internal value for the field.
          */
         setInitialValue: function setInitialValue() {
-            this.value = this.field.value || '';
+            this.value = this.field.value || [];
         },
 
 
@@ -483,7 +504,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Fill the given FormData object with the field's internal value.
          */
         fill: function fill(formData) {
-            formData.append(this.field.attribute, this.value || '');
+            formData.append(this.field.attribute, this.value || []);
         },
 
 
@@ -511,7 +532,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Append the given layout to flexible content's list
          */
         addLayout: function addLayout(layout) {
-            console.log(layout);
+            this.value.push({
+                layout: layout.name,
+                title: layout.title,
+                id: 'test_' + layout.name
+            });
             this.isLayoutsDropdownOpen = false;
         }
     }
@@ -10744,7 +10769,86 @@ var render = function() {
     },
     [
       _c("template", { slot: "field" }, [
-        _vm.value ? _c("div", { staticClass: "relative mb-4" }) : _vm._e(),
+        _vm.value.length > 0
+          ? _c(
+              "div",
+              _vm._l(_vm.value, function(group) {
+                return _c(
+                  "div",
+                  { staticClass: "relative bg-white pl-8 mb-4" },
+                  [
+                    _c("div", { staticClass: "w-full" }, [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "border-t border-r border-60 rounded-tr-lg"
+                        },
+                        [
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "border-b border-40 leading-normal py-2 px-8"
+                            },
+                            [
+                              _c("p", { staticClass: "text-80" }, [
+                                _vm._v(_vm._s(group.title))
+                              ])
+                            ]
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "border-b border-r border-l border-60 rounded-b-lg p-8"
+                        },
+                        [
+                          _c("input", {
+                            attrs: {
+                              type: "hidden",
+                              name: group.id + "_layout"
+                            },
+                            domProps: { value: group.layout }
+                          })
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8"
+                      },
+                      [
+                        _c("button", {
+                          staticClass: "btn border-r border-40 w-8 h-8 block",
+                          attrs: { title: "Move up" }
+                        }),
+                        _vm._v(" "),
+                        _c("button", {
+                          staticClass:
+                            "btn border-t border-r border-40 w-8 h-8 block",
+                          attrs: { title: "Move down" }
+                        }),
+                        _vm._v(" "),
+                        _c("button", {
+                          staticClass:
+                            "btn border-t border-r border-40 w-8 h-8 block",
+                          attrs: { title: "Delete" }
+                        })
+                      ]
+                    )
+                  ]
+                )
+              }),
+              0
+            )
+          : _vm._e(),
         _vm._v(" "),
         _vm.layouts
           ? _c("div", { staticClass: "z-20 relative" }, [

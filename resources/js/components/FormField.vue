@@ -2,7 +2,28 @@
     <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
             
-            <div class="relative mb-4" v-if="value"></div>
+            <div v-if="value.length > 0">
+                <div class="relative bg-white pl-8 mb-4" v-for="group in value">
+                    <div class="w-full">
+                        <div class="border-t border-r border-60 rounded-tr-lg">
+                            <div class="border-b border-40 leading-normal py-2 px-8">
+                                <p class="text-80">{{ group.title }}</p>
+                            </div>
+                        </div>
+                        <div class="border-b border-r border-l border-60 rounded-b-lg p-8">
+                            <input type="hidden"
+                                :name="group.id + '_layout'"
+                                :value="group.layout" 
+                            />
+                        </div>
+                    </div>
+                    <div class="absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8">
+                        <button class="btn border-r border-40 w-8 h-8 block" title="Move up"></button>
+                        <button class="btn border-t border-r border-40 w-8 h-8 block" title="Move down"></button>
+                        <button class="btn border-t border-r border-40 w-8 h-8 block" title="Delete"></button>
+                    </div>
+                </div>
+            </div>
 
             <div class="z-20 relative" v-if="layouts">
                 <div class="relative" v-if="layouts.length > 1">
@@ -64,14 +85,14 @@ export default {
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
-            this.value = this.field.value || ''
+            this.value = this.field.value || []
         },
 
         /**
          * Fill the given FormData object with the field's internal value.
          */
         fill(formData) {
-            formData.append(this.field.attribute, this.value || '')
+            formData.append(this.field.attribute, this.value || [])
         },
 
         /**
@@ -96,7 +117,11 @@ export default {
          * Append the given layout to flexible content's list
          */
         addLayout(layout) {
-            console.log(layout);
+            this.value.push({
+                layout: layout.name,
+                title: layout.title,
+                id: 'test_' + layout.name
+            });
             this.isLayoutsDropdownOpen = false;
         },
     },
