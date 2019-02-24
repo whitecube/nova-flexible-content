@@ -124,6 +124,24 @@ class Flexible extends Field
     }
 
     /**
+     * Resolve the field's value.
+     *
+     * @param  mixed  $resource
+     * @param  string|null  $attribute
+     * @return void
+     */
+    public function resolve($resource, $attribute = null)
+    {
+        $attribute = $attribute ?? $this->attribute;
+
+        if(!$this->resolver) {
+            $this->resolver(Resolver::class);
+        }
+
+        $this->value = $this->resolver->get($resource, $attribute);
+    }
+
+    /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -132,8 +150,17 @@ class Flexible extends Field
      * @param  string  $attribute
      * @return void
      */
-    protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
+    protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
-        \Log::info($request[$requestAttribute]);
+        $attribute = $attribute ?? $this->attribute;
+        $value = json_decode($request[$requestAttribute]);
+
+        // TODO : run the sub-field's "fill" method in order to retrieve their resolved values
+
+        if(!$this->resolver) {
+            $this->resolver(Resolver::class);
+        }
+
+        $this->value = $this->resolver->set($model, $attribute, $value);
     }
 }

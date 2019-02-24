@@ -70,6 +70,8 @@ export default {
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
+            console.log(this.field.value);
+            
             this.value = this.field.value || [];
 
             this.populateGroups();
