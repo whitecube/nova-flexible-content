@@ -2,7 +2,9 @@
 
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
-class Layout implements LayoutInterface
+use JsonSerializable;
+
+class Layout implements LayoutInterface, JsonSerializable
 {
     /**
      * The layout's identifier
@@ -68,5 +70,18 @@ class Layout implements LayoutInterface
     public function fields()
     {
         return $this->fields ?? [];
+    }
+
+    /**
+     * Transform layout for serialization
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'name' => $this->name(),
+            'title' => $this->title()
+        ];
     }
 }

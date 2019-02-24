@@ -424,6 +424,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -431,6 +453,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
 
     props: ['resourceName', 'resourceId', 'field'],
+
+    computed: {
+        button: function button() {
+            return this.field.button || '+';
+        },
+        layouts: function layouts() {
+            return this.field.layouts || false;
+        }
+    },
+
+    data: function data() {
+        return {
+            isLayoutsDropdownOpen: false
+        };
+    },
+
 
     methods: {
         /*
@@ -454,6 +492,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         handleChange: function handleChange(value) {
             this.value = value;
+        },
+
+
+        /**
+         * Display or hide the layouts choice dropdown
+         */
+        toggleLayoutsDropdown: function toggleLayoutsDropdown(event) {
+            event.preventDefault();
+            this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
         }
     }
 });
@@ -10679,32 +10726,65 @@ var render = function() {
     { attrs: { field: _vm.field, errors: _vm.errors } },
     [
       _c("template", { slot: "field" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.value,
-              expression: "value"
-            }
-          ],
-          staticClass: "w-full form-control form-input form-input-bordered",
-          class: _vm.errorClasses,
-          attrs: {
-            id: _vm.field.name,
-            type: "text",
-            placeholder: _vm.field.name
-          },
-          domProps: { value: _vm.value },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.value = $event.target.value
-            }
-          }
-        })
+        _vm.value ? _c("div", { staticClass: "relative mb-4" }) : _vm._e(),
+        _vm._v(" "),
+        _vm.layouts
+          ? _c("div", { staticClass: "z-20 relative" }, [
+              _c("div", { staticClass: "relative" }, [
+                _vm.isLayoutsDropdownOpen
+                  ? _c(
+                      "div",
+                      {
+                        staticClass:
+                          "overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                      },
+                      [
+                        _c("div", [
+                          _c(
+                            "ul",
+                            { staticClass: "list-reset" },
+                            _vm._l(_vm.layouts, function(layout) {
+                              return _c(
+                                "li",
+                                { staticClass: "border-b border-40" },
+                                [
+                                  _c(
+                                    "a",
+                                    {
+                                      staticClass:
+                                        "cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20"
+                                    },
+                                    [
+                                      _c("div", [
+                                        _c("p", { staticClass: "text-90" }, [
+                                          _vm._v(_vm._s(layout.title))
+                                        ])
+                                      ])
+                                    ]
+                                  )
+                                ]
+                              )
+                            }),
+                            0
+                          )
+                        ])
+                      ]
+                    )
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "btn btn-default btn-primary inline-flex items-center relative",
+                  attrs: { type: "button", tabindex: "0" },
+                  on: { click: _vm.toggleLayoutsDropdown }
+                },
+                [_c("span", [_vm._v(_vm._s(_vm.button))])]
+              )
+            ])
+          : _vm._e()
       ])
     ],
     2

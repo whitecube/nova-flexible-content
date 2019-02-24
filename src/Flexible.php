@@ -25,18 +25,26 @@ class Flexible extends Field
     protected $layouts;
 
     /**
-     * The "Add layout" button label
-     *
-     * @var string
-     */
-    protected $buttonLabel;
-
-    /**
      * The field's value setter & getter
      *
      * @var Whitecube\NovaFlexibleContent\Value\ResolverInterface
      */
     protected $resolver;
+
+    /**
+     * Create a fresh flexible field instance
+     *
+     * @param  string  $name
+     * @param  string|null  $attribute
+     * @param  mixed|null  $resolveCallback
+     * @return void
+     */
+    public function __construct($name, $attribute = null, $resolveCallback = null)
+    {
+        parent::__construct($name, $attribute, $resolveCallback);
+
+        $this->button('Add layout');
+    }
 
     /**
      * Set the button's label
@@ -46,8 +54,7 @@ class Flexible extends Field
      */
     public function button($label)
     {
-        $this->buttonLabel = $label;
-        return $this;
+        return $this->withMeta(['button' => $label]);
     }
 
     /**
@@ -109,6 +116,7 @@ class Flexible extends Field
     {
         if(!$this->layouts) {
             $this->layouts = collect();
+            $this->withMeta(['layouts' => $this->layouts]);
         }
 
         $this->layouts->push($layout);
