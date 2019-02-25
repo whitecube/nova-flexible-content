@@ -191,11 +191,11 @@ class Flexible extends Field
     protected function resolveGroups(array $raw)
     {
         return collect($raw)->map(function($item) {
-            return $this->resolveNewLayoutGroupFromAttributes(
+            return $this->resolveLayoutGroupFromAttributes(
                 (array) $item->attributes,
                 $item->layout,
                 $item->key
-            )->resolvedValue();
+            );
         });
     }
 
@@ -222,7 +222,7 @@ class Flexible extends Field
      * @param  string  $key
      * @return Illuminate\Support\Collection
      */
-    protected function resolveNewLayoutGroupFromAttributes(array $attributes, $name, $key)
+    protected function resolveLayoutGroupFromAttributes(array $attributes, $name, $key)
     {
         if(!($layout = $this->findLayout($name))) return;
 

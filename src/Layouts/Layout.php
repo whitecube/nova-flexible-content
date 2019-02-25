@@ -100,20 +100,15 @@ class Layout implements LayoutInterface, JsonSerializable
      *
      * @param  array   $request
      * @param  string  $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return array
      */
     public function getResolved(array $attributes, $key)
     {
-        $instance = new static(
-            $this->title(),
-            $this->name(),
-            $this->fields->all(),
-            $key
-        );
+        $instance = $this->duplicateUsingKey($key);
 
         $instance->resolve($attributes);
 
-        return $instance;
+        return $instance->resolvedValue();
     }
 
     /**
@@ -125,16 +120,28 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function getFilled(ScopedRequest $request, $key)
     {
-        $instance = new static(
-            $this->title(),
-            $this->name(),
-            $this->fields->all(),
-            $key
-        );
+        $instance = $this->duplicateUsingKey($key);
 
         $instance->fill($request);
 
         return $instance;
+    }
+
+    /**
+     * Get a cloned instance for key
+     *
+     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
+     * @param  string  $key
+     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     */
+    public function duplicateUsingKey($key)
+    {
+        return new static(
+            $this->title,
+            $this->name,
+            $this->fields->all(),
+            $key
+        );
     }
 
     /**
@@ -231,7 +238,7 @@ class Layout implements LayoutInterface, JsonSerializable
         return [
             'layout' => $this->name,
             'key' => $this->key,
-            'attributes' => $this->fields
+            'attributes' => $this->fields->jsonSerialize()
         ];
     }
 
