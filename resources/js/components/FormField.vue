@@ -6,6 +6,7 @@
                 <form-nova-flexible-content-group 
                     v-for="(group, index) in groups"
                     :key="index"
+                    :field="field"
                     :group="group"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
@@ -62,6 +63,7 @@ export default {
         return {
             isLayoutsDropdownOpen: false,
             groups: [],
+            files: {},
         };
     },
 
@@ -70,9 +72,8 @@ export default {
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
-            console.log(this.field.value);
-            
             this.value = this.field.value || [];
+            this.files = {};
 
             this.populateGroups();
         },
@@ -81,20 +82,39 @@ export default {
          * Fill the given FormData object with the field's internal value.
          */
         fill(formData) {
+            let group;
+
             this.value = [];
+            this.files = {};
 
             for (var i = 0; i < this.groups.length; i++) {
-                this.value.push(this.groups[i].serialize());
+                group = this.groups[i].serialize();
+
+                // Only serialize the group's non-file attributes
+                this.value.push({
+                    layout: group.layout,
+                    key: group.key,
+                    attributes: group.attributes
+                });
+
+                // Attach the files for formData appending
+                this.fields = {...this.fields, ...group.files};
             }
 
             formData.append(this.field.attribute, JSON.stringify(this.value));
+
+            // Append file uploads
+            for(var key in this.fields) {
+                formData.append(key, this.fields[key]);
+            }
         },
 
         /**
          * Update the field's internal value.
          */
         handleChange(value) {
-            this.value = value;
+            this.value = value || [];
+            this.files = {};
 
             this.populateGroups();
         },
@@ -120,7 +140,8 @@ export default {
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
-                    this.value[i].attributes
+                    this.value[i].attributes,
+                    this.value[i].key
                 );
             }
         },
@@ -155,11 +176,12 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes) {
+        addGroup(layout, attributes, key) {
             if(!layout) return;
 
             this.groups.push({
                 name: layout.name,
+                key: key || null,
                 title: layout.title,
                 fields: this.getFreshFieldsWithValues(layout.fields, attributes)
             });

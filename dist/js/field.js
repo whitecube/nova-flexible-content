@@ -331,6 +331,9 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
 //
 //
 //
@@ -394,7 +397,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             isLayoutsDropdownOpen: false,
-            groups: []
+            groups: [],
+            files: {}
         };
     },
 
@@ -404,9 +408,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Set the initial, internal value for the field.
          */
         setInitialValue: function setInitialValue() {
-            console.log(this.field.value);
-
             this.value = this.field.value || [];
+            this.files = {};
 
             this.populateGroups();
         },
@@ -416,13 +419,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Fill the given FormData object with the field's internal value.
          */
         fill: function fill(formData) {
+            var group = void 0;
+
             this.value = [];
+            this.files = {};
 
             for (var i = 0; i < this.groups.length; i++) {
-                this.value.push(this.groups[i].serialize());
+                group = this.groups[i].serialize();
+
+                // Only serialize the group's non-file attributes
+                this.value.push({
+                    layout: group.layout,
+                    key: group.key,
+                    attributes: group.attributes
+                });
+
+                // Attach the files for formData appending
+                this.fields = _extends({}, this.fields, group.files);
             }
 
             formData.append(this.field.attribute, JSON.stringify(this.value));
+
+            // Append file uploads
+            for (var key in this.fields) {
+                formData.append(key, this.fields[key]);
+            }
         },
 
 
@@ -430,7 +451,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          * Update the field's internal value.
          */
         handleChange: function handleChange(value) {
-            this.value = value;
+            this.value = value || [];
+            this.files = {};
 
             this.populateGroups();
         },
@@ -456,7 +478,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.groups = [];
 
             for (var i = 0; i < this.value.length; i++) {
-                this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes);
+                this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key);
             }
         },
 
@@ -493,11 +515,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup: function addGroup(layout, attributes) {
+        addGroup: function addGroup(layout, attributes, key) {
             if (!layout) return;
 
             this.groups.push({
                 name: layout.name,
+                key: key || null,
                 title: layout.title,
                 fields: this.getFreshFieldsWithValues(layout.fields, attributes)
             });
@@ -10741,6 +10764,7 @@ var render = function() {
                 return _c("form-nova-flexible-content-group", {
                   key: index,
                   attrs: {
+                    field: _vm.field,
                     group: group,
                     "resource-name": _vm.resourceName,
                     "resource-id": _vm.resourceId,
@@ -10930,7 +10954,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['resourceName', 'resourceId', 'group'],
+    props: ['resourceName', 'resourceId', 'group', 'field'],
+
+    data: function data() {
+        return {
+            key: null
+        };
+    },
+
 
     /**
      * Mount the component.
@@ -10942,6 +10973,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         initializeComponent: function initializeComponent() {
+            // Get a unique identifier for this FormGroup
+            this.key = this.group.key || this.getTemporaryUniqueKey();
+            // Rename all fields with this key
+            for (var i = 0; i < this.group.fields.length; i++) {
+                this.group.fields[i].attribute = this.key + '__' + this.group.fields[i].attribute;
+            }
+            // Link this component's serialize function to the parent object
             this.group.serialize = this.serialize;
         },
 
@@ -10961,14 +10999,56 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
         /**
+         * Generate a unique string for current form
+         */
+        getTemporaryUniqueKey: function getTemporaryUniqueKey() {
+            return this.field.attribute + '_' + Math.random().toString(36).substr(2, 9) + '_' + this.group.name;
+        },
+
+
+        /**
          * Retrieve the layout's filled object
          */
         serialize: function serialize() {
-            var data = { layout: this.group.name, attributes: {} };
+            var data = {
+                layout: this.group.name,
+                key: this.key,
+                attributes: {},
+                files: {}
+            };
 
-            this.values().forEach(function (value, key) {
-                data.attributes[key] = value;
-            });
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var item = _step.value;
+
+                    if (!(item[1] instanceof File || item[1] instanceof Blob)) {
+                        // Simple input value, no need to attach files
+                        data.attributes[item[0]] = item[1];
+                        continue;
+                    }
+
+                    // File object, attach its file for upload
+                    data.attributes[item[0]] = '___upload-' + item[0];
+                    data.files['___upload-' + item[0]] = item[1];
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
 
             return data;
         }

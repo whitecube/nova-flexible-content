@@ -2,12 +2,13 @@
 
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
 interface LayoutInterface
 {
     public function name();
     public function title();
     public function fields();
-    public function getFilled(NovaRequest $request, $attributes);
+    public function key();
+    public function getFilled(ScopedRequest $request, $attributes);
 }

@@ -3,7 +3,7 @@
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use JsonSerializable;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 class Layout implements LayoutInterface, JsonSerializable
@@ -11,11 +11,18 @@ class Layout implements LayoutInterface, JsonSerializable
     use HasAttributes;
 
     /**
-     * The layout's identifier
+     * The layout's name
      *
      * @var string
      */
     protected $name;
+
+    /**
+     * The layout's unique identifier
+     *
+     * @var string
+     */
+    protected $key;
 
     /**
      * The layout's title
@@ -36,14 +43,16 @@ class Layout implements LayoutInterface, JsonSerializable
      *
      * @param string $title
      * @param string $name
-     * @param string $fields
+     * @param array $fields
+     * @param string $key
      * @return void
      */
-    public function __construct($title, $name, $fields = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null)
     {
-        $this->title = $title;
-        $this->name = $name;
+        $this->title = $title ?? $this->title();
+        $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
+        $this->key = is_null($key) ? null : $this->getProcessedKey($key);
     }
 
     /**
@@ -77,39 +86,46 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
+     * Retrieve the layout's unique key
+     *
+     * @return string
+     */
+    public function key()
+    {
+        return $this->key;
+    }
+
+    /**
      * Get a cloned & hydrated instance
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  object  $attributes
+     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
+     * @param  string  $key
      * @return Whitecube\NovaFlexibleContent\Layouts\Layout
      */
-    public function getFilled(NovaRequest $request, $attributes)
+    public function getFilled(ScopedRequest $request, $key)
     {
         $instance = new static(
             $this->title(),
             $this->name(),
-            $this->fields->all()
+            $this->fields->all(),
+            $key
         );
 
-        $instance->hydrate($request, (array) $attributes);
+        $instance->fillFromRequest($request);
 
         return $instance;
     }
 
     /**
-     * fill attributes using underlaying fields
+     * Fill attributes using underlaying fields and incoming request
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  array  $attributes
      * @return void
      */
-    public function hydrate(NovaRequest $request, array $attributes = [])
+    public function fillFromRequest(ScopedRequest $request)
     {
-        $scopedRequest = NovaRequest::createFrom($request);
-        $scopedRequest->replace($attributes);
-
-        $this->fields->each(function($field) use ($scopedRequest) {
-            $field->fill($scopedRequest, $this);
+        $this->fields->each(function($field) use ($request) {
+            $field->fill($request, $this);
         });
     }
 
@@ -165,9 +181,32 @@ class Layout implements LayoutInterface, JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'name' => $this->name(),
-            'title' => $this->title(),
-            'fields' => $this->fields()
+            'name' => $this->name,
+            'title' => $this->title,
+            'fields' => $this->fields
         ];
+    }
+
+    /**
+     * Returns an unique key for this group if it's not already the case
+     *
+     * @param  string  $key
+     * @return string
+     */
+    protected function getProcessedKey($key)
+    {
+        if(strpos($key, '_') === false) return $key;
+
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil(16/2));
+        }
+        elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil(16/2));
+        }
+        else {
+            throw new \Exception("No cryptographically secure random function available");
+        }
+
+        return substr(bin2hex($bytes), 0, 16);
     }
 }

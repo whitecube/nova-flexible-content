@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent;
 
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
@@ -154,7 +155,7 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        $groups = $this->fillGroups($request, $request[$requestAttribute]);
+        $groups = $this->fillGroups($request, $requestAttribute);
 
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
@@ -167,25 +168,29 @@ class Flexible extends Field
      * Hydrate the underlaying layouts structure & fields
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  string  $json
+     * @param  string  $requestAttribute
      * @return Illuminate\Support\Collection
      */
-    protected function fillGroups(NovaRequest $request, $json)
+    protected function fillGroups(NovaRequest $request, $requestAttribute)
     {
-        return collect(json_decode($json))->map(function($item, $key) use ($request) {
-            return $this->newLayoutForName($request, $item->layout, $item->attributes);
+        return collect(json_decode($request[$requestAttribute]))->map(function($item, $key) use ($request) {
+            return $this->newLayoutForName(
+                ScopedRequest::scopeFrom($request, (array) $item->attributes, $item->key),
+                $item->layout,
+                $item->key
+            );
         });
     }
 
     /**
      * Retrieve a registered layout based on its name and return a new hydrated instance of it
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
      * @param  string  $name
-     * @param  object  $attributes
+     * @param  string  $key
      * @return Illuminate\Support\Collection
      */
-    protected function newLayoutForName(NovaRequest $request, $name, $attributes)
+    protected function newLayoutForName(ScopedRequest $request, $name, $key)
     {
         $layout = $this->layouts->first(function($layout) use ($name) {
             return $layout->name() === $name;
@@ -193,6 +198,6 @@ class Flexible extends Field
 
         if(!$layout) return;
 
-        return $layout->getFilled($request, $attributes);
+        return $layout->getFilled($request, $key);
     }
 }

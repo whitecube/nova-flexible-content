@@ -11,13 +11,14 @@ class Resolver implements ResolverInterface
      * @param  mixed  $model
      * @param  string $attribute
      * @param  Illuminate\Support\Collection $groups
-     * @return void
+     * @return string
      */
     public function set($model, $attribute, $groups)
     {
-        $model->$attribute = json_encode($groups->map(function($group) {
+        return $model->$attribute = json_encode($groups->map(function($group) {
             return [
                 'layout' => $group->name(),
+                'key' => $group->key(),
                 'attributes' => $group->getAttributes()
             ];
         }), JSON_PRETTY_PRINT);

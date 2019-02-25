@@ -29,7 +29,13 @@
 
 <script>
 export default {
-    props: ['resourceName', 'resourceId', 'group'],
+    props: ['resourceName', 'resourceId', 'group', 'field'],
+
+    data() {
+        return {
+            key: null,
+        };
+    },
 
     /**
      * Mount the component.
@@ -40,6 +46,13 @@ export default {
 
     methods: {
         initializeComponent() {
+            // Get a unique identifier for this FormGroup
+            this.key = this.group.key || this.getTemporaryUniqueKey();
+            // Rename all fields with this key
+            for (var i = 0; i < this.group.fields.length; i++) {
+                this.group.fields[i].attribute = this.key + '__' + this.group.fields[i].attribute;
+            }
+            // Link this component's serialize function to the parent object
             this.group.serialize = this.serialize;
         },
 
@@ -55,16 +68,38 @@ export default {
 
             return formData;
         },
+
+        /**
+         * Generate a unique string for current form
+         */
+        getTemporaryUniqueKey() {
+            return this.field.attribute
+                + '_' + Math.random().toString(36).substr(2, 9)
+                + '_' + this.group.name;
+        },
         
         /**
          * Retrieve the layout's filled object
          */
         serialize() {
-            let data = { layout: this.group.name, attributes: {} };
+            let data = {
+                layout: this.group.name,
+                key: this.key,
+                attributes: {},
+                files: {}
+            };
 
-            this.values().forEach(function(value, key) {
-                data.attributes[key] = value;
-            });
+            for(var item of this.values()) {
+                if(!(item[1] instanceof File || item[1] instanceof Blob)) {
+                    // Simple input value, no need to attach files
+                    data.attributes[item[0]] = item[1];
+                    continue;
+                }
+
+                // File object, attach its file for upload
+                data.attributes[item[0]] = '___upload-' + item[0];
+                data.files['___upload-' + item[0]] = item[1];
+            }
 
             return data;
         },
