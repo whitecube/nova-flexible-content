@@ -10,7 +10,9 @@ interface LayoutInterface
     public function title();
     public function fields();
     public function key();
-    public function getResolved(array $attributes, $key);
-    public function getFilled(ScopedRequest $request, $key);
-    public function resolvedValue();
+    public function getResolved();
+    public function resolve(array $attributes = []);
+    public function fill(ScopedRequest $request);
+    public function duplicate($key);
+    public function duplicateAndHydrate($key, array $attributes = []);
 }

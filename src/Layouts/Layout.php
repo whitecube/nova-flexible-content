@@ -47,12 +47,13 @@ class Layout implements LayoutInterface, JsonSerializable
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [])
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
+        $this->setRawAttributes($attributes);
     }
 
     /**
@@ -96,51 +97,41 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
-     * Get a cloned & hydrated instance
+     * Resolve and return the result
      *
-     * @param  array   $request
-     * @param  string  $key
      * @return array
      */
-    public function getResolved(array $attributes, $key)
+    public function getResolved()
     {
-        $instance = $this->duplicateUsingKey($key);
-
-        $instance->resolve($attributes);
-
-        return $instance->resolvedValue();
+        return $this->resolve($this->getAttributes());
     }
 
     /**
-     * Get a cloned & hydrated instance
+     * Get an empty cloned instance
      *
-     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
      * @param  string  $key
      * @return Whitecube\NovaFlexibleContent\Layouts\Layout
      */
-    public function getFilled(ScopedRequest $request, $key)
+    public function duplicate($key)
     {
-        $instance = $this->duplicateUsingKey($key);
-
-        $instance->fill($request);
-
-        return $instance;
+        return $this->duplicateAndHydrate($key);
     }
 
     /**
-     * Get a cloned instance for key
+     * Get a cloned instance with set values
      *
-     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
      * @param  string  $key
+     * @param  array  $attributes
      * @return Whitecube\NovaFlexibleContent\Layouts\Layout
      */
-    public function duplicateUsingKey($key)
+    public function duplicateAndHydrate($key, array $attributes = [])
     {
         return new static(
             $this->title,
             $this->name,
             $this->fields->all(),
-            $key
+            $key,
+            $attributes
         );
     }
 
@@ -155,6 +146,12 @@ class Layout implements LayoutInterface, JsonSerializable
         $this->fields->each(function($field) use ($attributes) {
             $field->resolve($attributes);
         });
+
+        return [
+            'layout' => $this->name,
+            'key' => $this->key,
+            'attributes' => $this->fields->jsonSerialize()
+        ];
     }
 
     /**
@@ -221,26 +218,13 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function jsonSerialize()
     {
+        // Calling an empty "resolve" call first in order to empty all fields
         $this->resolve();
 
         return [
             'name' => $this->name,
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize()
-        ];
-    }
-
-    /**
-     * Transform layout for serialization
-     *
-     * @return array
-     */
-    public function resolvedValue()
-    {
-        return [
-            'layout' => $this->name,
-            'key' => $this->key,
-            'attributes' => $this->fields->jsonSerialize()
         ];
     }
 
