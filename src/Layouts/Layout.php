@@ -3,9 +3,13 @@
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use JsonSerializable;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 class Layout implements LayoutInterface, JsonSerializable
 {
+    use HasAttributes;
+
     /**
      * The layout's identifier
      *
@@ -23,7 +27,7 @@ class Layout implements LayoutInterface, JsonSerializable
     /**
      * The layout's registered fields
      *
-     * @var array
+     * @var \Illuminate\Support\Collection
      */
     protected $fields;
 
@@ -35,11 +39,11 @@ class Layout implements LayoutInterface, JsonSerializable
      * @param string $fields
      * @return void
      */
-    public function __construct($title, $name, $fields)
+    public function __construct($title, $name, $fields = null)
     {
         $this->title = $title;
         $this->name = $name;
-        $this->fields = $fields;
+        $this->fields = collect($fields ?? $this->fields());
     }
 
     /**
@@ -69,7 +73,88 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function fields()
     {
-        return $this->fields ?? [];
+        return $this->fields ? $this->fields->all() : [];
+    }
+
+    /**
+     * Get a cloned & hydrated instance
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  object  $attributes
+     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     */
+    public function getFilled(NovaRequest $request, $attributes)
+    {
+        $instance = new static(
+            $this->title(),
+            $this->name(),
+            $this->fields->all()
+        );
+
+        $instance->hydrate($request, (array) $attributes);
+
+        return $instance;
+    }
+
+    /**
+     * fill attributes using underlaying fields
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  array  $attributes
+     * @return void
+     */
+    public function hydrate(NovaRequest $request, array $attributes = [])
+    {
+        $scopedRequest = NovaRequest::createFrom($request);
+        $scopedRequest->replace($attributes);
+
+        $this->fields->each(function($field) use ($scopedRequest) {
+            $field->fill($scopedRequest, $this);
+        });
+    }
+
+    /**
+     * Dynamically retrieve attributes on the layout.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        return $this->getAttribute($key);
+    }
+
+    /**
+     * Dynamically set attributes on the layout.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function __set($key, $value)
+    {
+        $this->setAttribute($key, $value);
+    }
+
+    /**
+     * Determine if the given attribute is a date or date castable.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    protected function isDateAttribute($key)
+    {
+        return false;
+    }
+
+    /**
+     * Get the casts array.
+     *
+     * @return array
+     */
+    public function getCasts()
+    {
+        return $this->casts;
     }
 
     /**

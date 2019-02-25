@@ -153,14 +153,46 @@ class Flexible extends Field
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
         $attribute = $attribute ?? $this->attribute;
-        $value = json_decode($request[$requestAttribute]);
 
-        // TODO : run the sub-field's "fill" method in order to retrieve their resolved values
+        $groups = $this->fillGroups($request, $request[$requestAttribute]);
 
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
 
-        $this->value = $this->resolver->set($model, $attribute, $value);
+        $this->value = $this->resolver->set($model, $attribute, $groups);
+    }
+
+    /**
+     * Hydrate the underlaying layouts structure & fields
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $json
+     * @return Illuminate\Support\Collection
+     */
+    protected function fillGroups(NovaRequest $request, $json)
+    {
+        return collect(json_decode($json))->map(function($item, $key) use ($request) {
+            return $this->newLayoutForName($request, $item->layout, $item->attributes);
+        });
+    }
+
+    /**
+     * Retrieve a registered layout based on its name and return a new hydrated instance of it
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $name
+     * @param  object  $attributes
+     * @return Illuminate\Support\Collection
+     */
+    protected function newLayoutForName(NovaRequest $request, $name, $attributes)
+    {
+        $layout = $this->layouts->first(function($layout) use ($name) {
+            return $layout->name() === $name;
+        });
+
+        if(!$layout) return;
+
+        return $layout->getFilled($request, $attributes);
     }
 }
