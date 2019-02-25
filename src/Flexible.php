@@ -139,7 +139,7 @@ class Flexible extends Field
             $this->resolver(Resolver::class);
         }
 
-        $this->value = $this->resolver->get($resource, $attribute);
+        $this->value = $this->resolveGroups($this->resolver->get($resource, $attribute));
     }
 
     /**
@@ -174,11 +174,28 @@ class Flexible extends Field
     protected function fillGroups(NovaRequest $request, $requestAttribute)
     {
         return collect(json_decode($request[$requestAttribute]))->map(function($item, $key) use ($request) {
-            return $this->newLayoutForName(
+            return $this->fillNewLayoutGroupFromRequest(
                 ScopedRequest::scopeFrom($request, (array) $item->attributes, $item->key),
                 $item->layout,
                 $item->key
             );
+        });
+    }
+
+    /**
+     * Resolve all contained groups and their fields
+     *
+     * @param  array  $raw
+     * @return Illuminate\Support\Collection
+     */
+    protected function resolveGroups(array $raw)
+    {
+        return collect($raw)->map(function($item) {
+            return $this->resolveNewLayoutGroupFromAttributes(
+                (array) $item->attributes,
+                $item->layout,
+                $item->key
+            )->resolvedValue();
         });
     }
 
@@ -190,14 +207,38 @@ class Flexible extends Field
      * @param  string  $key
      * @return Illuminate\Support\Collection
      */
-    protected function newLayoutForName(ScopedRequest $request, $name, $key)
+    protected function fillNewLayoutGroupFromRequest(ScopedRequest $request, $name, $key)
     {
-        $layout = $this->layouts->first(function($layout) use ($name) {
-            return $layout->name() === $name;
-        });
-
-        if(!$layout) return;
+        if(!($layout = $this->findLayout($name))) return;
 
         return $layout->getFilled($request, $key);
+    }
+
+    /**
+     * Retrieve a registered layout based on its name and return a new hydrated instance of it
+     *
+     * @param  array   $attributes
+     * @param  string  $name
+     * @param  string  $key
+     * @return Illuminate\Support\Collection
+     */
+    protected function resolveNewLayoutGroupFromAttributes(array $attributes, $name, $key)
+    {
+        if(!($layout = $this->findLayout($name))) return;
+
+        return $layout->getResolved($attributes, $key);
+    }
+
+    /**
+     * Find a layout based on its name
+     *
+     * @param  string  $name
+     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     */
+    protected function findLayout($name)
+    {
+        return $this->layouts->first(function($layout) use ($name) {
+            return $layout->name() === $name;
+        });
     }
 }

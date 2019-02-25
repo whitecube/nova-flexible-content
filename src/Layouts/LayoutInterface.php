@@ -10,5 +10,7 @@ interface LayoutInterface
     public function title();
     public function fields();
     public function key();
-    public function getFilled(ScopedRequest $request, $attributes);
+    public function getResolved(array $attributes, $key);
+    public function getFilled(ScopedRequest $request, $key);
+    public function resolvedValue();
 }

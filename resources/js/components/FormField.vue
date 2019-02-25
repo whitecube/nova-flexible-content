@@ -159,21 +159,6 @@ export default {
         },
 
         /**
-         * Clone fields and inject values from given attributes
-         */
-        getFreshFieldsWithValues(fields, attributes) {
-            fields = JSON.parse(JSON.stringify(fields));
-
-            if(!attributes) return fields;
-
-            for (var i = fields.length - 1; i >= 0; i--) {
-                fields[i].value = attributes[fields[i].attribute] || null;
-            }
-
-            return fields;
-        },
-
-        /**
          * Append the given layout to flexible content's list
          */
         addGroup(layout, attributes, key) {
@@ -183,7 +168,7 @@ export default {
                 name: layout.name,
                 key: key || null,
                 title: layout.title,
-                fields: this.getFreshFieldsWithValues(layout.fields, attributes)
+                fields: attributes || layout.fields
             });
 
             this.isLayoutsDropdownOpen = false;

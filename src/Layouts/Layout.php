@@ -98,6 +98,27 @@ class Layout implements LayoutInterface, JsonSerializable
     /**
      * Get a cloned & hydrated instance
      *
+     * @param  array   $request
+     * @param  string  $key
+     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     */
+    public function getResolved(array $attributes, $key)
+    {
+        $instance = new static(
+            $this->title(),
+            $this->name(),
+            $this->fields->all(),
+            $key
+        );
+
+        $instance->resolve($attributes);
+
+        return $instance;
+    }
+
+    /**
+     * Get a cloned & hydrated instance
+     *
      * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
      * @param  string  $key
      * @return Whitecube\NovaFlexibleContent\Layouts\Layout
@@ -111,9 +132,24 @@ class Layout implements LayoutInterface, JsonSerializable
             $key
         );
 
-        $instance->fillFromRequest($request);
+        $instance->fill($request);
 
         return $instance;
+    }
+
+    /**
+     * Resolve fields using given attributes
+     *
+     * @param  array  $attributes
+     * @return void
+     */
+    public function resolve(array $attributes)
+    {
+        $this->fields->each(function($field) use ($attributes) {
+            $field->resolve($attributes);
+        });
+
+        info($this->fields);
     }
 
     /**
@@ -122,7 +158,7 @@ class Layout implements LayoutInterface, JsonSerializable
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return void
      */
-    public function fillFromRequest(ScopedRequest $request)
+    public function fill(ScopedRequest $request)
     {
         $this->fields->each(function($field) use ($request) {
             $field->fill($request, $this);
@@ -184,6 +220,20 @@ class Layout implements LayoutInterface, JsonSerializable
             'name' => $this->name,
             'title' => $this->title,
             'fields' => $this->fields
+        ];
+    }
+
+    /**
+     * Transform layout for serialization
+     *
+     * @return array
+     */
+    public function resolvedValue()
+    {
+        return [
+            'layout' => $this->name,
+            'key' => $this->key,
+            'attributes' => $this->fields
         ];
     }
 
