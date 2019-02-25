@@ -150,7 +150,7 @@ class Layout implements LayoutInterface, JsonSerializable
      * @param  array  $attributes
      * @return void
      */
-    public function resolve(array $attributes)
+    public function resolve(array $attributes = [])
     {
         $this->fields->each(function($field) use ($attributes) {
             $field->resolve($attributes);
@@ -221,10 +221,12 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function jsonSerialize()
     {
+        $this->resolve();
+
         return [
             'name' => $this->name,
             'title' => $this->title,
-            'fields' => $this->fields
+            'fields' => $this->fields->jsonSerialize()
         ];
     }
 
