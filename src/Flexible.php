@@ -5,10 +5,11 @@ namespace Whitecube\NovaFlexibleContent;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
-use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
@@ -22,7 +23,7 @@ class Flexible extends Field
     /**
      * The available layouts collection
      *
-     * @var Illuminate\Support\Collection
+     * @var Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     protected $layouts;
 
@@ -124,7 +125,7 @@ class Flexible extends Field
     protected function registerLayout(LayoutInterface $layout)
     {
         if(!$this->layouts) {
-            $this->layouts = collect();
+            $this->layouts = new LayoutsCollection();
             $this->withMeta(['layouts' => $this->layouts]);
         }
 
@@ -249,9 +250,7 @@ class Flexible extends Field
      */
     protected function newGroup($layout, $key)
     {
-        $layout = $this->layouts->first(function($item) use ($layout) {
-            return $item->name() === $layout;
-        });
+        $layout = $this->layouts->find($layout);
 
         if(!$layout) return;
 

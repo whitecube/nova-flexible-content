@@ -39,26 +39,12 @@ class Resolver implements ResolverInterface
         if(!is_array($value)) $value = json_decode($value);
 
         return collect($value)->map(function($item) use ($layouts) {
-            $layout = $this->findLayout($item->layout, $layouts);
+            $layout = $layouts->find($item->layout);
 
             if(!$layout) return;
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
         })->filter();
-    }
-
-    /**
-     * Find a layout based on its name
-     *
-     * @param  string  $name
-     * @param  Illuminate\Support\Collection $layouts
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
-     */
-    protected function findLayout($name, $layouts)
-    {
-        return $layouts->first(function($layout) use ($name) {
-            return $layout->name() === $name;
-        });
     }
 
 }
