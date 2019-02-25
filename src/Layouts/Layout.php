@@ -148,8 +148,6 @@ class Layout implements LayoutInterface, JsonSerializable
         $this->fields->each(function($field) use ($attributes) {
             $field->resolve($attributes);
         });
-
-        info($this->fields);
     }
 
     /**
