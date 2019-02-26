@@ -138,6 +138,8 @@ export default {
          * Set the displayed layouts from the field's current value
          */
         populateGroups() {
+            this.groups.splice(0, this.groups.length);
+
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
