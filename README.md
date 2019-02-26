@@ -1,4 +1,4 @@
-# ![Laravel Nova Flexible Content](title.png)
+# ![Laravel Nova Flexible Content](https://github.com/whitecube/nova-flexible-content/blob/master/title.png)
 
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
@@ -65,3 +65,55 @@ Change the default "Add layout" copy by calling the `button(string $label)` meth
 Flexible::make('Content')
     ->button('Add something amazing!');
 ```
+
+## Custom Layout Classes
+
+Since some `addLayout` fields definitions can get quite long or are used in other `Flexible` fields, you can also define them in a custom Layout Class:
+
+```php
+namespace App\Nova\Flexible\Layouts;
+
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Markdown;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+
+class SimpleWysiwygLayout extends Layout
+{
+    /**
+     * The layout's unique identifier
+     *
+     * @var string
+     */
+    protected $name = 'wysiwyg';
+
+    /**
+     * The displayed title
+     *
+     * @var string
+     */
+    protected $title = 'Title + WYSIWYG';
+
+    /**
+     * Get the fields displayed by the layout.
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return [
+            Text::make('Title'),
+            Markdown::make('Content')
+        ];
+    }
+}
+```
+
+You can then refer to this class as first and single parameter of the `addLayout(string $classname)` method:
+
+```php
+Flexible::make('Content')
+    ->addLayout(\App\Nova\Flexible\Layouts\SimpleWysiwygLayout::class);
+```
+
+> **Quickly generate Layout classes**:
+> Using the `php artisan flexible:layout {?classname} {?layout}` command, you can create these Layout files promptly. 
