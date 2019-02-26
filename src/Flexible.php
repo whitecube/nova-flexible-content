@@ -5,10 +5,11 @@ namespace Whitecube\NovaFlexibleContent;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
-use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
@@ -22,9 +23,16 @@ class Flexible extends Field
     /**
      * The available layouts collection
      *
-     * @var Illuminate\Support\Collection
+     * @var Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     protected $layouts;
+
+    /**
+     * The currently defined layout groups
+     *
+     * @var Illuminate\Support\Collection
+     */
+    protected $groups;
 
     /**
      * The field's value setter & getter
@@ -117,7 +125,7 @@ class Flexible extends Field
     protected function registerLayout(LayoutInterface $layout)
     {
         if(!$this->layouts) {
-            $this->layouts = collect();
+            $this->layouts = new LayoutsCollection();
             $this->withMeta(['layouts' => $this->layouts]);
         }
 
@@ -135,11 +143,9 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        if(!$this->resolver) {
-            $this->resolver(Resolver::class);
-        }
+        $this->buildGroups($resource, $attribute);
 
-        $this->value = $this->resolveGroups($this->resolver->get($resource, $attribute));
+        $this->value = $this->resolveGroups($this->groups);
     }
 
     /**
@@ -155,90 +161,99 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        $groups = $this->fillGroups($request, $requestAttribute);
+        $this->buildGroups($model, $attribute);
 
-        if(!$this->resolver) {
-            $this->resolver(Resolver::class);
-        }
+        $this->syncAndFillGroups($request, $requestAttribute);
 
-        $this->value = $this->resolver->set($model, $attribute, $groups);
+        $this->value = $this->resolver->set($model, $attribute, $this->groups);
     }
 
     /**
-     * Hydrate the underlaying layouts structure & fields
+     * Process an incoming POST Request
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  string  $requestAttribute
-     * @return Illuminate\Support\Collection
+     * @return void
      */
-    protected function fillGroups(NovaRequest $request, $requestAttribute)
+    protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
-        return collect(json_decode($request[$requestAttribute]))->map(function($item, $key) use ($request) {
-            return $this->fillNewLayoutGroupFromRequest(
-                ScopedRequest::scopeFrom($request, (array) $item->attributes, $item->key),
-                $item->layout,
-                $item->key
-            );
+        $raw = json_decode($request[$requestAttribute]);
+
+        if(!is_array($raw)) {
+            throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
+        }
+
+        $this->groups = collect($raw)->map(function($item, $key) use ($request) {
+            $layout = $item->layout;
+            $key = $item->key;
+            $attributes = (array) $item->attributes;
+
+            $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
+
+            if(!$group) return;
+
+            $group->fill(ScopedRequest::scopeFrom($request, $attributes, $key));
+
+            return $group;
         });
     }
 
     /**
      * Resolve all contained groups and their fields
      *
-     * @param  array  $raw
+     * @param  Illuminate\Support\Collection  $groups
      * @return Illuminate\Support\Collection
      */
-    protected function resolveGroups(array $raw)
+    protected function resolveGroups($groups)
     {
-        return collect($raw)->map(function($item) {
-            return $this->resolveLayoutGroupFromAttributes(
-                (array) $item->attributes,
-                $item->layout,
-                $item->key
-            );
+        return $groups->map(function($group) {
+            return $group->getResolved();
         });
     }
 
     /**
-     * Retrieve a registered layout based on its name and return a new hydrated instance of it
+     * Define the field's actual layout groups (as "base models") based
+     * on the field's current model & attribute
      *
-     * @param  Whitecube\NovaFlexibleContent\Http\ScopedRequest  $request
-     * @param  string  $name
-     * @param  string  $key
+     * @param  mixed  $resource
+     * @param  string $attribute
      * @return Illuminate\Support\Collection
      */
-    protected function fillNewLayoutGroupFromRequest(ScopedRequest $request, $name, $key)
+    protected function buildGroups($resource, $attribute)
     {
-        if(!($layout = $this->findLayout($name))) return;
+        if(!$this->resolver) {
+            $this->resolver(Resolver::class);
+        }
 
-        return $layout->getFilled($request, $key);
+        return $this->groups = $this->resolver->get($resource, $attribute, $this->layouts);
     }
 
     /**
-     * Retrieve a registered layout based on its name and return a new hydrated instance of it
+     * Find an existing group based on its key
      *
-     * @param  array   $attributes
-     * @param  string  $name
-     * @param  string  $key
-     * @return Illuminate\Support\Collection
-     */
-    protected function resolveLayoutGroupFromAttributes(array $attributes, $name, $key)
-    {
-        if(!($layout = $this->findLayout($name))) return;
-
-        return $layout->getResolved($attributes, $key);
-    }
-
-    /**
-     * Find a layout based on its name
-     *
-     * @param  string  $name
+     * @param  string $key
      * @return Whitecube\NovaFlexibleContent\Layouts\Layout
      */
-    protected function findLayout($name)
+    protected function findGroup($key)
     {
-        return $this->layouts->first(function($layout) use ($name) {
-            return $layout->name() === $name;
+        return $this->groups->first(function($group) use ($key) {
+            return $group->key() === $key;
         });
+    }
+
+    /**
+     * Create a new group based on its key and layout
+     *
+     * @param  string $layout
+     * @param  string $key
+     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     */
+    protected function newGroup($layout, $key)
+    {
+        $layout = $this->layouts->find($layout);
+
+        if(!$layout) return;
+
+        return $layout->duplicate($key);
     }
 }
