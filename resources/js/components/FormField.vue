@@ -209,11 +209,8 @@ export default {
          */
         updateValues() {
             for (var i = 0; i < this.groups.length; i++) {
-                // Get the latest data
-                let data = this.groups[i].serialize();
-
-                for(let [attribute, value] of Object.entries(data.attributes)) {
-                    this.updateValue(this.groups[i], attribute, value);
+                for(var item of this.groups[i].values()) {
+                    this.updateValue(this.groups[i], item[0], item[1]);
                 }
             }
         },
@@ -222,9 +219,9 @@ export default {
          * Update a field's value
          */
         updateValue(group, attribute, value) {
-            group.fields.forEach(field => {
-                if(field.attribute == attribute) field.value = value;
-            });
+            let field = group.fields.find(item => item.attribute === attribute);
+
+            field.value = value;
         }
     }
 }

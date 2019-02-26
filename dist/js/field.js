@@ -10538,8 +10538,6 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -10762,23 +10760,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
          */
         updateValues: function updateValues() {
             for (var i = 0; i < this.groups.length; i++) {
-                // Get the latest data
-                var data = this.groups[i].serialize();
-
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = Object.entries(data.attributes)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var _ref = _step.value;
+                    for (var _iterator = this.groups[i].values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var item = _step.value;
 
-                        var _ref2 = _slicedToArray(_ref, 2);
-
-                        var attribute = _ref2[0];
-                        var value = _ref2[1];
-
-                        this.updateValue(this.groups[i], attribute, value);
+                        this.updateValue(this.groups[i], item[0], item[1]);
                     }
                 } catch (err) {
                     _didIteratorError = true;
@@ -10802,9 +10792,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
          * Update a field's value
          */
         updateValue: function updateValue(group, attribute, value) {
-            group.fields.forEach(function (field) {
-                if (field.attribute == attribute) field.value = value;
+            var field = group.fields.find(function (item) {
+                return item.attribute === attribute;
             });
+
+            field.value = value;
         }
     }
 });
@@ -11454,6 +11446,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             // Link this component's serialize function to the parent object
             this.group.serialize = this.serialize;
+            this.group.values = this.values;
         },
 
 
