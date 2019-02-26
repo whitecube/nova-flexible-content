@@ -20,13 +20,15 @@ composer require whitecube/nova-flexible-content
 
 ### Usage
 
-The basic idea behind this Flexible Content Field is to allow to include most of Laravel Nova's existing fields (and probably your own). You'll only need to add a `Layout` for each "fields group" that needs to be available in the form and you're all set.
+The basic idea behind this field is to register most of Laravel Nova's existing fields (and probably your own) in _layouts_ for each group of fields you wish to repeat.
 
 #### Adding layouts
 
-Each layout represents a group of fields that can be repeated inside the Flexible field. You can add as many as you wish. If only one is layout is defined the field will behave like a simple Repeater and by adding more layouts you'll obtain a real Flexible Content. Both concepts are similar to their cousins in Wordpress' ACF Plugin.
+You can add as many layouts as you wish. If only one is layout is provided, the field will behave like a simple Repeater Field. By adding more of them you'll be able to choose between the available groups as in any complex Flexible Content Field. Both concepts are similar to their cousins in Wordpress' ACF Plugin.
 
-These layouts can be added using the `addLayout(string $title, string $name, array $fields)` method. The `$name` parameter will be used to store the chosen layout in the field's value, meaning it will probably be used to identify each group's layout in your application.
+Layouts can be added using the `addLayout(string $title, string $name, array $fields)` method.
+
+The `$name` parameter is used to store the chosen layout in the field's value. Choose it wisely, you'll probably use it to identify the layouts in your application.
 
 ```php
 use Whitecube\NovaFlexibleContent\Flexible;
@@ -40,43 +42,26 @@ use Whitecube\NovaFlexibleContent\Flexible;
 public function fields(Request $request)
 {
     return [
-        ID::make('ID', 'id')->sortable(),
-
         Flexible::make('Content')
-            ->addLayout('Title + wysiwyg', 'wysiwyg', [
+            ->addLayout('Title + Wysiwyg', 'wysiwyg', [
                 Text::make('Title'),
                 Markdown::make('Content')
             ])
-            ->addLayout('Title + Video + caption', 'video', [
+            ->addLayout('Title + Video + Caption', 'video', [
                 Text::make('Title'),
-                Image::make('Video thumbnail', 'thumbnail'),
+                Image::make('Video Thumbnail', 'thumbnail'),
                 Text::make('Video ID (YoutTube)', 'video'),
-                Text::make('Video caption', 'caption')
+                Text::make('Video Caption', 'caption')
             ])
     ];
 }
 ```
 
-#### Changing the button's label
+#### Customizing the button label
 
-Change the default "Add layout" button's copy by calling the `button(string $label)` method:
+Change the default "Add layout" copy by calling the `button(string $label)` method:
 
 ```php
-use Whitecube\NovaFlexibleContent\Flexible;
-
-/**
- * Get the fields displayed by the resource.
- *
- * @param  \Illuminate\Http\Request  $request
- * @return array
- */
-public function fields(Request $request)
-{
-    return [
-        ID::make('ID', 'id')->sortable(),
-
-        Flexible::make('Content')
-            ->button('Add something amazing!')
-    ];
-}
+Flexible::make('Content')
+    ->button('Add something amazing!');
 ```
