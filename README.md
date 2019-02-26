@@ -8,6 +8,8 @@ We're sorry, this package is still under development. We're expecting a release 
 
 For more information & updates, please follow us on [Twitter](https://twitter.com/whitecube_be).
 
+![Laravel Nova Flexible Content in action](https://github.com/whitecube/nova-flexible-content/blob/master/presentation.gif)
+
 ## Quick start
 
 The Flexible field can be used in various ways and for different purposes, but in most cases you'll only need a few of its capabilities. Here's how to get you started really quickly.
