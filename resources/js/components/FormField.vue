@@ -11,6 +11,9 @@
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
+                    @move-up="moveUp(index)"
+                    @move-down="moveDown(index)"
+                    @remove="remove(index)"
                 />
             </div>
 
@@ -51,7 +54,7 @@ import { FormField, HandlesValidationErrors } from 'laravel-nova'
 export default {
     mixins: [FormField, HandlesValidationErrors],
 
-    props: ['resourceName', 'resourceId', 'field'],
+    props: ['resourceName', 'resourceId', 'resource', 'field'],
 
     computed: {
         layouts() {
@@ -135,8 +138,6 @@ export default {
          * Set the displayed layouts from the field's current value
          */
         populateGroups() {
-            this.groups = [];
-
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
@@ -151,11 +152,7 @@ export default {
          */
         getLayout(name) {
             if(!this.layouts) return;
-
-            for (var i = this.layouts.length - 1; i >= 0; i--) {
-                if(this.layouts[i].name !== name) continue;
-                return this.layouts[i];
-            }
+            return this.layouts.find(layout => layout.name == name);
         },
 
         /**
@@ -173,6 +170,60 @@ export default {
 
             this.isLayoutsDropdownOpen = false;
         },
-    },
+
+        /**
+         * Move a group up
+         */
+        moveUp(index) {
+            if(index == 0) return;
+
+            this.updateValues();
+            this.groups.splice(index - 1, 0, this.groups.splice(index, 1)[0]);
+            Nova.$emit('flexible-field-reorder');
+        },
+
+        /**
+         * Move a group down
+         */
+        moveDown(index) {
+            if(index >= this.groups.length - 1) return;
+
+            this.updateValues();
+            this.groups.splice(index + 1, 0, this.groups.splice(index, 1)[0]);
+            Nova.$emit('flexible-field-reorder');
+        },
+
+        /**
+         * Remove a group
+         */
+        remove(index) {
+            this.updateValues();
+            this.groups.splice(index, 1);
+            Nova.$emit('flexible-field-reorder');
+        },
+
+        /**
+         * Make sure this.groups is up to date with the latest field data
+         */
+        updateValues() {
+            for (var i = 0; i < this.groups.length; i++) {
+                // Get the latest data
+                let data = this.groups[i].serialize();
+
+                for(let [attribute, value] of Object.entries(data.attributes)) {
+                    this.updateValue(this.groups[i], attribute, value);
+                }
+            }
+        },
+
+        /**
+         * Update a field's value
+         */
+        updateValue(group, attribute, value) {
+            group.fields.forEach(field => {
+                if(field.attribute == attribute) field.value = value;
+            });
+        }
+    }
 }
 </script>
