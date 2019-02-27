@@ -57,13 +57,13 @@ public function fields(Request $request)
             ->addLayout('Video section', 'video', [
                 Text::make('Title'),
                 Image::make('Video Thumbnail', 'thumbnail'),
-                Text::make('Video ID (YoutTube)', 'video'),
+                Text::make('Video ID (YouTube)', 'video'),
                 Text::make('Video Caption', 'caption')
             ])
     ];
 }
 ```
-![Example of Flexible layouts](example_layouts.png)
+![Example of Flexible layouts](https://github.com/whitecube/nova-flexible-content/raw/master/example_layouts.png)
 
 #### Customizing the button label
 
@@ -74,11 +74,11 @@ Flexible::make('Content')
     ->button('Add something amazing!');
 ```
 
-![Add something amazing](add_something_amazing.png)
+![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/add_something_amazing.png)
 
 ## Custom Layout Classes
 
-Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class. [See the docs for more infomation on this]().
+Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.
 
 ```php
 namespace App\Nova\Flexible\Layouts;
@@ -134,7 +134,7 @@ php artisan flexible:layout {classname?} {name?}
 ```
 
 
-## Presets
+## Predefined Preset Classes
 
 In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. 
 
