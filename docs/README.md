@@ -12,10 +12,7 @@ For more information & updates, please follow us on [Twitter](https://twitter.co
 
 ## Quick start
 
-Here's a very condensed guide to get you started asap.  
-See the full docs at [https://whitecube.github.io/nova-flexible-content](https://whitecube.github.io/nova-flexible-content)
-
-
+The Flexible field can be used in various ways and for different purposes, but in most cases you'll only need a few of its capabilities. Here's how to get started really quickly.
 
 ### Install
 
@@ -81,11 +78,88 @@ Flexible::make('Content')
 
 ## Custom Layout Classes
 
-Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.
+
+```php
+namespace App\Nova\Flexible\Layouts;
+
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Markdown;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+
+class SimpleWysiwygLayout extends Layout
+{
+    /**
+     * The layout's unique identifier
+     *
+     * @var string
+     */
+    protected $name = 'wysiwyg';
+
+    /**
+     * The displayed title
+     *
+     * @var string
+     */
+    protected $title = 'Simple content section';
+
+    /**
+     * Get the fields displayed by the layout.
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return [
+            Text::make('Title'),
+            Markdown::make('Content')
+        ];
+    }
+}
+```
+
+You can then refer to this class as first and single parameter of the `addLayout(string $classname)` method:
+
+```php
+Flexible::make('Content')
+    ->addLayout(\App\Nova\Flexible\Layouts\SimpleWysiwygLayout::class);
+```
+
+
+You can create these Layout classes easily with the following artisan command
+```
+php artisan flexible:layout {classname?} {name?}
+
+// Ex: php artisan flexible:layout SimpleWysiwygLayout wysiwyg
+```
+
 
 ## Predefined Preset Classes
 
-In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=predefined-preset-classes).
+In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. 
+
+```php
+namespace App\Nova\Flexible\Presets;
+
+class WysiwygPagePreset extends Preset
+{
+    // TODO: add example of preset class 🥳
+}
+```
+
+Then you just reference the preset when you define your Flexible field like so
+```php
+Flexible::make('Content')
+    ->preset(\App\Nova\Flexible\Presets\WysiwygPagePreset::class);
+```
+
+You can create these Preset classes easily with the following artisan command
+```
+php artisan flexible:preset {classname?}
+
+// Ex: php artisan flexible:preset WysiwygPagePreset
+```
+
 
 ## Contributing
 
@@ -98,4 +172,3 @@ Thanks!
 At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
 So when we have an opportunity to give something back, we're super excited!  
 We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects.
-
