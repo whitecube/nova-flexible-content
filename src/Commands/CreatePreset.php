@@ -5,7 +5,7 @@ namespace Whitecube\NovaFlexibleContent\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 
-class CreateLayout extends Command
+class CreatePreset extends Command
 {
     /**
      * The filesystem instance.
@@ -19,14 +19,14 @@ class CreateLayout extends Command
      *
      * @var string
      */
-    protected $signature = 'flexible:layout {classname? : The layout\'s classname} {name? : The layout\'s identifier}';
+    protected $signature = 'flexible:preset {classname? : The preset\'s classname}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate a new Flexible Content Field Layout';
+    protected $description = 'Generate a new Flexible Content Field configuration Preset';
 
     /**
      * The layout's classname
@@ -34,13 +34,6 @@ class CreateLayout extends Command
      * @var string
      */
     protected $classname;
-
-    /**
-     * The layout's name attribute
-     *
-     * @var string
-     */
-    protected $name;
 
     /**
      * Create a new command instance.
@@ -61,7 +54,6 @@ class CreateLayout extends Command
     public function handle()
     {
         $this->classname = $this->getClassnameArgument();
-        $this->name = $this->getNameArgument();
 
         $path = $this->getPath();
 
@@ -78,35 +70,21 @@ class CreateLayout extends Command
     public function getClassnameArgument()
     {
         if(!$this->argument('classname')) {
-            return $this->ask('Please provide a class name for your layout');
+            return $this->ask('Please provide a class name for your preset');
         }
 
         return $this->argument('classname');
     }
 
     /**
-     * Get the name
-     *
-     * @return string
-     */
-    public function getNameArgument()
-    {
-        if(!$this->argument('name')) {
-            return strtolower($this->classname);
-        }
-
-        return $this->argument('name');
-    }
-
-    /**
-     * Build the layout's file path
+     * Build the preset's file path
      *
      * @return string
      */
     protected function getPath()
     {
         return $this->makeDirectory(
-            app_path('Nova/Flexible/Layouts/' . $this->classname . '.php')
+            app_path('Nova/Flexible/Presets/' . $this->classname . '.php')
         );
     }
 
@@ -134,14 +112,10 @@ class CreateLayout extends Command
      */
     protected function buildClass()
     {
-        return str_replace([
-                ':classname',
-                ':name'
-            ], [
-                $this->classname,
-                $this->name
-            ],
-            $this->files->get(__DIR__ . '/../Stubs/Layout.php')
+        return str_replace(
+            ':classname',
+            $this->classname,
+            $this->files->get(__DIR__ . '/../Stubs/Preset.php')
         );
     }
 
