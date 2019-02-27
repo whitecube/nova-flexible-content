@@ -65,6 +65,7 @@ export default {
             }
             // Link this component's serialize function to the parent object
             this.group.serialize = this.serialize;
+            this.group.values = this.values;
         },
 
         /**
