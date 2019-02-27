@@ -101,7 +101,7 @@ class SimpleWysiwygLayout extends Layout
      *
      * @var string
      */
-    protected $title = 'Title + WYSIWYG';
+    protected $title = 'Simple content section';
 
     /**
      * Get the fields displayed by the layout.
