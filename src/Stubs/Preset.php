@@ -2,6 +2,7 @@
 
 namespace App\Nova\Flexible\Presets;
 
+use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Layouts\Preset;
 
 class :classname extends Preset
@@ -11,12 +12,12 @@ class :classname extends Preset
      *
      * @return void
      */
-    public function handle()
+    public function handle(Flexible $field)
     {
         // You can call all available methods on the Flexible field.
-        // $this->addLayout(...)
-        // $this->button(...)
-        // $this->resolver(...)
+        // $field->addLayout(...)
+        // $field->button(...)
+        // $field->resolver(...)
         // ... and so on.
     }
 

@@ -126,9 +126,9 @@ class Flexible extends Field
      */
     public function preset($classname)
     {
-        $preset = app()->makeWith($classname, ['field' => $this]);
+        $preset = resolve($classname);
 
-        $preset->handle();
+        $preset->handle($this);
 
         return $this;
     }
