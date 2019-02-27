@@ -7,6 +7,7 @@ use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\ServiceProvider;
 use Whitecube\NovaFlexibleContent\Commands\CreateLayout;
 use Whitecube\NovaFlexibleContent\Commands\CreatePreset;
+use Whitecube\NovaFlexibleContent\Commands\CreateResolver;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,7 @@ class FieldServiceProvider extends ServiceProvider
         $this->commands([
             CreateLayout::class,
             CreatePreset::class,
+            CreateResolver::class,
         ]);
     }
 }
