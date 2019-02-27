@@ -7,6 +7,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Preset;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
@@ -89,6 +90,7 @@ class Flexible extends Field
     /**
      * Register a new layout
      *
+     * @param array $arguments
      * @return this
      */
     public function addLayout(...$arguments)
@@ -112,6 +114,21 @@ class Flexible extends Field
         }
 
         $this->registerLayout($layout);
+
+        return $this;
+    }
+
+    /**
+     * Apply a field configuration preset
+     *
+     * @param string $classname
+     * @return this
+     */
+    public function preset($classname)
+    {
+        $preset = app()->makeWith($classname, ['field' => $this]);
+
+        $preset->handle();
 
         return $this;
     }
