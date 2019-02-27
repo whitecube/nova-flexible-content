@@ -118,4 +118,4 @@ Flexible::make('Content')
 ```
 
 > **Quickly generate Layout classes**:
-> Using the `php artisan flexible:layout {?classname} {?layout}` command, you can create these Layout files promptly. 
+> Using the `php artisan flexible:layout {classname?} {layout?}` command, you can create these Layout files promptly. 
