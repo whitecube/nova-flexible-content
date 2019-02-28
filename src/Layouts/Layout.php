@@ -212,6 +212,16 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
+     * Check if relation exists. Layouts do not have relations.
+     *
+     * @return bool
+     */
+    protected function relationLoaded()
+    {
+        return false;
+    }
+
+    /**
      * Transform layout for serialization
      *
      * @return array
