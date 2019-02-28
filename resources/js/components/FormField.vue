@@ -2,18 +2,17 @@
     <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
             
-            <div v-if="groups.length > 0">
+            <div v-if="order.length > 0">
                 <form-nova-flexible-content-group 
-                    v-for="(group, index) in groups"
-                    :key="index"
-                    :field="field"
+                    v-for="group in orderedGroups"
+                    :key="group.key"
                     :group="group"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
-                    @move-up="moveUp(index)"
-                    @move-down="moveDown(index)"
-                    @remove="remove(index)"
+                    @move-up="moveUp(group.key)"
+                    @move-down="moveDown(group.key)"
+                    @remove="remove(group.key)"
                 />
             </div>
 
@@ -49,7 +48,8 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import Group from '../group';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -59,13 +59,20 @@ export default {
     computed: {
         layouts() {
             return this.field.layouts || false
+        },
+        orderedGroups() {
+            return this.order.reduce((groups, key) => {
+                groups.push(this.groups[key]);
+                return groups;
+            }, []);
         }
     },
 
     data() {
         return {
             isLayoutsDropdownOpen: false,
-            groups: [],
+            order: [],
+            groups: {},
             files: {},
         };
     },
@@ -85,13 +92,14 @@ export default {
          * Fill the given FormData object with the field's internal value.
          */
         fill(formData) {
-            let group;
+            let key, group;
 
             this.value = [];
             this.files = {};
 
-            for (var i = 0; i < this.groups.length; i++) {
-                group = this.groups[i].serialize();
+            for (var i = 0; i < this.order.length; i++) {
+                key = this.order[i];
+                group = this.groups[key].serialize();
 
                 // Only serialize the group's non-file attributes
                 this.value.push({
@@ -101,14 +109,14 @@ export default {
                 });
 
                 // Attach the files for formData appending
-                this.fields = {...this.fields, ...group.files};
+                this.files = {...this.files, ...group.files};
             }
 
             formData.append(this.field.attribute, JSON.stringify(this.value));
 
             // Append file uploads
-            for(var key in this.fields) {
-                formData.append(key, this.fields[key]);
+            for(let file in this.files) {
+                formData.append(file, this.files[file]);
             }
         },
 
@@ -138,7 +146,8 @@ export default {
          * Set the displayed layouts from the field's current value
          */
         populateGroups() {
-            this.groups.splice(0, this.groups.length);
+            this.order.splice(0, this.order.length);
+            this.groups = {};
 
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
@@ -163,12 +172,11 @@ export default {
         addGroup(layout, attributes, key) {
             if(!layout) return;
 
-            this.groups.push({
-                name: layout.name,
-                key: key || null,
-                title: layout.title,
-                fields: attributes || layout.fields
-            });
+            let fields = attributes || layout.fields,
+                group = new Group(layout.name, layout.title, fields, this.field, key);
+
+            this.groups[group.key] = group;
+            this.order.push(group.key);
 
             this.isLayoutsDropdownOpen = false;
         },
@@ -176,52 +184,35 @@ export default {
         /**
          * Move a group up
          */
-        moveUp(index) {
-            if(index == 0) return;
+        moveUp(key) {
+            let index = this.order.indexOf(key);
 
-            this.updateValues();
-            this.groups.splice(index - 1, 0, this.groups.splice(index, 1)[0]);
-            Nova.$emit('flexible-field-reorder');
+            if(index <= 0) return;
+
+            this.order.splice(index - 1, 0, this.order.splice(index, 1)[0]);
         },
 
         /**
          * Move a group down
          */
-        moveDown(index) {
-            if(index >= this.groups.length - 1) return;
+        moveDown(key) {
+            let index = this.order.indexOf(key);
 
-            this.updateValues();
-            this.groups.splice(index + 1, 0, this.groups.splice(index, 1)[0]);
-            Nova.$emit('flexible-field-reorder');
+            if(index < 0 || index >= this.order.length - 1) return;
+
+            this.order.splice(index + 1, 0, this.order.splice(index, 1)[0]);
         },
 
         /**
          * Remove a group
          */
-        remove(index) {
-            this.updateValues();
-            this.groups.splice(index, 1);
-            Nova.$emit('flexible-field-reorder');
-        },
+        remove(key) {
+            let index = this.order.indexOf(key);
 
-        /**
-         * Make sure this.groups is up to date with the latest field data
-         */
-        updateValues() {
-            for (var i = 0; i < this.groups.length; i++) {
-                for(var item of this.groups[i].values()) {
-                    this.updateValue(this.groups[i], item[0], item[1]);
-                }
-            }
-        },
+            if(index < 0) return;
 
-        /**
-         * Update a field's value
-         */
-        updateValue(group, attribute, value) {
-            let field = group.fields.find(item => item.attribute === attribute);
-
-            field.value = value;
+            this.order.splice(index, 1);
+            delete this.groups[key];
         }
     }
 }
