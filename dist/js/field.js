@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -174,6 +174,122 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Group = function () {
+    function Group(name, title, fields, field, key) {
+        _classCallCheck(this, Group);
+
+        this.name = name;
+        this.title = title;
+        this.fields = fields;
+        this.key = key || this.getTemporaryUniqueKey(field.attribute);
+
+        this.renameFields();
+    }
+
+    /**
+     * Retrieve the layout's filled FormData
+     */
+
+
+    _createClass(Group, [{
+        key: 'values',
+        value: function values() {
+            var formData = new FormData();
+
+            for (var i = 0; i < this.fields.length; i++) {
+                this.fields[i].fill(formData);
+            }
+
+            return formData;
+        }
+
+        /**
+         * Retrieve the layout's filled object
+         */
+
+    }, {
+        key: 'serialize',
+        value: function serialize() {
+            var data = {
+                layout: this.name,
+                key: this.key,
+                attributes: {},
+                files: {}
+            };
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var item = _step.value;
+
+                    if (!(item[1] instanceof File || item[1] instanceof Blob)) {
+                        // Simple input value, no need to attach files
+                        data.attributes[item[0]] = item[1];
+                        continue;
+                    }
+
+                    // File object, attach its file for upload
+                    data.attributes[item[0]] = '___upload-' + item[0];
+                    data.files['___upload-' + item[0]] = item[1];
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return data;
+        }
+
+        /**
+         * Generate a unique string for current group
+         */
+
+    }, {
+        key: 'getTemporaryUniqueKey',
+        value: function getTemporaryUniqueKey(attribute) {
+            return attribute + '-' + Math.random().toString(36).substr(2, 9) + '-' + this.name;
+        }
+
+        /**
+         * Assign a new unique field name to each field
+         */
+
+    }, {
+        key: 'renameFields',
+        value: function renameFields(attribute) {
+            for (var i = this.fields.length - 1; i >= 0; i--) {
+                this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
+            }
+        }
+    }]);
+
+    return Group;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Group);
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -10381,36 +10497,37 @@ module.exports = g;
 });
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(3);
+__webpack_require__(4);
 module.exports = __webpack_require__(23);
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 Nova.booting(function (Vue, router, store) {
     // Vue.component('index-nova-flexible-content', require('./components/IndexField'))
-    Vue.component('detail-nova-flexible-content', __webpack_require__(4));
-    Vue.component('form-nova-flexible-content', __webpack_require__(7));
+    Vue.component('detail-nova-flexible-content', __webpack_require__(5));
+    Vue.component('detail-nova-flexible-content-group', __webpack_require__(27));
+    Vue.component('form-nova-flexible-content', __webpack_require__(8));
     Vue.component('form-nova-flexible-content-group', __webpack_require__(11));
     Vue.component('icon-arrow-down', __webpack_require__(19));
     Vue.component('icon-arrow-up', __webpack_require__(21));
 });
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(5)
+var __vue_script__ = __webpack_require__(6)
 /* template */
-var __vue_template__ = __webpack_require__(6)
+var __vue_template__ = __webpack_require__(7)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -10449,29 +10566,106 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__group__ = __webpack_require__(1);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['resource', 'resourceName', 'resourceId', 'field']
+
+    props: ['resource', 'resourceName', 'resourceId', 'field'],
+
+    computed: {
+        groups: function groups() {
+            var _this = this;
+
+            var group = void 0;
+            return this.field.value.reduce(function (groups, item) {
+                if (!(group = _this.getGroup(item))) return groups;
+                groups.push(group);
+                return groups;
+            }, []);
+        }
+    },
+
+    methods: {
+        /**
+         * Retrieve layout definition from its name
+         */
+        getLayout: function getLayout(name) {
+            if (!this.field.layouts) return;
+            return this.field.layouts.find(function (layout) {
+                return layout.name == name;
+            });
+        },
+
+
+        /**
+         * create group instance from raw field value
+         */
+        getGroup: function getGroup(item) {
+            var layout = this.getLayout(item.layout);
+
+            if (!layout) return;
+
+            return new __WEBPACK_IMPORTED_MODULE_0__group__["a" /* default */](layout.name, layout.title, item.attributes, this.field);
+        }
+    }
 });
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("panel-item", { attrs: { field: _vm.field } })
+  return _c(
+    "panel-item",
+    { attrs: { field: _vm.field } },
+    [
+      _c(
+        "template",
+        { slot: "value" },
+        _vm._l(_vm.groups, function(group, index) {
+          return _c(
+            "div",
+            [
+              _c("detail-nova-flexible-content-group", {
+                attrs: {
+                  index: index,
+                  last: index === _vm.groups.length - 1,
+                  group: group
+                }
+              })
+            ],
+            1
+          )
+        }),
+        0
+      )
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -10484,13 +10678,13 @@ if (false) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(0)
 /* script */
-var __vue_script__ = __webpack_require__(8)
+var __vue_script__ = __webpack_require__(9)
 /* template */
 var __vue_template__ = __webpack_require__(10)
 /* template functional */
@@ -10531,14 +10725,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__group__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__group__ = __webpack_require__(1);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -10770,122 +10964,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
     }
 });
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Group = function () {
-    function Group(name, title, fields, field, key) {
-        _classCallCheck(this, Group);
-
-        this.name = name;
-        this.title = title;
-        this.fields = fields;
-        this.key = key || this.getTemporaryUniqueKey(field.attribute);
-
-        this.renameFields();
-    }
-
-    /**
-     * Retrieve the layout's filled FormData
-     */
-
-
-    _createClass(Group, [{
-        key: 'values',
-        value: function values() {
-            var formData = new FormData();
-
-            for (var i = 0; i < this.fields.length; i++) {
-                this.fields[i].fill(formData);
-            }
-
-            return formData;
-        }
-
-        /**
-         * Retrieve the layout's filled object
-         */
-
-    }, {
-        key: 'serialize',
-        value: function serialize() {
-            var data = {
-                layout: this.name,
-                key: this.key,
-                attributes: {},
-                files: {}
-            };
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = this.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var item = _step.value;
-
-                    if (!(item[1] instanceof File || item[1] instanceof Blob)) {
-                        // Simple input value, no need to attach files
-                        data.attributes[item[0]] = item[1];
-                        continue;
-                    }
-
-                    // File object, attach its file for upload
-                    data.attributes[item[0]] = '___upload-' + item[0];
-                    data.files['___upload-' + item[0]] = item[1];
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            return data;
-        }
-
-        /**
-         * Generate a unique string for current group
-         */
-
-    }, {
-        key: 'getTemporaryUniqueKey',
-        value: function getTemporaryUniqueKey(attribute) {
-            return attribute + '-' + Math.random().toString(36).substr(2, 9) + '-' + this.name;
-        }
-
-        /**
-         * Assign a new unique field name to each field
-         */
-
-    }, {
-        key: 'renameFields',
-        value: function renameFields(attribute) {
-            for (var i = this.fields.length - 1; i >= 0; i--) {
-                this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
-            }
-        }
-    }]);
-
-    return Group;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Group);
 
 /***/ }),
 /* 10 */
@@ -11456,7 +11534,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
 //
 //
@@ -11826,6 +11904,157 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(28)
+/* template */
+var __vue_template__ = __webpack_require__(29)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/DetailGroup.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5e566c93", Component.options)
+  } else {
+    hotAPI.reload("data-v-5e566c93", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 28 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['group', 'index', 'last'],
+
+    computed: {
+        classes: function classes() {
+            return this.last ? '' : 'border-b border-40 mb-4';
+        }
+    }
+});
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { class: _vm.classes }, [
+    _c("div", { staticClass: "pb-4 border-b border-40" }, [
+      _c(
+        "span",
+        { staticClass: "block float-left border-r border-40 pr-4 mr-4" },
+        [
+          _c("span", { staticClass: "text-60 text-xs" }, [_vm._v("#")]),
+          _c("span", { staticClass: "text-80" }, [
+            _vm._v(_vm._s(_vm.index + 1))
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _c("span", { staticClass: "font-bold" }, [
+        _vm._v(_vm._s(_vm.group.title))
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { class: _vm.last ? "pt-6" : "py-6" },
+      _vm._l(_vm.group.fields, function(item, index) {
+        return _c("detail-" + item.component, {
+          key: index,
+          tag: "component",
+          class: {
+            "remove-bottom-border": index == _vm.group.fields.length - 1
+          },
+          attrs: {
+            "resource-name": _vm.resourceName,
+            "resource-id": _vm.resourceId,
+            resource: _vm.resource,
+            field: item,
+            errors: _vm.validationErrors
+          }
+        })
+      }),
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5e566c93", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
