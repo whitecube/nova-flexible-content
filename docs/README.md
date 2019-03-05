@@ -141,25 +141,135 @@ In addition to reusable Layout classes, you can go a step further and create `Pr
 ```php
 namespace App\Nova\Flexible\Presets;
 
+use App\PageBlocks;
+use Whitecube\NovaFlexibleContent\Flexible;
+use Whitecube\NovaFlexibleContent\Layouts\Preset;
+
 class WysiwygPagePreset extends Preset
 {
-    // TODO: add example of preset class 🥳
+
+    /**
+     * The available blocks
+     *
+     * @var Illuminate\Support\Collection
+     */
+    protected $blocks;
+
+    /**
+     * Create a new preset instance
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->blocks = PageBlocks::orderBy('label')->get();
+    }
+
+    /**
+     * Execute the preset configuration
+     *
+     * @return void
+     */
+    public function handle(Flexible $field)
+    {
+        $field->button('Add new block');
+        $field->resolver(\App\Nova\Flexible\Resolvers\WysiwygPageResolver::class);
+        $field->help('Go to the "<strong>Page blocks</strong>" Resource in order to add new WYSIWYG block types.');
+
+        $this->blocks->each(function($block) use ($field) {
+            $field->addLayout($block->title, $block->id, $block->getLayoutFields());
+        });
+    }
 }
 ```
 
-Then you just reference the preset when you define your Flexible field like so
+Please note that Preset classes are resolved using Laravel's Container, meaning you can type-hint any useful dependency in the Preset's `__construct()` method.
+
+Once the Preset is defined, just reference its classname in your Flexible field using the `preset` method:
 ```php
 Flexible::make('Content')
     ->preset(\App\Nova\Flexible\Presets\WysiwygPagePreset::class);
 ```
 
-You can create these Preset classes easily with the following artisan command
+You can create these Preset classes easily with the following artisan command:
 ```
 php artisan flexible:preset {classname?}
 
 // Ex: php artisan flexible:preset WysiwygPagePreset
 ```
 
+
+## Custom Resolver Classes
+
+By default, the field takes advantage of a **JSON column** on your model's table. In some cases, a JSON attribute is just not the way to go. For example, you could want to store the values in another table (meaning you'll be using the Flexible Content field instead of a traditional BelongsToMany or HasMany field). No worries, we've got you covered!
+
+First, create the new Resolver class. For convenience, this can be achieved using the following artisan command:
+```
+php artisan flexible:resolver {classname?}
+
+// Ex: php artisan flexible:preset WysiwygPageResolver
+```
+
+It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Whitecube\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
+
+### Resolving the field
+
+The `get` method is used to resolve the field's content. It is responsible to retrieve the content from somewhere and return a collection of hydrated Layouts. For example, we could want to retrieve the values on a `blocks` table and transform them into Layout instance:
+
+```php
+/**
+ * get the field's value
+ *
+ * @param  mixed  $resource
+ * @param  string $attribute
+ * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+ * @return Illuminate\Support\Collection
+ */
+public function get($resource, $attribute, $layouts) {
+    $blocks = $resource->blocks()->orderBy('order')->get();
+
+    return $blocks->map(function($block) use ($layouts) {
+        $layout = $layouts->find($block->name);
+
+        if(!$layout) return;
+
+        return $layout->duplicateAndHydrate($block->id, ['value' => $block->value]);
+    })->filter();
+}
+```
+
+### Filling the field
+
+The `set` method is responsible for saving the Flexible's content somewhere the `get` method will be able to access it. In our example, it should store the data in a `blocks` table:
+
+```php
+/**
+ * Set the field's value
+ *
+ * @param  mixed  $model
+ * @param  string $attribute
+ * @param  Illuminate\Support\Collection $groups
+ * @return void
+ */
+public function set($model, $attribute, $groups)
+{
+    $class = get_class($model);
+
+    $class::saved(function ($model) use ($groups) {
+        $blocks = $groups->map(function($group, $index) {
+            return [
+                'name' => $group->name(),
+                'value' => json_encode($group->getAttributes()),
+                'order' => $index
+            ];
+        });
+
+        // This is a quick & dirty example, syncing the models is probably a better idea.
+        $model->blocks()->delete();
+        $model->blocks()->createMany($blocks);
+    });
+}
+```
 
 ## Contributing
 
