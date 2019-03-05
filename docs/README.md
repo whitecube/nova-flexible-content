@@ -183,7 +183,9 @@ class WysiwygPagePreset extends Preset
 }
 ```
 
-Then you just reference the preset when you define your Flexible field like so
+Please note that Preset classes are resolved using Laravel's Container, meaning you can type-hint any useful dependency in the Preset's `__construct()` method.
+
+Once the Preset is defined, just reference its classname in your Flexible field using the `preset` method:
 ```php
 Flexible::make('Content')
     ->preset(\App\Nova\Flexible\Presets\WysiwygPagePreset::class);
