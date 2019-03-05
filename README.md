@@ -9,8 +9,6 @@ An easy & complete Flexible Field for Laravel Nova, perfect for repeated and fle
 Here's a very condensed guide to get you started asap.  
 See the full docs at [https://whitecube.github.io/nova-flexible-content](https://whitecube.github.io/nova-flexible-content)
 
-
-
 ### Install
 
 ```
@@ -85,7 +83,7 @@ In addition to reusable Layout classes, you can go a step further and create `Pr
 
 By default, the field takes advantage of a **JSON column** on your model's table. In some cases, you'd really like to use this field, but for some reason a JSON attribute is just not the way to go. For example, you could want to store the values in another table (meaning you'll be using the Flexible Content field instead of a traditional BelongsToMany or HasMany field). No worries, we've got you covered!
 
-Tell the field how to store and retrieve its content by creating your own `Resolver` class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
+Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
 ## Contributing
 
@@ -93,9 +91,9 @@ Feel free to suggest changes, ask for new features or fix bugs yourself. We're s
 
 Thanks!
 
-
 ## Made with ❤️ for open source
-At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
-So when we have an opportunity to give something back, we're super excited!  
-We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects.
 
+At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
+So when we have an opportunity to give something back, we're super excited!
+
+We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects. Follow us on [Twitter](https://twitter.com/whitecube_be) for more updates!
