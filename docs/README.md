@@ -189,13 +189,85 @@ Flexible::make('Content')
     ->preset(\App\Nova\Flexible\Presets\WysiwygPagePreset::class);
 ```
 
-You can create these Preset classes easily with the following artisan command
+You can create these Preset classes easily with the following artisan command:
 ```
 php artisan flexible:preset {classname?}
 
 // Ex: php artisan flexible:preset WysiwygPagePreset
 ```
 
+
+## Custom Resolver Classes
+
+By default, the field takes advantage of a **JSON column** on your model's table. In some cases, a JSON attribute is just not the way to go. For example, you could want to store the values in another table (meaning you'll be using the Flexible Content field instead of a traditional BelongsToMany or HasMany field). No worries, we've got you covered!
+
+First, create the new Resolver class. For convenience, this can be achieved using the following artisan command:
+```
+php artisan flexible:resolver {classname?}
+
+// Ex: php artisan flexible:preset WysiwygPageResolver
+```
+
+It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Whitecube\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
+
+### Resolving the field
+
+The `get` method is used to resolve the field's content. It is responsible to retrieve the content from somewhere and return a collection of hydrated Layouts. For example, we could want to retrieve the values on a `blocks` table and transform them into Layout instance:
+
+```php
+/**
+ * get the field's value
+ *
+ * @param  mixed  $resource
+ * @param  string $attribute
+ * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+ * @return Illuminate\Support\Collection
+ */
+public function get($resource, $attribute, $layouts) {
+    $blocks = $resource->blocks()->orderBy('order')->get();
+
+    return $blocks->map(function($block) use ($layouts) {
+        $layout = $layouts->find($block->name);
+
+        if(!$layout) return;
+
+        return $layout->duplicateAndHydrate($block->id, ['value' => $block->value]);
+    })->filter();
+}
+```
+
+### Filling the field
+
+The `set` method is responsible for saving the Flexible's content somewhere the `get` method will be able to access it. In our example, it should store the data in a `blocks` table:
+
+```php
+/**
+ * Set the field's value
+ *
+ * @param  mixed  $model
+ * @param  string $attribute
+ * @param  Illuminate\Support\Collection $groups
+ * @return void
+ */
+public function set($model, $attribute, $groups)
+{
+    $class = get_class($model);
+
+    $class::saved(function ($model) use ($groups) {
+        $blocks = $groups->map(function($group, $index) {
+            return [
+                'name' => $group->name(),
+                'value' => json_encode($group->getAttributes()),
+                'order' => $index
+            ];
+        });
+
+        // This is a quick & dirty example, syncing the models is probably a better idea.
+        $model->blocks()->delete();
+        $model->blocks()->createMany($blocks);
+    });
+}
+```
 
 ## Contributing
 
