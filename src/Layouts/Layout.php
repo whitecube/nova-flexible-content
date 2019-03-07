@@ -39,6 +39,20 @@ class Layout implements LayoutInterface, JsonSerializable
     protected $fields;
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [];
+
+    /**
      * Create a new base Layout instance
      *
      * @param string $title
@@ -191,14 +205,13 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
-     * Determine if the given attribute is a date or date castable.
+     * Get the attributes that should be converted to dates.
      *
-     * @param  string  $key
-     * @return bool
+     * @return array
      */
-    protected function isDateAttribute($key)
+    protected function getDates()
     {
-        return false;
+        return $this->dates ?? [];
     }
 
     /**
@@ -208,7 +221,7 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function getCasts()
     {
-        return $this->casts;
+        return $this->casts ?? [];
     }
 
     /**
