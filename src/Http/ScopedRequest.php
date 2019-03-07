@@ -60,38 +60,116 @@ class ScopedRequest extends NovaRequest
         ];
 
         foreach ($attributes as $originalAttribute => $value) {
-            $attribute = $this->getCleanAttributeName($originalAttribute, $key);
+            $attribute = $this->parseAttribute($originalAttribute, $key);
 
             // Sub-objects should remain JSON strings for further fields resolving
             if(is_array($value) || is_object($value)) {
                 $scope['keep'] = array_merge($scope['keep'], $this->getNestedFiles($value));
-                $scope['input'][$attribute] = json_encode($value);
+                $scope['input'] = $this->addAttributeToArray($scope['input'], $attribute, json_encode($value));
                 continue;
             }
 
             // Register Files
             if($this->isFlexibleFileAttribute($originalAttribute, $value)) {
-                $scope['files'][$attribute] = $value;
+                $scope['files'] = $this->addAttributeToArray($scope['files'], $attribute, $value);
                 continue;
             }
 
             // Register regular attributes
-            $scope['input'][$attribute] = $value;
+            $scope['input'] = $this->addAttributeToArray($scope['input'], $attribute, $value);
         }
 
         return $scope;
     }
 
     /**
-     * Remove the prepended random key from the attribute name
+     * Add a parsed attribute and its value to an array
+     *
+     * @param  array  $array
+     * @param  string $attribute
+     * @param  mixed  $value
+     * @return array
+     */
+    protected function addAttributeToArray($array, $attribute, $value)
+    {
+        if(!$attribute['key']) {
+            // It is a simple array attribute, we can just add its value
+            // to the array without nesting it in another array.
+            $array[$attribute['name']] = $value;
+
+            return $array;
+        }
+
+        if(!is_array($array[$attribute['name']] ?? null)) {
+            // It is a nested array attribute and there are no other
+            // sibling values yet, so we have to create the nested array first.
+            $array[$attribute['name']] = [];
+        }
+
+        if($attribute['key'] === true) {
+            // The nested attribute doesn't have a particular key, meaning
+            // we can just append its value to the nested array.
+            $array[$attribute['name']][] = $value;
+
+            return $array;
+        }
+
+        // The nested attribute has a defined key, we'll register its
+        // value in the array using its key.
+        $array[$attribute['name']][$attribute['key']] = $value;
+
+        return $array;
+    }
+
+    /**
+     * Analyse and clean up the raw attribute
      *
      * @param  string  $attribute
      * @param  string  $key
-     * @return string
+     * @return array
      */
-    protected function getCleanAttributeName($attribute, $key)
+    protected function parseAttribute($attribute, $key)
     {
-        return substr($attribute, strpos($attribute, $key) + strlen($key . '__'));
+        $analysis = [];
+        $analysis['original'] = $attribute;
+        $analysis['raw'] = substr($attribute, strpos($attribute, $key) + strlen($key . '__'));
+        $analysis['key'] = $this->getAttributeAggregateKey($analysis['raw']);
+        $analysis['name'] = $analysis['key'] ? $this->getAttributeAggregateName($analysis['raw']) : $analysis['raw'];
+        return $analysis;
+    }
+
+    /**
+     * Look for an aggregate syntax in an attribute name and return its key
+     * or true if its an incrementing numeric key
+     *
+     * @param  string  $attribute
+     * @return mixed
+     */
+    protected function getAttributeAggregateKey($attribute)
+    {
+        preg_match('/^.+?(\[.*\])?$/', $attribute, $matches);
+
+        if(!isset($matches[1])) return false;
+
+        $key = trim($matches[1], "[]'\" \t\n\r\0\x0B");
+
+        return strlen($key) ? $key : true;
+    }
+
+    /**
+     * Look for an aggregate syntax in an attribute name and return its key
+     * or true if its an incrementing numeric key
+     *
+     * @param  string  $attribute
+     * @return mixed
+     */
+    protected function getAttributeAggregateName($attribute)
+    {
+        $end = strpos($attribute, '[');
+
+        if($end === false) return $attribute;
+
+        return substr($attribute, 0, $end);
     }
 
     /**
