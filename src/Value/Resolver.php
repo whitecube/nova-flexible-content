@@ -15,13 +15,13 @@ class Resolver implements ResolverInterface
      */
     public function set($model, $attribute, $groups)
     {
-        return $model->$attribute = json_encode($groups->map(function($group) {
+        return $model->$attribute = $groups->map(function($group) {
             return [
                 'layout' => $group->name(),
                 'key' => $group->key(),
                 'attributes' => $group->getAttributes()
             ];
-        }), JSON_PRETTY_PRINT);
+        });
     }
 
     /**
@@ -34,7 +34,7 @@ class Resolver implements ResolverInterface
      */
     public function get($resource, $attribute, $layouts)
     {
-        $value = $resource->$attribute ?? [];
+        $value = $this->extractValueFromResource($resource, $attribute);
 
         if(!is_array($value)) $value = json_decode($value);
 
@@ -45,6 +45,22 @@ class Resolver implements ResolverInterface
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
         })->filter();
+    }
+
+    /**
+     * Find the attribute's value in the given resource
+     *
+     * @param  mixed  $resource
+     * @param  string $attribute
+     * @return mixed
+     */
+    protected function extractValueFromResource($resource, $attribute)
+    {
+        if(is_array($resource)) {
+            return $resource[$attribute] ?? [];
+        }
+
+        return $resource->$attribute ?? [];
     }
 
 }

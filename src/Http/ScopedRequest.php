@@ -60,8 +60,7 @@ class ScopedRequest extends NovaRequest
         ];
 
         foreach ($attributes as $originalAttribute => $value) {
-            // Retrieve the attribute name without the prepended key
-            $attribute = substr($originalAttribute, strlen($key . '__'));
+            $attribute = $this->getCleanAttributeName($originalAttribute, $key);
 
             // Sub-objects should remain JSON strings for further fields resolving
             if(is_array($value) || is_object($value)) {
@@ -81,6 +80,18 @@ class ScopedRequest extends NovaRequest
         }
 
         return $scope;
+    }
+
+    /**
+     * Remove the prepended random key from the attribute name
+     *
+     * @param  string  $attribute
+     * @param  string  $key
+     * @return string
+     */
+    protected function getCleanAttributeName($attribute, $key)
+    {
+        return substr($attribute, strpos($attribute, $key) + strlen($key . '__'));
     }
 
     /**
