@@ -276,7 +276,7 @@ var Group = function () {
 
     }, {
         key: 'renameFields',
-        value: function renameFields(attribute) {
+        value: function renameFields() {
             for (var i = this.fields.length - 1; i >= 0; i--) {
                 this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
             }
@@ -11065,7 +11065,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         addGroup: function addGroup(layout, attributes, key) {
             if (!layout) return;
 
-            var fields = attributes || layout.fields,
+            var fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new __WEBPACK_IMPORTED_MODULE_1__group__["a" /* default */](layout.name, layout.title, fields, this.field, key);
 
             this.groups[group.key] = group;

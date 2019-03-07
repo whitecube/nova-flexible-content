@@ -172,7 +172,7 @@ export default {
         addGroup(layout, attributes, key) {
             if(!layout) return;
 
-            let fields = attributes || layout.fields,
+            let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key);
 
             this.groups[group.key] = group;

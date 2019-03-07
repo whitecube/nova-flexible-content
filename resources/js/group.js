@@ -60,7 +60,7 @@ export default class Group {
     /**
      * Assign a new unique field name to each field
      */
-    renameFields(attribute) {
+    renameFields() {
         for (var i = this.fields.length - 1; i >= 0; i--) {
             this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
         }
