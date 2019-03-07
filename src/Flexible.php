@@ -254,7 +254,7 @@ class Flexible extends Field
     protected function findGroup($key)
     {
         return $this->groups->first(function($group) use ($key) {
-            return $group->key() === $key;
+            return $group->matches($key);
         });
     }
 
