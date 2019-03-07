@@ -259,7 +259,7 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     protected function getProcessedKey($key)
     {
-        if(strpos($key, '_') === false) return $key;
+        if(strpos($key, '-') === false) return $key;
 
         if (function_exists("random_bytes")) {
             $bytes = random_bytes(ceil(16/2));
