@@ -21,7 +21,7 @@ export default class Group {
 
         return formData;
     }
-    
+
     /**
      * Retrieve the layout's filled object
      */
@@ -34,6 +34,12 @@ export default class Group {
         };
 
         for(var item of this.values()) {
+            if(item[0].indexOf('___upload-') == 0) {
+                // Previously nested file attribute
+                data.files[item[0]] = item[1];
+                continue;
+            }
+
             if(!(item[1] instanceof File || item[1] instanceof Blob)) {
                 // Simple input value, no need to attach files
                 data.attributes[item[0]] = item[1];

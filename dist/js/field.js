@@ -232,6 +232,12 @@ var Group = function () {
                 for (var _iterator = this.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var item = _step.value;
 
+                    if (item[0].indexOf('___upload-') == 0) {
+                        // Previously nested file attribute
+                        data.files[item[0]] = item[1];
+                        continue;
+                    }
+
                     if (!(item[1] instanceof File || item[1] instanceof Blob)) {
                         // Simple input value, no need to attach files
                         data.attributes[item[0]] = item[1];
