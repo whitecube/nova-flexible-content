@@ -178,8 +178,6 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        $this->buildGroups($model, $attribute);
-
         $this->syncAndFillGroups($request, $requestAttribute);
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
