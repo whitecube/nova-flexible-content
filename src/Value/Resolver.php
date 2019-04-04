@@ -36,8 +36,6 @@ class Resolver implements ResolverInterface
     {
         $value = $this->extractValueFromResource($resource, $attribute);
 
-        if(!is_array($value)) $value = json_decode($value);
-
         return collect($value)->map(function($item) use ($layouts) {
             $layout = $layouts->find($item->layout);
 
@@ -52,15 +50,17 @@ class Resolver implements ResolverInterface
      *
      * @param  mixed  $resource
      * @param  string $attribute
-     * @return mixed
+     * @return array
      */
     protected function extractValueFromResource($resource, $attribute)
     {
-        if(is_array($resource)) {
-            return $resource[$attribute] ?? [];
-        }
+        $value = data_get($resource, str_replace('->', '.', $attribute)) ?? [];
+        if (is_string($value)) $value = json_decode($value) ?? [];
 
-        return $resource->$attribute ?? [];
+        return collect($value)->map(function ($item) {
+            if (is_array($item)) return (object)$item;
+            return $item;
+        })->toArray();
     }
 
 }
