@@ -30,7 +30,6 @@ class ScopedRequest extends NovaRequest
     public function scopeInto($key, $attributes)
     {
         $scope = $this->getScopeState($key, $attributes);
-        
         $scope['input']['_method'] = $this->input('_method');
         $scope['input']['_retrieved_at'] = $this->input('_retrieved_at');
 
@@ -132,10 +131,16 @@ class ScopedRequest extends NovaRequest
     {
         $analysis = [];
         $analysis['original'] = $attribute;
-        $analysis['raw'] = substr($attribute, strpos($attribute, $key) + strlen($key . '__'));
+        $analysis['raw'] = $this->getAttributeRawKey($attribute, $key);
         $analysis['key'] = $this->getAttributeAggregateKey($analysis['raw']);
         $analysis['name'] = $analysis['key'] ? $this->getAttributeAggregateName($analysis['raw']) : $analysis['raw'];
         return $analysis;
+    }
+
+    protected function getAttributeRawKey($attribute, $key)
+    {
+        $position = strpos($attribute, strval($key)) + strlen($key . '__');
+        return substr($attribute, $position);
     }
 
     /**
