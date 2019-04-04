@@ -1,9 +1,9 @@
 <template>
     <default-field :field="field" :errors="errors" :full-width-content="true">
         <template slot="field">
-            
+
             <div v-if="order.length > 0">
-                <form-nova-flexible-content-group 
+                <form-nova-flexible-content-group
                     v-for="group in orderedGroups"
                     :key="group.key"
                     :group="group"

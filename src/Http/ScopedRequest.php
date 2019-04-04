@@ -60,6 +60,8 @@ class ScopedRequest extends NovaRequest
 
         foreach ($attributes as $originalAttribute => $value) {
             $attribute = $this->parseAttribute($originalAttribute, $key);
+            $value = $this->parseValue($value);
+            info([$attribute['name'], $value]);
 
             // Sub-objects should remain JSON strings for further fields resolving
             if(is_array($value) || is_object($value)) {
@@ -137,6 +139,13 @@ class ScopedRequest extends NovaRequest
         return $analysis;
     }
 
+    /**
+     * Retrieves original field name from layout attribute name
+     *
+     * @param string $attribute
+     * @param string $key
+     * @return string
+     */
     protected function getAttributeRawKey($attribute, $key)
     {
         $position = strpos($attribute, strval($key)) + strlen($key . '__');
@@ -175,6 +184,28 @@ class ScopedRequest extends NovaRequest
         if($end === false) return $attribute;
 
         return substr($attribute, 0, $end);
+    }
+
+
+    /**
+     * Transforms JSON strings to objects if needed
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function parseValue($value)
+    {
+        if(!is_string($value)) {
+            return $value;
+        }
+
+        $parsed = json_decode($value);
+
+        if(!is_array($parsed) && !is_object($parsed)) {
+            return $value;
+        }
+
+        return $parsed;
     }
 
     /**
