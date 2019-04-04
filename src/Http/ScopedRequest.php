@@ -30,6 +30,7 @@ class ScopedRequest extends NovaRequest
     public function scopeInto($key, $attributes)
     {
         $scope = $this->getScopeState($key, $attributes);
+        
         $scope['input']['_method'] = $this->input('_method');
         $scope['input']['_retrieved_at'] = $this->input('_retrieved_at');
 
@@ -61,7 +62,6 @@ class ScopedRequest extends NovaRequest
         foreach ($attributes as $originalAttribute => $value) {
             $attribute = $this->parseAttribute($originalAttribute, $key);
             $value = $this->parseValue($value);
-            info([$attribute['name'], $value]);
 
             // Sub-objects should remain JSON strings for further fields resolving
             if(is_array($value) || is_object($value)) {
