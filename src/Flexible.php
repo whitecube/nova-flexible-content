@@ -178,6 +178,8 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
+        $this->buildGroups($model, $attribute);
+
         $this->syncAndFillGroups($request, $requestAttribute);
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
@@ -236,6 +238,8 @@ class Flexible extends Field
      */
     protected function buildGroups($resource, $attribute)
     {
+        if($this->groups) return $this->groups;
+        
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
