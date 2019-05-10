@@ -67,6 +67,16 @@ class Flexible extends Field
     {
         return $this->withMeta(['button' => $label]);
     }
+    
+    /**
+     *  Prevent the 'Add Layout' button from appearing more than once
+     *
+     * @return $this
+     */
+    public function once()
+    {
+        return $this->withMeta(['once' => true]);
+    }
 
     /**
      * Set the field's resolver
@@ -239,7 +249,7 @@ class Flexible extends Field
     protected function buildGroups($resource, $attribute)
     {
         if($this->groups) return $this->groups;
-        
+
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
