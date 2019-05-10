@@ -10938,185 +10938,198 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
+  mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
 
-    props: ['resourceName', 'resourceId', 'resource', 'field'],
+  props: ["resourceName", "resourceId", "resource", "field"],
 
-    computed: {
-        layouts: function layouts() {
-            return this.field.layouts || false;
-        },
-        orderedGroups: function orderedGroups() {
-            var _this = this;
-
-            return this.order.reduce(function (groups, key) {
-                groups.push(_this.groups[key]);
-                return groups;
-            }, []);
-        }
+  computed: {
+    layouts: function layouts() {
+      return this.field.layouts || false;
     },
+    orderedGroups: function orderedGroups() {
+      var _this = this;
 
-    data: function data() {
-        return {
-            isLayoutsDropdownOpen: false,
-            order: [],
-            groups: {},
-            files: {}
-        };
-    },
-
-
-    methods: {
-        /*
-         * Set the initial, internal value for the field.
-         */
-        setInitialValue: function setInitialValue() {
-            this.value = this.field.value || [];
-            this.files = {};
-
-            this.populateGroups();
-        },
-
-
-        /**
-         * Fill the given FormData object with the field's internal value.
-         */
-        fill: function fill(formData) {
-            var key = void 0,
-                group = void 0;
-
-            this.value = [];
-            this.files = {};
-
-            for (var i = 0; i < this.order.length; i++) {
-                key = this.order[i];
-                group = this.groups[key].serialize();
-
-                // Only serialize the group's non-file attributes
-                this.value.push({
-                    layout: group.layout,
-                    key: group.key,
-                    attributes: group.attributes
-                });
-
-                // Attach the files for formData appending
-                this.files = _extends({}, this.files, group.files);
-            }
-
-            formData.append(this.field.attribute, JSON.stringify(this.value));
-
-            // Append file uploads
-            for (var file in this.files) {
-                formData.append(file, this.files[file]);
-            }
-        },
-
-
-        /**
-         * Update the field's internal value.
-         */
-        handleChange: function handleChange(value) {
-            this.value = value || [];
-            this.files = {};
-
-            this.populateGroups();
-        },
-
-
-        /**
-         * Display or hide the layouts choice dropdown if there are multiple layouts
-         * or directly add the only available layout.
-         */
-        toggleLayoutsDropdownOrAddDefault: function toggleLayoutsDropdownOrAddDefault(event) {
-            if (this.layouts.length === 1) {
-                return this.addGroup(this.layouts[0]);
-            }
-
-            this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
-        },
-
-
-        /**
-         * Set the displayed layouts from the field's current value
-         */
-        populateGroups: function populateGroups() {
-            this.order.splice(0, this.order.length);
-            this.groups = {};
-
-            for (var i = 0; i < this.value.length; i++) {
-                this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key);
-            }
-        },
-
-
-        /**
-         * Retrieve layout definition from its name
-         */
-        getLayout: function getLayout(name) {
-            if (!this.layouts) return;
-            return this.layouts.find(function (layout) {
-                return layout.name == name;
-            });
-        },
-
-
-        /**
-         * Append the given layout to flexible content's list
-         */
-        addGroup: function addGroup(layout, attributes, key) {
-            if (!layout) return;
-
-            var fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new __WEBPACK_IMPORTED_MODULE_1__group__["a" /* default */](layout.name, layout.title, fields, this.field, key);
-
-            this.groups[group.key] = group;
-            this.order.push(group.key);
-
-            this.isLayoutsDropdownOpen = false;
-        },
-
-
-        /**
-         * Move a group up
-         */
-        moveUp: function moveUp(key) {
-            var index = this.order.indexOf(key);
-
-            if (index <= 0) return;
-
-            this.order.splice(index - 1, 0, this.order.splice(index, 1)[0]);
-        },
-
-
-        /**
-         * Move a group down
-         */
-        moveDown: function moveDown(key) {
-            var index = this.order.indexOf(key);
-
-            if (index < 0 || index >= this.order.length - 1) return;
-
-            this.order.splice(index + 1, 0, this.order.splice(index, 1)[0]);
-        },
-
-
-        /**
-         * Remove a group
-         */
-        remove: function remove(key) {
-            var index = this.order.indexOf(key);
-
-            if (index < 0) return;
-
-            this.order.splice(index, 1);
-            delete this.groups[key];
-        }
+      return this.order.reduce(function (groups, key) {
+        groups.push(_this.groups[key]);
+        return groups;
+      }, []);
     }
+  },
+
+  data: function data() {
+    return {
+      isLayoutsDropdownOpen: false,
+      order: [],
+      onceCounter: 1,
+      groups: {},
+      files: {}
+    };
+  },
+
+
+  methods: {
+    /*
+     * Set the initial, internal value for the field.
+     */
+    setInitialValue: function setInitialValue() {
+      this.value = this.field.value || [];
+      this.files = {};
+
+      this.populateGroups();
+    },
+
+
+    /**
+     * Fill the given FormData object with the field's internal value.
+     */
+    fill: function fill(formData) {
+      var key = void 0,
+          group = void 0;
+
+      this.value = [];
+      this.files = {};
+
+      for (var i = 0; i < this.order.length; i++) {
+        key = this.order[i];
+        group = this.groups[key].serialize();
+
+        // Only serialize the group's non-file attributes
+        this.value.push({
+          layout: group.layout,
+          key: group.key,
+          attributes: group.attributes
+        });
+
+        // Attach the files for formData appending
+        this.files = _extends({}, this.files, group.files);
+      }
+
+      formData.append(this.field.attribute, JSON.stringify(this.value));
+
+      // Append file uploads
+      for (var file in this.files) {
+        formData.append(file, this.files[file]);
+      }
+    },
+
+
+    /**
+     * Update the field's internal value.
+     */
+    handleChange: function handleChange(value) {
+      this.value = value || [];
+      this.files = {};
+
+      this.populateGroups();
+    },
+
+
+    /**
+     * Display or hide the layouts choice dropdown if there are multiple layouts
+     * or directly add the only available layout.
+     */
+    toggleLayoutsDropdownOrAddDefault: function toggleLayoutsDropdownOrAddDefault(event) {
+      if (this.layouts.length === 1) {
+        return this.addGroup(this.layouts[0]);
+      }
+
+      this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+    },
+
+
+    /**
+     * Set the displayed layouts from the field's current value
+     */
+    populateGroups: function populateGroups() {
+      this.order.splice(0, this.order.length);
+      this.groups = {};
+
+      for (var i = 0; i < this.value.length; i++) {
+        this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key);
+      }
+    },
+
+
+    /**
+     * Retrieve layout definition from its name
+     */
+    getLayout: function getLayout(name) {
+      if (!this.layouts) return;
+      return this.layouts.find(function (layout) {
+        return layout.name == name;
+      });
+    },
+
+
+    /**
+     * Append the given layout to flexible content's list
+     */
+    addGroup: function addGroup(layout, attributes, key) {
+      if (!layout) return;
+
+      var fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
+          group = new __WEBPACK_IMPORTED_MODULE_1__group__["a" /* default */](layout.name, layout.title, fields, this.field, key);
+
+      this.groups[group.key] = group;
+      this.order.push(group.key);
+
+      this.isLayoutsDropdownOpen = false;
+
+      if (this.field.once) {
+        this.onceCounter--;
+      }
+    },
+
+
+    /**
+     * Move a group up
+     */
+    moveUp: function moveUp(key) {
+      var index = this.order.indexOf(key);
+
+      if (index <= 0) return;
+
+      this.order.splice(index - 1, 0, this.order.splice(index, 1)[0]);
+    },
+
+
+    /**
+     * Move a group down
+     */
+    moveDown: function moveDown(key) {
+      var index = this.order.indexOf(key);
+
+      if (index < 0 || index >= this.order.length - 1) return;
+
+      this.order.splice(index + 1, 0, this.order.splice(index, 1)[0]);
+    },
+
+
+    /**
+     * Remove a group
+     */
+    remove: function remove(key) {
+      var index = this.order.indexOf(key);
+
+      if (index < 0) return;
+
+      this.order.splice(index, 1);
+      delete this.groups[key];
+
+      if (this.field.once) {
+        this.onceCounter++;
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -11221,16 +11234,18 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass:
-                    "btn btn-default btn-primary inline-flex items-center relative",
-                  attrs: { type: "button", tabindex: "0" },
-                  on: { click: _vm.toggleLayoutsDropdownOrAddDefault }
-                },
-                [_c("span", [_vm._v(_vm._s(_vm.field.button))])]
-              )
+              this.onceCounter == 1
+                ? _c(
+                    "button",
+                    {
+                      staticClass:
+                        "btn btn-default btn-primary inline-flex items-center relative",
+                      attrs: { type: "button", tabindex: "0" },
+                      on: { click: _vm.toggleLayoutsDropdownOrAddDefault }
+                    },
+                    [_c("span", [_vm._v(_vm._s(_vm.field.button))])]
+                  )
+                : _vm._e()
             ])
           : _vm._e()
       ])
