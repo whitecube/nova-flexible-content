@@ -134,7 +134,7 @@ class MyResource extends Resources
      */
     protected static function afterValidation(NovaRequest $request, $validator)
     {
-        $this->validateFlexibleFields($request, $validator);
+        static::validateFlexibleFields($request, $validator);
     }
 
     /**
@@ -142,7 +142,7 @@ class MyResource extends Resources
      */
     protected static function afterCreationValidation(NovaRequest $request, $validator)
     {
-        $this->validateFlexibleFieldsForCreation($request, $validator);
+        static::validateFlexibleFieldsForCreation($request, $validator);
     }
 
     /**
@@ -150,7 +150,7 @@ class MyResource extends Resources
      */
     protected static function afterUpdateValidation(NovaRequest $request, $validator)
     {
-        $this->validateFlexibleFieldsForUpdate($request, $validator);
+        static::validateFlexibleFieldsForUpdate($request, $validator);
     }
 }
 ```
