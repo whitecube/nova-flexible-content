@@ -2,6 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent;
 
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
@@ -14,6 +16,10 @@ use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
+    const CLASSIC_RULES = 'getRules';
+    const CREATION_RULES = 'getCreationRules';
+    const UPDATE_RULES = 'getUpdateRules';
+
     /**
      * The field's component.
      *
@@ -239,7 +245,7 @@ class Flexible extends Field
     protected function buildGroups($resource, $attribute)
     {
         if($this->groups) return $this->groups;
-        
+
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
@@ -274,5 +280,96 @@ class Flexible extends Field
         if(!$layout) return;
 
         return $layout->duplicate($key);
+    }
+
+    /**
+     * Get rules for inner fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string|null  $type
+     * @return array
+     */
+    public function getFlexibleRules(NovaRequest $request, string $type = null): array
+    {
+        $type = ! in_array($type, [
+            static::CLASSIC_RULES,
+            static::CREATION_RULES,
+            static::UPDATE_RULES
+        ])
+            ? static::CLASSIC_RULES
+            : $type;
+
+        $rules = [];
+
+        foreach ($this->layouts as $layout) {
+            /** @var \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface $layout */
+            $fields = $layout->fields();
+            if (is_iterable($fields)) {
+                $rules[$layout->name()] = collect($fields)->mapWithKeys(function ($field) use ($request, $type) {
+                    return [$field->attribute => data_get($field->{$type}($request), $field->attribute, [])];
+                })->toArray();
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Get creation for inner fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getFlexibleCreationRules(NovaRequest $request)
+    {
+        return $this->getFlexibleRules($request, static::CREATION_RULES);
+    }
+
+    /**
+     * Get update for inner fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getFlexibleUpdateRules(NovaRequest $request)
+    {
+        return $this->getFlexibleRules($request, static::UPDATE_RULES);
+    }
+
+    public function validateForCreation(NovaRequest $request, ValidatorContract &$validator): void
+    {
+        $this->validate($request, $validator, $this->getFlexibleCreationRules($request));
+    }
+
+    public function validateForUpdate(NovaRequest $request, ValidatorContract &$validator): void
+    {
+        $this->validate($request, $validator, $this->getFlexibleUpdateRules($request));
+    }
+
+    public function validate(NovaRequest $request, ValidatorContract &$validator, array $rules = null): void
+    {
+        if (empty($rules)) {
+            $rules = $this->getFlexibleRules($request);
+        }
+
+        $inputs = json_decode($request->input($this->attribute), true);
+
+        foreach ($inputs as $input) {
+            $key = data_get($input, 'key', '');
+
+            $data = collect(data_get($input, 'attributes', []))->mapWithKeys(function ($value, $attribute) use ($input, $key) {
+                return [str_replace("{$key}__", '', $attribute) => $value];
+            })->toArray();
+            $inputRules = data_get($rules, data_get($input, 'layout'), []);
+
+            $v = Validator::make($data, $inputRules);
+            if ($v->fails()) {
+                foreach ($v->errors()->toArray() as $attribute => $messages) {
+                    foreach ($messages as $message) {
+                        $validator->errors()->add("{$this->attribute}.{$key}__{$attribute}", $message);
+                    }
+                }
+            }
+        }
     }
 }

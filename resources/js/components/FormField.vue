@@ -10,6 +10,7 @@
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
+                    :validationErrors="errorsForField(group.key)"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -48,7 +49,7 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import { FormField, HandlesValidationErrors, Errors } from 'laravel-nova';
 import Group from '../group';
 
 export default {
@@ -213,6 +214,26 @@ export default {
 
             this.order.splice(index, 1);
             delete this.groups[key];
+        },
+
+        /**
+         * Get errors for a given field.
+         *
+         * @param field
+         */
+        errorsForField(field) {
+            let errors = _.reduce(
+                _.pickBy(this.errors.all(), (value, key) => {
+                    return key.startsWith(`${this.field.attribute}.${field}__`)
+                }),
+                (result, value, key) => {
+                    result[key.replace(`${this.field.attribute}.`, '')] = value
+                    return result
+                },
+                {}
+            )
+
+            return new Errors(errors)
         }
     }
 }

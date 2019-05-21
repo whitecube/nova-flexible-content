@@ -89,6 +89,72 @@ By default, the field takes advantage of a **JSON column** on your model's table
 
 Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
+## Fields validation
+
+You can perform validation using the `afterValidation*` resource's methods. Make sure your resource use the `ValidateFlexible` trait.
+
+```php
+<?php
+
+namespace App\Nova;
+
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
+use Whitecube\NovaFlexibleContent\ValidateFlexible;
+
+class MyResource extends Resources
+{
+    use ValidateFlexible;
+    
+    /**
+     * Get the fields displayed by the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function fields(Request $request)
+    {
+        return [
+            // ...
+            
+            Flexible::make('Content')
+                ->addLayout('Simple content section', 'wysiwyg', [
+                    Text::make('Title')
+                        ->rules('required'),
+                    Text::make('Slug')
+                        ->creationRules('string','max:255','unique:table,slug')
+                        ->updateRules('unique:table,slug,{{resourceId}}'),
+                ])
+        ];
+    }
+    
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterValidation(NovaRequest $request, $validator)
+    {
+        $this->validateFlexibleFields($request, $validator);
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterCreationValidation(NovaRequest $request, $validator)
+    {
+        $this->validateFlexibleFieldsForCreation($request, $validator);
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterUpdateValidation(NovaRequest $request, $validator)
+    {
+        $this->validateFlexibleFieldsForUpdate($request, $validator);
+    }
+}
+```
+
 ## Contributing
 
 Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made and we would be very happy to merge useful pull requests.
