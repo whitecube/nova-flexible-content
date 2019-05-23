@@ -253,8 +253,6 @@ class Flexible extends Field
      */
     protected function buildGroups($resource, $attribute)
     {
-        if($this->groups) return $this->groups;
-
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
