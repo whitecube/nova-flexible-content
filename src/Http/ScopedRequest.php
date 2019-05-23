@@ -25,7 +25,7 @@ class ScopedRequest extends NovaRequest
      *
      * @param  string  $key
      * @param  array  $attributes
-     * @return this
+     * @return $this
      */
     public function scopeInto($key, $attributes)
     {
