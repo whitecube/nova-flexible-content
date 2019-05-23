@@ -313,9 +313,13 @@ class Flexible extends Field
             $fields = $layout->fields();
             if (is_iterable($fields)) {
                 $rules[$layout->name()] = collect($fields)->mapWithKeys(function ($field) use ($request, $type) {
-                    return $field instanceof Flexible
-                        ? [$field->attribute => $field->getFlexibleRules($request, $type)]
-                        : [$field->attribute => data_get($field->{$type}($request), $field->attribute, [])];
+                    $rules = data_get($field->{$type}($request), $field->attribute, []);
+
+                    if ($field instanceof Flexible) {
+                        $rules += $field->getFlexibleRules($request, $type);
+                    }
+
+                    return [$field->attribute => $rules];
                 })->toArray();
             }
         }
@@ -448,7 +452,7 @@ class Flexible extends Field
                         $value,
                         data_get($rules, "{$layoutName}.{$attribute}", []),
                         $validator,
-                        "{$this->attribute}.{$key}__"
+                        "{$prefix}{$this->attribute}.{$key}__"
                     );
                 }
             }
