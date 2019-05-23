@@ -420,14 +420,13 @@ class Flexible extends Field
             $flexibleFieldsNames = array_keys($flexibleFields);
 
             foreach ($groups as $key => $inputs) {
-                $classicFields = array_filter($inputs, function ($attribute) use ($flexibleFieldsNames) {
-                    return ! in_array($attribute, $flexibleFieldsNames);
-                }, ARRAY_FILTER_USE_KEY);
+                $inputsRules = array_map(function ($rules) {
+                    return array_values(array_filter($rules, function ($rule) {
+                        return ! is_array($rule);
+                    }));
+                }, data_get($rules, $layoutName, []));
 
-                $inputsValidator = Validator::make(
-                    $classicFields,
-                    array_intersect_key($rules[$layoutName], $classicFields)
-                );
+                $inputsValidator = Validator::make($inputs, $inputsRules);
 
                 if ($inputsValidator->fails()) {
                     foreach ($inputsValidator->errors()->toArray() as $attribute => $messages) {
