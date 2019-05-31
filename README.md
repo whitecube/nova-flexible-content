@@ -110,6 +110,8 @@ public function getFlexibleContentAttribute()
 }
 ```
 
+Each Layout (or custom layout extending the base Layout) is already implementing the `HasFlexible` trait, meaning you can directly use the `$layout->flexible('my-sub-layout')` method to parse nested flexible content values.
+
 #### The Layouts Collection
 
 Collections returned by the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
