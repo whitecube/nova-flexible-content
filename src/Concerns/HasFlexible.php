@@ -36,7 +36,7 @@ trait HasFlexible {
         }
 
         return new Collection(
-            array_filter($this->getMappedFlexibleLayouts($flexible));
+            array_filter($this->getMappedFlexibleLayouts($flexible))
         );
     }
 
