@@ -98,6 +98,26 @@ class MyModel extends Model
 }
 ```
 
+#### The Layouts Collection
+
+Collections returned by the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
+
+#### The Layout instance
+
+Layouts are some kind of _fake models_. They use Laravel's `HasAttributes` trait, which means you can define accessors & mutators for the layout's attributes. Furthermore, it's also possible to access the Layout's properties using the following methods:
+
+##### `name()`
+
+Returns the layout's name.
+
+##### `title()`
+
+Returns the layout's title (as shown in Nova).
+
+##### `key()`
+
+Returns the layout's unique key (the layout's unique identifier).
+
 ## Going further
 
 When using the Flexible Content field, you'll quickly come across of some use cases where the basics described above are not enough. That's why we developed the package in an extendable way, making it possible to easily add custom behaviors and/or capabilities to Field and its output.
