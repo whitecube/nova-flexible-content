@@ -5,6 +5,7 @@ namespace Whitecube\NovaFlexibleContent\Concerns;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
+use Laravel\Nova\NovaServiceProvider;
 
 trait HasFlexible {
 
@@ -16,9 +17,13 @@ trait HasFlexible {
      */
     public function flexible($attribute)
     {
-        $flexible = $this->__get($attribute) ?: null;
+        $flexible = $this->attributes[$attribute] ?? null;
 
-        return $this->toFlexible($flexible);
+        if(app()->getProvider(NovaServiceProvider::class)) {
+            return $flexible;
+        }
+        
+        return $this->toFlexible($flexible ?: null);
     }
 
     /**
