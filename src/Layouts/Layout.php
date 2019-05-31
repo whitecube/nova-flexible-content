@@ -4,11 +4,13 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use JsonSerializable;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
 class Layout implements LayoutInterface, JsonSerializable
 {
     use HasAttributes;
+    use HasFlexible;
 
     /**
      * The layout's name
