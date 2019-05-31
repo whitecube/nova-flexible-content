@@ -55,8 +55,11 @@ class Resolver implements ResolverInterface
     protected function extractValueFromResource($resource, $attribute)
     {
         $value = data_get($resource, str_replace('->', '.', $attribute)) ?? [];
+
         if (is_string($value)) $value = json_decode($value) ?? [];
-        if (!is_array($value)) return []; // Fail silently in case data is invalid
+
+        // Fail silently in case data is invalid
+        if (!is_array($value)) return [];
 
         return array_map(function($item) {
             return is_array($item) ? (object) $item : $item;

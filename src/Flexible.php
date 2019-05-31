@@ -61,7 +61,7 @@ class Flexible extends Field
      * Set the button's label
      *
      * @param string $label
-     * @return this
+     * @return $this
      */
     public function button($label)
     {
@@ -72,7 +72,7 @@ class Flexible extends Field
      * Set the field's resolver
      *
      * @param string $classname
-     * @return this
+     * @return $this
      */
     public function resolver($classname)
     {
@@ -91,7 +91,7 @@ class Flexible extends Field
      * Register a new layout
      *
      * @param array $arguments
-     * @return this
+     * @return $this
      */
     public function addLayout(...$arguments)
     {
@@ -122,7 +122,7 @@ class Flexible extends Field
      * Apply a field configuration preset
      *
      * @param string $classname
-     * @return this
+     * @return $this
      */
     public function preset($classname)
     {
@@ -237,7 +237,7 @@ class Flexible extends Field
      * @return Illuminate\Support\Collection
      */
     protected function buildGroups($resource, $attribute)
-    {
+    {      
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
