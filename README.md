@@ -89,6 +89,78 @@ By default, the field takes advantage of a **JSON column** on your model's table
 
 Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
+## Usage with nova-page
+
+Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it specifically. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! Below is an example on how to combine them. First of all create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.
+
+### Requesting the flexible content
+
+As explained in the documentation, you can [acces nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your blade views using `{{ Page::get('my-static-flexible-attribute') }}`. When you are requesting the flexible content like this, it returns a raw json string describing the flexible content, which is of course not very useful. Instead, let's create a `trait` wich adds the `Page::flexible('attribute')` method to our `Page` facade and will take care of the flexible content's transformation.
+
+```php
+namespace App\Nova\Templates\Concerns;
+
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+
+trait HasFlexible
+{
+
+    /**
+     * Get a parsed Flexible Content field
+     *
+     * @param string $attribute
+     * @return Illuminate\Support\Collection
+     */
+    public function flexible($attribute)
+    {
+        $flexible = $this->__get($attribute) ?: null;
+
+        if(is_null($flexible)) return collect();
+
+        if(is_string($flexible)) $flexible = json_decode($flexible);
+
+        return $this->toFlexible($flexible);
+    }
+
+    /**
+     * Parse a Flexible Content from array
+     *
+     * @param mixed $value
+     * @return Illuminate\Support\Collection
+     */
+    public function toFlexible($value)
+    {
+        if(is_array($value)) $value = collect($value);
+
+        return $value->map(function($item) {
+            if(!is_a($item, \stdClass::class)) return $item;
+            return new Layout($item->layout, $item->layout, [], $item->key, (array) $item->attributes);
+        });
+    }
+}
+```
+
+You can modify the trait to your needs. The `flexible` method decodes the flexible content and returns a collection containing hydrated `Layout` instances.
+
+Next, go to your `nova-page` template file and include the trait file.
+
+```php
+namespace App\Nova\Templates;
+
+...
+use Whitecube\NovaFlexibleContent\Flexible;
+use App\Nova\Templates\Concerns\HasFlexible;
+
+class Home extends Template
+{
+    use HasFlexible;
+
+    // ...
+}
+```
+
+You're all set! Enjoy using the `Page::flexible('attribute')` method on Templates using the trait.
+
 ## Contributing
 
 Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made and we would be very happy to merge useful pull requests.
