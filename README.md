@@ -98,6 +98,18 @@ class MyModel extends Model
 }
 ```
 
+By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible to specify the mapping rules as follows:
+
+```php
+public function getFlexibleContentAttribute()
+{
+    return $this->flexible('flexible-content', [
+        'wysiwyg' => \App\Nova\Flexible\Layouts\WysiwygLayout::class,
+        'video' => \App\Nova\Flexible\Layouts\VideoLayout::class,
+    ]);
+}
+```
+
 #### The Layouts Collection
 
 Collections returned by the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
