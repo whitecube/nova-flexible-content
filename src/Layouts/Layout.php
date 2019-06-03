@@ -180,10 +180,10 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
-     * Resolve fields using given attributes
+     * Resolve fields using given attributes.
      *
      * @param  array  $attributes
-     * @return void
+     * @return array
      */
     public function resolve(array $attributes = [])
     {
