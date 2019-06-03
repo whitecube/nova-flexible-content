@@ -166,6 +166,22 @@ class Flexible extends Field
     }
 
     /**
+     * Resolve the field's value for display on index and detail views.
+     *
+     * @param mixed $resource
+     * @param string|null $attribute
+     * @return void
+     */
+    public function resolveForDisplay($resource, $attribute = null)
+    {
+        $attribute = $attribute ?? $this->attribute;
+
+        $this->buildGroups($resource, $attribute);
+
+        $this->value = $this->resolveGroupsForDisplay($this->groups);
+    }
+
+    /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -225,6 +241,20 @@ class Flexible extends Field
     {
         return $groups->map(function($group) {
             return $group->getResolved();
+        });
+    }
+
+    /**
+     * Resolve all contained groups and their fields for display on index and
+     * detail views.
+     *
+     * @param Illuminate\Support\Collection $groups
+     * @return Illuminate\Support\Collection
+     */
+    protected function resolveGroupsForDisplay($groups)
+    {
+        return $groups->map(function ($group) {
+            return $group->getResolvedForDisplay();
         });
     }
 

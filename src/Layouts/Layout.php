@@ -141,6 +141,16 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
+     * Resolve the field for display and return the result.
+     *
+     * @return array
+     */
+    public function getResolvedForDisplay()
+    {
+        return $this->resolveForDisplay($this->getAttributes());
+    }
+
+    /**
      * Get an empty cloned instance
      *
      * @param  string  $key
@@ -181,19 +191,46 @@ class Layout implements LayoutInterface, JsonSerializable
             $field->resolve($attributes);
         });
 
+        return $this->getResolvedValue();
+    }
+
+    /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay($attributes);
+        });
+
+        return $this->getResolvedValue();
+    }
+
+    /**
+     * Returns the final value of the layout.
+     *
+     * Should only be called after all the fields are resolved.
+     *
+     * @return array
+     **/
+    protected function getResolvedValue()
+    {
         return [
             'layout' => $this->name,
 
             // The (old) temporary key is preferred to the new one during
-            // field resolving because we need to keep track of the current 
-            // attributes during the next fill request that will override 
+            // field resolving because we need to keep track of the current
+            // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
             'key' => $this->_key ?? $this->key,
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple
             // groups use the same layout, the current values will be lost
-            // since each group uses the same fields by reference. That's 
+            // since each group uses the same fields by reference. That's
             // why we need to serialize the field's current state.
             'attributes' => $this->fields->jsonSerialize()
         ];
