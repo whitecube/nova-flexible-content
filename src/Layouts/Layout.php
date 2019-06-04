@@ -6,8 +6,9 @@ use JsonSerializable;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Contracts\Support\Arrayable;
 
-class Layout implements LayoutInterface, JsonSerializable
+class Layout implements LayoutInterface, JsonSerializable, Arrayable
 {
     use HasAttributes;
     use HasFlexible;
@@ -308,5 +309,15 @@ class Layout implements LayoutInterface, JsonSerializable
         }
 
         return substr(bin2hex($bytes), 0, 16);
+    }
+    
+    /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_merge($this->attributesToArray(), $this->relationsToArray());
     }
 }
