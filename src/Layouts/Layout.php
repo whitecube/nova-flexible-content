@@ -137,7 +137,13 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function getResolved()
     {
-        return $this->resolve($this->getAttributes());
+        $mutatedAttributes = [];
+
+        foreach ($this->getAttributes() as $key => $value) {
+            $mutatedAttributes[$key] = $this->getAttributeValue($key);
+        }
+
+        return $this->resolve($mutatedAttributes);
     }
 
     /**
