@@ -188,15 +188,15 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
             'layout' => $this->name,
 
             // The (old) temporary key is preferred to the new one during
-            // field resolving because we need to keep track of the current 
-            // attributes during the next fill request that will override 
+            // field resolving because we need to keep track of the current
+            // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
             'key' => $this->_key ?? $this->key,
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple
             // groups use the same layout, the current values will be lost
-            // since each group uses the same fields by reference. That's 
+            // since each group uses the same fields by reference. That's
             // why we need to serialize the field's current state.
             'attributes' => $this->fields->jsonSerialize()
         ];
@@ -312,7 +312,7 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
 
         return substr(bin2hex($bytes), 0, 16);
     }
-    
+
     /**
      * Convert the model instance to an array.
      *
@@ -320,6 +320,7 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
      */
     public function toArray()
     {
-        return array_merge($this->attributesToArray(), $this->relationsToArray());
+        return $this->attributesToArray();
     }
+
 }
