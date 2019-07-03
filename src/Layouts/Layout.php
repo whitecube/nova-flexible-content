@@ -6,11 +6,13 @@ use JsonSerializable;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 
 class Layout implements LayoutInterface, JsonSerializable, Arrayable
 {
     use HasAttributes;
+    use HidesAttributes;
     use HasFlexible;
 
     /**
