@@ -176,6 +176,8 @@ class Flexible extends Field
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
+        if (!$request->exists($requestAttribute)) return;
+
         $attribute = $attribute ?? $this->attribute;
 
         $this->buildGroups($model, $attribute);
@@ -237,7 +239,7 @@ class Flexible extends Field
      * @return Illuminate\Support\Collection
      */
     protected function buildGroups($resource, $attribute)
-    {      
+    {
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
