@@ -6,6 +6,7 @@
                 <form-nova-flexible-content-group
                     v-for="group in orderedGroups"
                     :key="group.key"
+                    :field="field"
                     :group="group"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
@@ -70,6 +71,7 @@ export default {
     },
 
     data() {
+        console.log('test');
         return {
             isLayoutsDropdownOpen: false,
             order: [],

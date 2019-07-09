@@ -81,6 +81,21 @@ class Flexible extends Field
     }
 
     /**
+     * Confirm remove
+     *
+     * @return $this
+     */
+    public function confirmRemove($label = '', $yes = 'Confirm?', $no = 'X')
+    {
+        return $this->withMeta([
+            'confirmRemove'         => true,
+            'confirmRemoveMessage'  => $label,
+            'confirmRemoveYes'      => $yes,
+            'confirmRemoveNo'       => $no,
+        ]);
+    }
+
+    /**
      * Set the field's resolver
      *
      * @param string $classname

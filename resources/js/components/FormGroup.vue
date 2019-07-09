@@ -20,16 +20,21 @@
                 />
             </div>
         </div>
-        <div class="absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8">
+        <div class="absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8" >
             <button class="group-control btn border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
                 <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
             </button>
             <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
                 <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
             </button>
-            <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="remove">
+            <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
                 <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
             </button>
+            <div v-if="removeMessage" class="confirm-message">
+                <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
+                <button @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
+                <button @click.prevent="removeMessage=false" class="text-80 btn closebtn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+            </div>
         </div>
     </div>
 </template>
@@ -40,7 +45,13 @@ import { BehavesAsPanel } from 'laravel-nova'
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['validationErrors', 'group'],
+    props: ['validationErrors', 'group', 'field'],
+
+    data() {
+        return {
+            removeMessage: false,
+        };
+    },
 
     computed: {
         titleStyle() {
@@ -76,7 +87,18 @@ export default {
          */
         remove() {
             this.$emit('remove');
-        }
+        },
+
+        /**
+         * Confirm remove message
+         */
+        confirmRemove() {
+            if(this.field.confirmRemove){
+                this.removeMessage = true;
+            } else {
+                this.remove()
+            }
+        },
     },
 }
 </script>
@@ -91,5 +113,29 @@ export default {
     }
     .group-control:hover path {
         fill: var(--primary);
+    }
+    .confirm-message{
+        position: absolute;
+        overflow: visible;
+        right: 38px;
+        bottom: 0;
+        width: auto;
+        border-radius: 4px;
+        padding: 6px 7px;
+        border: 1px solid #B7CAD6;
+        fill: var(--20);
+        white-space: nowrap;
+    }
+    [dir=rtl] .confirm-message{
+        right: auto;
+        left: 35px;
+    }
+
+    .confirm-message .text-danger {
+        color: #ee3f22;
+    }
+
+    .closebtn {
+        color: #B7CAD6;
     }
 </style>

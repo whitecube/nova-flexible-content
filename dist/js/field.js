@@ -3557,15 +3557,6 @@ exports.default = {
     handleChange: function handleChange(value) {
       this.value = value;
     }
-  },
-
-  computed: {
-    /**
-     * Determine if the field is in readonly mode
-     */
-    isReadonly: function isReadonly() {
-      return this.field.readonly || _.get(this.field, 'extraAttributes.readonly');
-    }
   }
 };
 
@@ -3623,7 +3614,7 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _regenerator = __webpack_require__(50);
@@ -3641,108 +3632,98 @@ var _cardSizes2 = _interopRequireDefault(_cardSizes);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    props: {
-        loadCards: {
-            type: Boolean,
-            default: true
-        }
+  props: {
+    loadCards: {
+      type: Boolean,
+      default: true
+    }
+  },
+
+  data: function data() {
+    return { cards: [] };
+  },
+
+  /**
+   * Fetch all of the metrics panels for this view
+   */
+  created: function created() {
+    this.fetchCards();
+  },
+
+
+  watch: {
+    cardsEndpoint: function cardsEndpoint() {
+      this.fetchCards();
+    }
+  },
+
+  methods: {
+    fetchCards: function () {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        var _ref2, cards;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!this.loadCards) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _context.next = 3;
+                return Nova.request().get(this.cardsEndpoint);
+
+              case 3:
+                _ref2 = _context.sent;
+                cards = _ref2.data;
+
+                this.cards = cards;
+
+              case 6:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function fetchCards() {
+        return _ref.apply(this, arguments);
+      }
+
+      return fetchCards;
+    }()
+  },
+
+  computed: {
+    /**
+     * Determine whether we have cards to show on the Dashboard
+     */
+    shouldShowCards: function shouldShowCards() {
+      return this.cards.length > 0;
     },
 
-    data: function data() {
-        return { cards: [] };
-    },
 
     /**
-     * Fetch all of the metrics panels for this view
+     * Return the small cards used for the Dashboard
      */
-    created: function created() {
-        this.fetchCards();
+    smallCards: function smallCards() {
+      return _.filter(this.cards, function (c) {
+        return _cardSizes2.default.indexOf(c.width) !== -1;
+      });
     },
 
 
-    watch: {
-        cardsEndpoint: function cardsEndpoint() {
-            this.fetchCards();
-        }
-    },
-
-    methods: {
-        fetchCards: function () {
-            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
-                var _ref2, cards;
-
-                return _regenerator2.default.wrap(function _callee$(_context) {
-                    while (1) {
-                        switch (_context.prev = _context.next) {
-                            case 0:
-                                if (!this.loadCards) {
-                                    _context.next = 6;
-                                    break;
-                                }
-
-                                _context.next = 3;
-                                return Nova.request().get(this.cardsEndpoint, {
-                                    params: this.extraCardParams
-                                });
-
-                            case 3:
-                                _ref2 = _context.sent;
-                                cards = _ref2.data;
-
-                                this.cards = cards;
-
-                            case 6:
-                            case 'end':
-                                return _context.stop();
-                        }
-                    }
-                }, _callee, this);
-            }));
-
-            function fetchCards() {
-                return _ref.apply(this, arguments);
-            }
-
-            return fetchCards;
-        }()
-    },
-
-    computed: {
-        /**
-         * Determine whether we have cards to show on the Dashboard
-         */
-        shouldShowCards: function shouldShowCards() {
-            return this.cards.length > 0;
-        },
-
-
-        /**
-         * Return the small cards used for the Dashboard
-         */
-        smallCards: function smallCards() {
-            return _.filter(this.cards, function (c) {
-                return _cardSizes2.default.indexOf(c.width) !== -1;
-            });
-        },
-
-
-        /**
-         * Return the full-width cards used for the Dashboard
-         */
-        largeCards: function largeCards() {
-            return _.filter(this.cards, function (c) {
-                return c.width == 'full';
-            });
-        },
-
-
-        /**
-         * Get the extra card params to pass to the endpoint.
-         */
-        extraCardParams: function extraCardParams() {
-            return null;
-        }
+    /**
+     * Return the full-width cards used for the Dashboard
+     */
+    largeCards: function largeCards() {
+      return _.filter(this.cards, function (c) {
+        return c.width == 'full';
+      });
     }
+  }
 };
 
 /***/ }),
@@ -10961,6 +10942,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -10985,6 +10967,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     data: function data() {
+        console.log('test');
         return {
             isLayoutsDropdownOpen: false,
             order: [],
@@ -11177,6 +11160,7 @@ var render = function() {
                 return _c("form-nova-flexible-content-group", {
                   key: group.key,
                   attrs: {
+                    field: _vm.field,
                     group: group,
                     "resource-name": _vm.resourceName,
                     "resource-id": _vm.resourceId,
@@ -11368,7 +11352,7 @@ exports = module.exports = __webpack_require__(17)(false);
 
 
 // module
-exports.push([module.i, "\n.group-control:focus {\n    outline: none;\n}\n.group-control path {\n    fill: #B7CAD6;\n    -webkit-transition: fill 200ms ease-out;\n    transition: fill 200ms ease-out;\n}\n.group-control:hover path {\n    fill: var(--primary);\n}\n", ""]);
+exports.push([module.i, "\n.group-control:focus {\n    outline: none;\n}\n.group-control path {\n    fill: #B7CAD6;\n    -webkit-transition: fill 200ms ease-out;\n    transition: fill 200ms ease-out;\n}\n.group-control:hover path {\n    fill: var(--primary);\n}\n.confirm-message{\n    position: absolute;\n    overflow: visible;\n    right: 38px;\n    bottom: 0;\n    width: auto;\n    border-radius: 4px;\n    padding: 6px 7px;\n    border: 1px solid #B7CAD6;\n    fill: var(--20);\n    white-space: nowrap;\n}\n[dir=rtl] .confirm-message{\n    right: auto;\n    left: 35px;\n}\n.confirm-message .text-danger {\n    color: #ee3f22;\n}\n.closebtn {\n    color: #B7CAD6;\n}\n", ""]);
 
 // exports
 
@@ -11760,13 +11744,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["BehavesAsPanel"]],
 
-    props: ['validationErrors', 'group'],
+    props: ['validationErrors', 'group', 'field'],
+
+    data: function data() {
+        return {
+            removeMessage: false
+        };
+    },
+
 
     computed: {
         titleStyle: function titleStyle() {
@@ -11804,6 +11800,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          */
         remove: function remove() {
             this.$emit('remove');
+        },
+
+
+        /**
+         * Confirm remove message
+         */
+        confirmRemove: function confirmRemove() {
+            if (this.field.confirmRemove) {
+                this.removeMessage = true;
+            } else {
+                this.remove();
+            }
         }
     }
 });
@@ -11928,7 +11936,7 @@ var render = function() {
               on: {
                 click: function($event) {
                   $event.preventDefault()
-                  return _vm.remove($event)
+                  return _vm.confirmRemove($event)
                 }
               }
             },
@@ -11943,7 +11951,43 @@ var render = function() {
               })
             ],
             1
-          )
+          ),
+          _vm._v(" "),
+          _vm.removeMessage
+            ? _c("div", { staticClass: "confirm-message" }, [
+                _vm.field.confirmRemoveMessage
+                  ? _c("span", [_vm._v(_vm._s(_vm.field.confirmRemoveMessage))])
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "text-danger btn mx-1 focus:outline-none",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.remove($event)
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.field.confirmRemoveYes))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "text-80 btn closebtn focus:outline-none",
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.removeMessage = false
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.field.confirmRemoveNo))]
+                )
+              ])
+            : _vm._e()
         ]
       )
     ]
