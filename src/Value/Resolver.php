@@ -16,7 +16,7 @@ class Resolver implements ResolverInterface
     public function set($model, $attribute, $groups)
     {
         $modelAttribute = $model->$attribute;
-        $model->$attribute = $groups->map(function($group) use ($modelAttribute) {
+        return $model->$attribute = $groups->map(function($group) use ($modelAttribute) {
 
             // Merge old attributes with the new ones to avoid override File/ Image Fields when nested Images
             if(isset($modelAttribute)){
@@ -36,7 +36,7 @@ class Resolver implements ResolverInterface
                 'key' => $group->key(),
                 'attributes' => $group->getAttributes()
             ];
-        });    
+        });
     }
 
     /**
