@@ -6,10 +6,13 @@ use JsonSerializable;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
+use Illuminate\Contracts\Support\Arrayable;
 
-class Layout implements LayoutInterface, JsonSerializable
+class Layout implements LayoutInterface, JsonSerializable, Arrayable
 {
     use HasAttributes;
+    use HidesAttributes;
     use HasFlexible;
 
     /**
@@ -185,15 +188,15 @@ class Layout implements LayoutInterface, JsonSerializable
             'layout' => $this->name,
 
             // The (old) temporary key is preferred to the new one during
-            // field resolving because we need to keep track of the current 
-            // attributes during the next fill request that will override 
+            // field resolving because we need to keep track of the current
+            // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
             'key' => $this->_key ?? $this->key,
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple
             // groups use the same layout, the current values will be lost
-            // since each group uses the same fields by reference. That's 
+            // since each group uses the same fields by reference. That's
             // why we need to serialize the field's current state.
             'attributes' => $this->fields->jsonSerialize()
         ];
@@ -309,4 +312,15 @@ class Layout implements LayoutInterface, JsonSerializable
 
         return substr(bin2hex($bytes), 0, 16);
     }
+
+    /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->attributesToArray();
+    }
+
 }
