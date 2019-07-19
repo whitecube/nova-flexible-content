@@ -80,8 +80,6 @@ Flexible::make('Content')
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
 
-![Limit added layouts](https://github.com/whitecube/nova-flexible-content/raw/master/limit_added_layouts.png)
-
 ## Custom Layout Classes
 
 Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.
