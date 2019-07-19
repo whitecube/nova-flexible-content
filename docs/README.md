@@ -74,8 +74,7 @@ Flexible::make('Content')
 You can limit how many times the "Add Layout" button will appear by doing the following
 
 ```php
-Flexible::make('Content')
-    ->limit(2);
+Flexible::make('Content')->limit(2);
 ```
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
