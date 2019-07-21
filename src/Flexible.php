@@ -74,6 +74,16 @@ class Flexible extends Field
     }
 
     /**
+     *  Prevent the 'Add Layout' button from appearing more than once
+     *
+     * @return $this
+     */
+    public function limit($limit = 1)
+    {
+        return $this->withMeta(['limit' => $limit]);
+    }
+
+    /**
      * Set the field's resolver
      *
      * @param  string  $classname
@@ -189,6 +199,8 @@ class Flexible extends Field
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
+        if (!$request->exists($requestAttribute)) return;
+
         $attribute = $attribute ?? $this->attribute;
 
         $this->buildGroups($model, $attribute);

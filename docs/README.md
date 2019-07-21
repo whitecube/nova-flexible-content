@@ -67,8 +67,17 @@ You can change the default "Add layout" button's text like so:
 Flexible::make('Content')
     ->button('Add something amazing!');
 ```
-
 ![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/add_something_amazing.png)
+
+#### Limiting layouts
+
+You can limit how many times the "Add Layout" button will appear by doing the following
+
+```php
+Flexible::make('Content')->limit(2);
+```
+
+You can specify any integer, or no integer at all; in that case it will default to 1.
 
 ## Custom Layout Classes
 
