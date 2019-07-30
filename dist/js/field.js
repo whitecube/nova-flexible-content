@@ -11255,7 +11255,7 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              this.limitCounter != 0
+              !_vm.field.populate && this.limitCounter != 0
                 ? _c(
                     "button",
                     {
