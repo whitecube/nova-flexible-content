@@ -194,7 +194,7 @@ public function fields(Request $request)
 }
 ```
 
-![Example of Populate all layouts](https://github.com/whitecube/nova-flexible-content/raw/master/populate.PNG)
+![Example of Populate all layouts](https://raw.githubusercontent.com/yassir3wad/nova-flexible-content/master/populate.PNG)
 
 ## Contributing
 
