@@ -150,6 +150,72 @@ By default, the field takes advantage of a **JSON column** on your model's table
 
 Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
+## Fields validation
+
+You can perform validation using the `afterValidation*` resource's methods. Make sure your resource use the `ValidateFlexible` trait.
+
+```php
+<?php
+
+namespace App\Nova;
+
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
+use Whitecube\NovaFlexibleContent\ValidateFlexible;
+
+class MyResource extends Resources
+{
+    use ValidateFlexible;
+    
+    /**
+     * Get the fields displayed by the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function fields(Request $request)
+    {
+        return [
+            // ...
+            
+            Flexible::make('Content')
+                ->addLayout('Simple content section', 'wysiwyg', [
+                    Text::make('Title')
+                        ->rules('required'),
+                    Text::make('Slug')
+                        ->creationRules('string','max:255','unique:table,slug')
+                        ->updateRules('unique:table,slug,{{resourceId}}'),
+                ])
+        ];
+    }
+    
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterValidation(NovaRequest $request, $validator)
+    {
+        static::validateFlexibleFields($request, $validator);
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterCreationValidation(NovaRequest $request, $validator)
+    {
+        static::validateFlexibleFieldsForCreation($request, $validator);
+    }
+
+    /**
+     * {inheritDoc}
+     */
+    protected static function afterUpdateValidation(NovaRequest $request, $validator)
+    {
+        static::validateFlexibleFieldsForUpdate($request, $validator);
+    }
+}
+```
+
 ### Usage with nova-page
 
 Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! First of all create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.
