@@ -140,7 +140,9 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
      */
     public function getResolved()
     {
-        return $this->resolve($this->getAttributes());
+        $this->resolve();
+
+        return $this->getResolvedValue();
     }
 
     /**
@@ -175,15 +177,25 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
     /**
      * Resolve fields using given attributes
      *
-     * @param  array  $attributes
+     * @param  boolean $empty
      * @return void
      */
-    public function resolve(array $attributes = [])
+    public function resolve($empty = false)
     {
-        $this->fields->each(function($field) use ($attributes) {
-            $field->resolve($attributes);
+        $this->fields->each(function($field) use ($empty) {
+            $field->resolve($empty ? [] : $this);
         });
+    }
 
+    /**
+     * Get the layout's resolved representation. Best used
+     * after a resolve() call
+     *
+     * @param  boolean $empty
+     * @return void
+     */
+    public function getResolvedValue()
+    {
         return [
             'layout' => $this->name,
 
@@ -275,8 +287,8 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
      */
     public function jsonSerialize()
     {
-        // Calling an empty "resolve" call first in order to empty all fields
-        $this->resolve();
+        // Calling an empty "resolve" first in order to empty all fields
+        $this->resolve(true);
 
         return [
             'name' => $this->name,
