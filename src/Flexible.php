@@ -55,6 +55,8 @@ class Flexible extends Field
         parent::__construct($name, $attribute, $resolveCallback);
 
         $this->button('Add layout');
+
+        $this->hideFromIndex();
     }
 
     /**
