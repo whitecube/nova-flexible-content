@@ -114,7 +114,7 @@ export default {
                 this.files = {...this.files, ...group.files};
             }
 
-            formData.append(this.field.attribute, JSON.stringify(this.value));
+            formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
             for(let file in this.files) {

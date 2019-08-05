@@ -208,6 +208,11 @@ class Flexible extends Field
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
+        if(is_null($request[$requestAttribute])) {
+            $this->groups = collect();
+            return;
+        }
+
         $raw = json_decode($request[$requestAttribute]);
 
         if(!is_array($raw)) {
