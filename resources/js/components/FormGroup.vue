@@ -1,12 +1,12 @@
 <template>
     <div class="relative bg-white pl-8 mb-4" :id="group.key">
         <div class="w-full">
-            <div class="border-t border-r border-60 rounded-tr-lg">
+            <div :class="titleStyle" v-if="group.title">
                 <div class="border-b border-40 leading-normal py-2 px-8">
                     <p class="text-80">{{ group.title }}</p>
                 </div>
             </div>
-            <div class="border-b border-r border-l border-60 rounded-b-lg">
+            <div :class="containerStyle">
                 <component
                     v-for="(item, index) in group.fields"
                     :key="index"
@@ -41,6 +41,20 @@ export default {
     mixins: [BehavesAsPanel],
 
     props: ['validationErrors', 'group'],
+
+    computed: {
+        titleStyle() {
+            return ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
+        },
+        containerStyle() {
+            let classes = ['border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
+            if(!this.group.title) {
+                classes.push('border-t');
+                classes.push('rounded-tr-lg');
+            }
+            return classes;
+        }
+    },
 
     methods: {
         /**
