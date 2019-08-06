@@ -79,7 +79,7 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
-        $this->setRawAttributes($attributes);
+        $this->setRawAttributes($this->cleanAttributes($attributes));
     }
 
     /**
@@ -251,6 +251,22 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
     }
 
     /**
+     * Transform empty attribute values to null
+     *
+     * @param  array $attributes
+     * @return array
+     */
+    protected function cleanAttributes($attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            if(!is_string($value) || strlen($value)) continue;
+            $attributes[$key] = null;
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Get the attributes that should be converted to dates.
      *
      * @return array
@@ -258,6 +274,16 @@ class Layout implements LayoutInterface, JsonSerializable, Arrayable
     protected function getDates()
     {
         return $this->dates ?? [];
+    }
+
+    /**
+     * Get the format for database stored dates.
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->dateFormat ?: 'Y-m-d H:i:s';
     }
 
     /**
