@@ -3557,6 +3557,15 @@ exports.default = {
     handleChange: function handleChange(value) {
       this.value = value;
     }
+  },
+
+  computed: {
+    /**
+     * Determine if the field is in readonly mode
+     */
+    isReadonly: function isReadonly() {
+      return this.field.readonly || _.get(this.field, 'extraAttributes.readonly');
+    }
   }
 };
 
@@ -3614,7 +3623,7 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _regenerator = __webpack_require__(50);
@@ -3632,98 +3641,108 @@ var _cardSizes2 = _interopRequireDefault(_cardSizes);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-  props: {
-    loadCards: {
-      type: Boolean,
-      default: true
-    }
-  },
+    props: {
+        loadCards: {
+            type: Boolean,
+            default: true
+        }
+    },
 
-  data: function data() {
-    return { cards: [] };
-  },
+    data: function data() {
+        return { cards: [] };
+    },
 
-  /**
-   * Fetch all of the metrics panels for this view
-   */
-  created: function created() {
-    this.fetchCards();
-  },
+    /**
+     * Fetch all of the metrics panels for this view
+     */
+    created: function created() {
+        this.fetchCards();
+    },
 
 
-  watch: {
-    cardsEndpoint: function cardsEndpoint() {
-      this.fetchCards();
-    }
-  },
+    watch: {
+        cardsEndpoint: function cardsEndpoint() {
+            this.fetchCards();
+        }
+    },
 
-  methods: {
-    fetchCards: function () {
-      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
-        var _ref2, cards;
+    methods: {
+        fetchCards: function () {
+            var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+                var _ref2, cards;
 
-        return _regenerator2.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                if (!this.loadCards) {
-                  _context.next = 6;
-                  break;
-                }
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                    while (1) {
+                        switch (_context.prev = _context.next) {
+                            case 0:
+                                if (!this.loadCards) {
+                                    _context.next = 6;
+                                    break;
+                                }
 
-                _context.next = 3;
-                return Nova.request().get(this.cardsEndpoint);
+                                _context.next = 3;
+                                return Nova.request().get(this.cardsEndpoint, {
+                                    params: this.extraCardParams
+                                });
 
-              case 3:
-                _ref2 = _context.sent;
-                cards = _ref2.data;
+                            case 3:
+                                _ref2 = _context.sent;
+                                cards = _ref2.data;
 
-                this.cards = cards;
+                                this.cards = cards;
 
-              case 6:
-              case 'end':
-                return _context.stop();
+                            case 6:
+                            case 'end':
+                                return _context.stop();
+                        }
+                    }
+                }, _callee, this);
+            }));
+
+            function fetchCards() {
+                return _ref.apply(this, arguments);
             }
-          }
-        }, _callee, this);
-      }));
 
-      function fetchCards() {
-        return _ref.apply(this, arguments);
-      }
-
-      return fetchCards;
-    }()
-  },
-
-  computed: {
-    /**
-     * Determine whether we have cards to show on the Dashboard
-     */
-    shouldShowCards: function shouldShowCards() {
-      return this.cards.length > 0;
+            return fetchCards;
+        }()
     },
 
-
-    /**
-     * Return the small cards used for the Dashboard
-     */
-    smallCards: function smallCards() {
-      return _.filter(this.cards, function (c) {
-        return _cardSizes2.default.indexOf(c.width) !== -1;
-      });
-    },
+    computed: {
+        /**
+         * Determine whether we have cards to show on the Dashboard
+         */
+        shouldShowCards: function shouldShowCards() {
+            return this.cards.length > 0;
+        },
 
 
-    /**
-     * Return the full-width cards used for the Dashboard
-     */
-    largeCards: function largeCards() {
-      return _.filter(this.cards, function (c) {
-        return c.width == 'full';
-      });
+        /**
+         * Return the small cards used for the Dashboard
+         */
+        smallCards: function smallCards() {
+            return _.filter(this.cards, function (c) {
+                return _cardSizes2.default.indexOf(c.width) !== -1;
+            });
+        },
+
+
+        /**
+         * Return the full-width cards used for the Dashboard
+         */
+        largeCards: function largeCards() {
+            return _.filter(this.cards, function (c) {
+                return c.width == 'full';
+            });
+        },
+
+
+        /**
+         * Get the extra card params to pass to the endpoint.
+         */
+        extraCardParams: function extraCardParams() {
+            return null;
+        }
     }
-  }
 };
 
 /***/ }),
@@ -10967,7 +10986,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     data: function data() {
-        console.log('test');
         return {
             isLayoutsDropdownOpen: false,
             order: [],
@@ -11015,6 +11033,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 this.files = _extends({}, this.files, group.files);
             }
 
+            formData.append('_nova_flexible_content_fields[]', this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads

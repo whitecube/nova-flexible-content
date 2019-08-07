@@ -71,7 +71,6 @@ export default {
     },
 
     data() {
-        console.log('test');
         return {
             isLayoutsDropdownOpen: false,
             order: [],
@@ -116,6 +115,7 @@ export default {
                 this.files = {...this.files, ...group.files};
             }
 
+            formData.append('_nova_flexible_content_fields[]', this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
