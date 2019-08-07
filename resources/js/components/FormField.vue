@@ -71,7 +71,6 @@ export default {
     },
 
     data() {
-        console.log('test');
         return {
             isLayoutsDropdownOpen: false,
             order: [],
