@@ -79,6 +79,19 @@ Flexible::make('Content')->limit(2);
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
 
+#### Layout removal confirmation
+
+You can choose to display a confirmation prompt before a layout is deleted by doing
+
+```php
+Flexible::make('Content')->confirmRemove();
+
+// You can override the text as well
+Flexible::make('Content')->confirmRemove($label = '', $yes = 'Delete', $no = 'Cancel');
+```
+
+![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/confirm_remove.png)
+
 ## Custom Layout Classes
 
 Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.

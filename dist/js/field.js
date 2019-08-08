@@ -11371,7 +11371,7 @@ exports = module.exports = __webpack_require__(17)(false);
 
 
 // module
-exports.push([module.i, "\n.group-control:focus {\n    outline: none;\n}\n.group-control path {\n    fill: #B7CAD6;\n    -webkit-transition: fill 200ms ease-out;\n    transition: fill 200ms ease-out;\n}\n.group-control:hover path {\n    fill: var(--primary);\n}\n.confirm-message{\n    position: absolute;\n    overflow: visible;\n    right: 38px;\n    bottom: 0;\n    width: auto;\n    border-radius: 4px;\n    padding: 6px 7px;\n    border: 1px solid #B7CAD6;\n    fill: var(--20);\n    white-space: nowrap;\n}\n[dir=rtl] .confirm-message{\n    right: auto;\n    left: 35px;\n}\n.confirm-message .text-danger {\n    color: #ee3f22;\n}\n.closebtn {\n    color: #B7CAD6;\n}\n", ""]);
+exports.push([module.i, "\n.group-control:focus {\n    outline: none;\n}\n.group-control path {\n    fill: #B7CAD6;\n    -webkit-transition: fill 200ms ease-out;\n    transition: fill 200ms ease-out;\n}\n.group-control:hover path {\n    fill: var(--primary);\n}\n.confirm-message{\n    position: absolute;\n    overflow: visible;\n    right: 38px;\n    bottom: 0;\n    width: auto;\n    border-radius: 4px;\n    padding: 6px 7px;\n    border: 1px solid #B7CAD6;\n    fill: var(--20);\n    white-space: nowrap;\n}\n[dir=rtl] .confirm-message{\n    right: auto;\n    left: 35px;\n}\n.confirm-message .text-danger {\n    color: #ee3f22;\n}\n.closebtn {\n    /*color: #B7CAD6;*/\n}\n", ""]);
 
 // exports
 
@@ -11995,7 +11995,7 @@ var render = function() {
                 _c(
                   "button",
                   {
-                    staticClass: "text-80 btn closebtn focus:outline-none",
+                    staticClass: "text-80 btn focus:outline-none",
                     on: {
                       click: function($event) {
                         $event.preventDefault()
