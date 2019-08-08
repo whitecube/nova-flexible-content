@@ -10962,6 +10962,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -11033,7 +11034,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 this.files = _extends({}, this.files, group.files);
             }
 
-            formData.append('_nova_flexible_content_fields[]', this.field.attribute);
+            formData.append('___nova_flexible_content_fields[]', this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
@@ -11175,7 +11176,7 @@ var render = function() {
         _vm.order.length > 0
           ? _c(
               "div",
-              _vm._l(_vm.orderedGroups, function(group) {
+              _vm._l(_vm.orderedGroups, function(group, index) {
                 return _c("form-nova-flexible-content-group", {
                   key: group.key,
                   attrs: {
@@ -11183,7 +11184,8 @@ var render = function() {
                     group: group,
                     "resource-name": _vm.resourceName,
                     "resource-id": _vm.resourceId,
-                    resource: _vm.resource
+                    resource: _vm.resource,
+                    errors: _vm.errors
                   },
                   on: {
                     "move-up": function($event) {
@@ -11774,7 +11776,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["BehavesAsPanel"]],
 
-    props: ['validationErrors', 'group', 'field'],
+    props: ['errors', 'group', 'field'],
 
     data: function data() {
         return {
@@ -11880,7 +11882,7 @@ var render = function() {
                 "resource-id": _vm.resourceId,
                 resource: _vm.resource,
                 field: item,
-                errors: _vm.validationErrors
+                errors: _vm.errors
               }
             })
           }),

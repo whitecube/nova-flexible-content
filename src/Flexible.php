@@ -5,6 +5,7 @@ namespace Whitecube\NovaFlexibleContent;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
 use Whitecube\NovaFlexibleContent\Layouts\Preset;
@@ -48,6 +49,13 @@ class Flexible extends Field
      * @var array
      */
     protected $validation = [];
+
+    /**
+     * All the validated attributes
+     *
+     * @var array
+     */
+    protected static $validatedKeys = [];
 
     /**
      * Create a fresh flexible field instance
@@ -406,5 +414,35 @@ class Flexible extends Field
                 })
                 ->collapse()
                 ->all();
+    }
+
+    /**
+     * Add validation keys to the valdiatedKeys register, which will be
+     * used for transforming validation errors later in the request cycle.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  null|string $specificty
+     * @return array
+     */
+    public static function registerValidationKeys(array $keys, $group, $attribute)
+    {
+        static::$validatedKeys = array_merge(
+            static::$validatedKeys,
+            array_reduce($keys, function($carry, $key) use ($group, $attribute) {
+                $carry[$key] = FlexibleAttribute::make($attribute, $group);
+                return $carry;
+            }, [])
+        );
+    }
+
+    /**
+     * Return a previously registered validation key
+     *
+     * @param  string $key
+     * @return null|\Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public static function getValidationKey($key)
+    {
+        return static::$validatedKeys[$key] ?? null;
     }
 }

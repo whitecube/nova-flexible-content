@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
+use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
@@ -124,6 +125,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Retrieve the key currently in use in the views
+     *
+     * @return string
+     */
+    public function inUseKey()
+    {
+        return $this->_key ?? $this->key();
+    }
+
+    /**
      * Check if this group matches the given key
      *
      * @param string $key
@@ -204,7 +215,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             // field resolving because we need to keep track of the current
             // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
-            'key' => $this->_key ?? $this->key,
+            'key' => $this->inUseKey(),
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple
@@ -239,10 +250,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function generateRules(ScopedRequest $request, $specificty = null, $key = '')
     {
         return  $this->fields->map(function($field) use ($request, $specificty, $key) {
-                    return $this->getScopedFieldRules($field, $request, $specificty, $key);
+                    $rules = $this->getScopedFieldRules($field, $request, $specificty, $key);
+
+                    Flexible::registerValidationKeys(array_keys($rules), $this->inUseKey(), $field->attribute);
+                    
+                    return $rules;
                 })
                 ->collapse()
-                ->filter()
                 ->all();
     }
 
@@ -263,6 +277,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
                 ->mapWithKeys(function($rules, $attribute) use ($key) {
                     return [$key . '.attributes.' . $attribute => $rules ?: null];
                 })
+                ->filter()
                 ->all();
     }
 

@@ -15,7 +15,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :field="item"
-                    :errors="validationErrors"
+                    :errors="errors"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
                 />
             </div>
@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import { BehavesAsPanel } from 'laravel-nova'
+import { BehavesAsPanel } from 'laravel-nova';
 
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['validationErrors', 'group', 'field'],
+    props: ['errors', 'group', 'field'],
 
     data() {
         return {

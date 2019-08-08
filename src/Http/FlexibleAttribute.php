@@ -9,7 +9,7 @@ class FlexibleAttribute
      *
      * @var string
      */
-    const REGISTER = '_nova_flexible_content_fields';
+    const REGISTER = '___nova_flexible_content_fields';
 
     /**
      * The string between the group identifier 

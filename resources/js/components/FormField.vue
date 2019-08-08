@@ -4,13 +4,14 @@
 
             <div v-if="order.length > 0">
                 <form-nova-flexible-content-group
-                    v-for="group in orderedGroups"
+                    v-for="group,index in orderedGroups"
                     :key="group.key"
                     :field="field"
                     :group="group"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
+                    :errors="errors"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -115,7 +116,7 @@ export default {
                 this.files = {...this.files, ...group.files};
             }
 
-            formData.append('_nova_flexible_content_fields[]', this.field.attribute);
+            formData.append('___nova_flexible_content_fields[]', this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads

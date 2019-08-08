@@ -6,11 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
+use Whitecube\NovaFlexibleContent\Http\TransformsFlexibleErrors;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 
 class InterceptFlexibleAttributes
 {
     use ParsesFlexibleAttributes;
+    use TransformsFlexibleErrors;
 
     /**
      * Handle the given request and get the response.
@@ -24,6 +26,8 @@ class InterceptFlexibleAttributes
         if($this->requestHasParsableFlexibleInputs($request)) {
             $request->merge($this->getParsedFlexibleInputs($request));
             $request->request->remove(FlexibleAttribute::REGISTER);
+
+            return $this->transformFlexibleErrors($next($request));
         }
 
         return $next($request);
