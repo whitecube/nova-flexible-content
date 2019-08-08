@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 
-class ParseFlexibleAttributes
+class InterceptFlexibleAttributes
 {
     use ParsesFlexibleAttributes;
 

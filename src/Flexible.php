@@ -4,7 +4,6 @@ namespace Whitecube\NovaFlexibleContent;
 
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Illuminate\Support\Collection;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
@@ -401,7 +400,7 @@ class Flexible extends Field
                     $group = $this->newGroup($item['layout'], $item['key']);
 
                     if(!$group) return [];
-                    
+
                     $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
                     return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
                 })
