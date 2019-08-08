@@ -229,6 +229,44 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Get validation rules for fields concerned by given request
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  null|string $specificty
+     * @param  string $key
+     * @return array
+     */
+    public function generateRules(ScopedRequest $request, $specificty = null, $key = '')
+    {
+        return $this->fields->map(function($field) use ($request, $specificty, $key) {
+            return $this->getScopedFieldRules($field, $request, $specificty, $key);
+        })
+        ->collapse()
+        ->filter()
+        ->all();
+    }
+
+    /**
+     * Transform given field's rules attributes
+     *
+     * @param  \Laravel\Nova\Fields\Field $field
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  null|string $specificty
+     * @param  string $key
+     * @return array
+     */
+    public function getScopedFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
+    {
+        $method = 'get' . ucfirst($specificty) . 'Rules';
+        
+        return collect(call_user_func([$field, $method], $request))
+            ->mapWithKeys(function($rules, $attribute) use ($key) {
+                return [$key . '.attributes.' . $attribute => $rules ?: null];
+            })
+            ->all();
+    }
+
+    /**
      * Dynamically retrieve attributes on the layout.
      *
      * @param  string  $key

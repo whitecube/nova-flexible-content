@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent;
 
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Collection;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
@@ -41,6 +42,13 @@ class Flexible extends Field
      * @var Whitecube\NovaFlexibleContent\Value\ResolverInterface
      */
     protected $resolver;
+
+    /**
+     * The field's computed validation rules
+     *
+     * @var array
+     */
+    protected $validation = [];
 
     /**
      * Create a fresh flexible field instance
@@ -223,15 +231,9 @@ class Flexible extends Field
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
-        if(is_null($request[$requestAttribute])) {
+        if(!($raw = $this->extractValue($request, $requestAttribute))) {
             $this->groups = collect();
             return;
-        }
-
-        $raw = $request[$requestAttribute];
-
-        if(!is_array($raw)) {
-            throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
         }
 
         $this->groups = collect($raw)->map(function($item, $key) use ($request) {
@@ -247,6 +249,26 @@ class Flexible extends Field
 
             return $group;
         });
+    }
+
+    /**
+     * Find the flexible's value in given request
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $attribute
+     * @return null|array
+     */
+    protected function extractValue(NovaRequest $request, $attribute)
+    {
+        $value = $request[$attribute];
+
+        if(!$value) return;
+
+        if(!is_array($value)) {
+            throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
+        }
+
+        return $value;
     }
 
     /**
@@ -306,5 +328,85 @@ class Flexible extends Field
         if(!$layout) return;
 
         return $layout->duplicate($key);
+    }
+
+    /**
+     * Get the validation rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getRules(NovaRequest $request)
+    {
+        if (isset($this->validation['rules'])) {
+            return $this->validation['rules'];
+        }
+
+        return $this->validation['rules'] = array_merge_recursive(
+            parent::getRules($request),
+            $this->generateRules($request)
+        );
+    }
+
+    /**
+     * Get the creation rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array|string
+     */
+    public function getCreationRules(NovaRequest $request)
+    {
+        if (isset($this->validation['creationRules'])) {
+            return $this->validation['creationRules'];
+        }
+
+        return $this->validation['creationRules'] = array_merge_recursive(
+            parent::getCreationRules($request),
+            $this->generateRules($request, 'creation')
+        );
+    }
+
+    /**
+     * Get the update rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getUpdateRules(NovaRequest $request)
+    {
+        if (isset($this->validation['updateRules'])) {
+            return $this->validation['updateRules'];
+        }
+
+        return $this->validation['updateRules'] = array_merge_recursive(
+            parent::getUpdateRules($request),
+            $this->generateRules($request, 'update')
+        );
+    }
+
+    /**
+     * Retrieve contained fields rules and assign them to nested array attributes
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  null|string $specificty
+     * @return array
+     */
+    protected function generateRules(NovaRequest $request, $specificty = null)
+    {
+        if(!($value = $this->extractValue($request, $this->attribute))) {
+            return [];
+        }
+
+        return collect($value)->map(function ($item, $key) use ($request, $specificty) {
+            $group = $this->newGroup($item['layout'], $item['key']);
+
+            if(!$group) return [];
+
+            $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
+
+            return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
+        })
+        ->collapse()
+        ->all();
     }
 }
