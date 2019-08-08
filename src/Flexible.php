@@ -228,16 +228,16 @@ class Flexible extends Field
             return;
         }
 
-        $raw = json_decode($request[$requestAttribute]);
+        $raw = $request[$requestAttribute];
 
         if(!is_array($raw)) {
             throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
         }
 
         $this->groups = collect($raw)->map(function($item, $key) use ($request) {
-            $layout = $item->layout;
-            $key = $item->key;
-            $attributes = (array) $item->attributes;
+            $layout = $item['layout'];
+            $key = $item['key'];
+            $attributes = $item['attributes'];
 
             $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
 
