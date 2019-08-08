@@ -56,7 +56,7 @@ trait ParsesFlexibleAttributes
     protected function getParsedFlexibleValue($value)
     {
         if(is_string($value)) {
-            $raw = json_decode($value, JSON_OBJECT_AS_ARRAY);
+            $raw = json_decode($value, true);
         } else {
             $raw = $value;
         }

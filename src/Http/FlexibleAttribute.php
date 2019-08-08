@@ -20,6 +20,13 @@ class FlexibleAttribute
     const GROUP_SEPARATOR = '__';
 
     /**
+     * The string that identifies an "upload" value
+     *
+     * @var string
+     */
+    const FILE_INDICATOR = '___upload-';
+
+    /**
      * The original attribute name
      *
      * @var string
@@ -48,7 +55,7 @@ class FlexibleAttribute
     public $key;
 
     /**
-     * Create
+     * Create a new attribute instance
      *
      * @param  string $original
      * @param  mixed $group
@@ -63,6 +70,23 @@ class FlexibleAttribute
     }
 
     /**
+     * Build an attribute from its components
+     *
+     * @param  string $name
+     * @param  string $group
+     * @param  mixed $key
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public static function make($name, $group = null, $key = null)
+    {
+        $original = $group ? $group . static::GROUP_SEPARATOR : '';
+        $original .= $name;
+        $original .= $key ? '[' . ($key !== true ? $key : '') . ']' : '';
+
+        return new static($original, $group);
+    }
+
+    /**
      * Check if attribute is a flexible fields register
      *
      * @return bool
@@ -70,6 +94,21 @@ class FlexibleAttribute
     public function isFlexibleFieldsRegister()
     {
         return $this->name === static::REGISTER;
+    }
+
+    /**
+     * Check if attribute and value match a probable file
+     *
+     * @param mixed $value
+     * @return bool
+     */
+    public function isFlexibleFile($value)
+    {
+        if(!$value || !is_string($value)) {
+            return false;
+        }
+
+        return $value === static::FILE_INDICATOR . $this->original;
     }
 
     /**
@@ -94,7 +133,7 @@ class FlexibleAttribute
         if(!$group) {
             return;
         }
-        
+
         $group = strval($group);
 
         if(strpos($this->original, $group . static::GROUP_SEPARATOR) !== false) {
