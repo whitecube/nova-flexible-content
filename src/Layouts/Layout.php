@@ -238,12 +238,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     public function generateRules(ScopedRequest $request, $specificty = null, $key = '')
     {
-        return $this->fields->map(function($field) use ($request, $specificty, $key) {
-            return $this->getScopedFieldRules($field, $request, $specificty, $key);
-        })
-        ->collapse()
-        ->filter()
-        ->all();
+        return  $this->fields->map(function($field) use ($request, $specificty, $key) {
+                    return $this->getScopedFieldRules($field, $request, $specificty, $key);
+                })
+                ->collapse()
+                ->filter()
+                ->all();
     }
 
     /**
@@ -259,11 +259,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     {
         $method = 'get' . ucfirst($specificty) . 'Rules';
         
-        return collect(call_user_func([$field, $method], $request))
-            ->mapWithKeys(function($rules, $attribute) use ($key) {
-                return [$key . '.attributes.' . $attribute => $rules ?: null];
-            })
-            ->all();
+        return  collect(call_user_func([$field, $method], $request))
+                ->mapWithKeys(function($rules, $attribute) use ($key) {
+                    return [$key . '.attributes.' . $attribute => $rules ?: null];
+                })
+                ->all();
     }
 
     /**

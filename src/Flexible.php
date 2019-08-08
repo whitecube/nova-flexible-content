@@ -397,16 +397,15 @@ class Flexible extends Field
             return [];
         }
 
-        return collect($value)->map(function ($item, $key) use ($request, $specificty) {
-            $group = $this->newGroup($item['layout'], $item['key']);
+        return  collect($value)->map(function ($item, $key) use ($request, $specificty) {
+                    $group = $this->newGroup($item['layout'], $item['key']);
 
-            if(!$group) return [];
-
-            $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
-
-            return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
-        })
-        ->collapse()
-        ->all();
+                    if(!$group) return [];
+                    
+                    $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
+                    return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
+                })
+                ->collapse()
+                ->all();
     }
 }
