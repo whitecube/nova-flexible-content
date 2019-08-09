@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent;
 
+use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
@@ -42,13 +43,6 @@ class Flexible extends Field
      * @var Whitecube\NovaFlexibleContent\Value\ResolverInterface
      */
     protected $resolver;
-
-    /**
-     * The field's computed validation rules
-     *
-     * @var array
-     */
-    protected $validation = [];
 
     /**
      * All the validated attributes
@@ -345,14 +339,7 @@ class Flexible extends Field
      */
     public function getRules(NovaRequest $request)
     {
-        if (isset($this->validation['rules'])) {
-            return $this->validation['rules'];
-        }
-
-        return $this->validation['rules'] = array_merge_recursive(
-            parent::getRules($request),
-            $this->generateRules($request)
-        );
+        return parent::getRules($request);
     }
 
     /**
@@ -363,13 +350,9 @@ class Flexible extends Field
      */
     public function getCreationRules(NovaRequest $request)
     {
-        if (isset($this->validation['creationRules'])) {
-            return $this->validation['creationRules'];
-        }
-
-        return $this->validation['creationRules'] = array_merge_recursive(
+        return array_merge_recursive(
             parent::getCreationRules($request),
-            $this->generateRules($request, 'creation')
+            $this->getFlexibleRules($request, 'creation')
         );
     }
 
@@ -381,13 +364,9 @@ class Flexible extends Field
      */
     public function getUpdateRules(NovaRequest $request)
     {
-        if (isset($this->validation['updateRules'])) {
-            return $this->validation['updateRules'];
-        }
-
-        return $this->validation['updateRules'] = array_merge_recursive(
+        return array_merge_recursive(
             parent::getUpdateRules($request),
-            $this->generateRules($request, 'update')
+            $this->getFlexibleRules($request, 'update')
         );
     }
 
@@ -395,16 +374,44 @@ class Flexible extends Field
      * Retrieve contained fields rules and assign them to nested array attributes
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  null|string $specificty
+     * @param  string $specificty
      * @return array
      */
-    protected function generateRules(NovaRequest $request, $specificty = null)
+    protected function getFlexibleRules(NovaRequest $request, $specificty)
     {
         if(!($value = $this->extractValue($request, $this->attribute))) {
             return [];
         }
 
-        return  collect($value)->map(function ($item, $key) use ($request, $specificty) {
+        $rules = $this->generateRules($request, $value, $specificty);
+
+        if(!is_a($request, ScopedRequest::class)) {
+            // We're not in a nested flexible, meaning we're
+            // assuming the field is located at the root of
+            // the model's attributes. Therefore, we should now
+            // register all the collected validation rules for later
+            // reference (see Http\TransformsFlexibleErrors).
+            static::registerValidationKeys($rules);
+
+            // Then, transform the rules into an array that's actually 
+            // usable by Laravel's Validator.
+            $rules = $this->getCleanedRules($rules);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Format all contained fields rules and return them.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  array $value
+     * @param  string $specificty
+     * @return array
+     */
+    protected function generateRules(NovaRequest $request, $value, $specificty)
+    {
+        return collect($value)->map(function ($item, $key) use ($request, $specificty) {
                     $group = $this->newGroup($item['layout'], $item['key']);
 
                     if(!$group) return [];
@@ -417,23 +424,33 @@ class Flexible extends Field
     }
 
     /**
+     * Transform Flexible rules array into an actual validator rules array
+     *
+     * @param  array $rules
+     * @return array
+     */
+    protected function getCleanedRules(array $rules)
+    {
+        return array_map(function($field) {
+            return $field['rules'];
+        }, $rules);
+    }
+
+    /**
      * Add validation keys to the valdiatedKeys register, which will be
      * used for transforming validation errors later in the request cycle.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  null|string $specificty
-     * @return array
+     * @param  array $rules
+     * @return void
      */
-    public static function registerValidationKeys(array $keys, $group, $attribute)
+    protected static function registerValidationKeys(array $rules)
     {
-        $validatedKeys = array_reduce($keys, function($carry, $key) use ($group, $attribute) {
-            $carry[$key] = FlexibleAttribute::make($attribute, $group);
-            return $carry;
-        }, []);
+        $validatedKeys = array_map(function($field) {
+            return $field['attribute'];
+        }, $rules);
 
         static::$validatedKeys = array_merge(
-            static::$validatedKeys,
-            $validatedKeys
+            static::$validatedKeys, $validatedKeys
         );
     }
 

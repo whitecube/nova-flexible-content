@@ -4,8 +4,8 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
-use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
@@ -243,14 +243,14 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get validation rules for fields concerned by given request
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  null|string $specificty
+     * @param  string $specificty
      * @param  string $key
      * @return array
      */
-    public function generateRules(ScopedRequest $request, $specificty = null, $key = '')
+    public function generateRules(ScopedRequest $request, $specificty, $key)
     {
         return  $this->fields->map(function($field) use ($request, $specificty, $key) {
-                    return $this->getFieldRules($field, $request, $specificty, $key);
+                    return $this->getScopedFieldRules($field, $request, $specificty, $key);
                 })
                 ->collapse()
                 ->all();
@@ -260,43 +260,46 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get validation rules for fields concerned by given request
      *
      * @param  \Laravel\Nova\Fields\Field $field
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @param  null|string $specificty
-     * @param  string $key
-     * @return array
-     */
-    protected function getFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
-    {
-        $rules = $this->getScopedFieldRules($field, $request, $specificty, $key);
-
-        Flexible::registerValidationKeys(
-            array_keys($rules),
-            $this->inUseKey(),
-            $field->attribute
-        );
-        
-        return $rules;
-    }
-
-    /**
-     * Transform given field's rules attributes
-     *
-     * @param  \Laravel\Nova\Fields\Field $field
      * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
      * @param  null|string $specificty
      * @param  string $key
      * @return array
      */
-    protected function getScopedFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
+    protected function getScopedFieldRules($field, ScopedRequest $request, $specificty, $key)
     {
         $method = 'get' . ucfirst($specificty) . 'Rules';
+
+        $rules = call_user_func([$field, $method], $request);
         
-        return  collect(call_user_func([$field, $method], $request))
-                ->mapWithKeys(function($rules, $attribute) use ($key) {
-                    return [$key . '.attributes.' . $attribute => $rules ?: null];
+        return  collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field) {
+                    $key = $key . '.attributes.' . $attribute;
+                    return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
                 })
                 ->filter()
                 ->all();
+    }
+
+    /**
+     * Wrap the rules in an array containing field information for later use
+     *
+     * @param  \Laravel\Nova\Fields\Field $field
+     * @param  array $rules
+     * @return null|array
+     */
+    protected function wrapScopedFieldRules($field, array $rules)
+    {
+        if(!$rules) {
+            return;
+        }
+
+        if(is_a($rules['attribute'] ?? null, FlexibleAttribute::class)) {
+            return $rules;
+        }
+
+        return [
+            'attribute' => FlexibleAttribute::make($field->attribute, $this->inUseKey()),
+            'rules' => $rules,
+        ];
     }
 
     /**
