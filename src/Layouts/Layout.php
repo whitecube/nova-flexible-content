@@ -250,14 +250,32 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function generateRules(ScopedRequest $request, $specificty = null, $key = '')
     {
         return  $this->fields->map(function($field) use ($request, $specificty, $key) {
-                    $rules = $this->getScopedFieldRules($field, $request, $specificty, $key);
-
-                    Flexible::registerValidationKeys(array_keys($rules), $this->inUseKey(), $field->attribute);
-                    
-                    return $rules;
+                    return $this->getFieldRules($field, $request, $specificty, $key);
                 })
                 ->collapse()
                 ->all();
+    }
+
+    /**
+     * Get validation rules for fields concerned by given request
+     *
+     * @param  \Laravel\Nova\Fields\Field $field
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  null|string $specificty
+     * @param  string $key
+     * @return array
+     */
+    protected function getFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
+    {
+        $rules = $this->getScopedFieldRules($field, $request, $specificty, $key);
+
+        Flexible::registerValidationKeys(
+            array_keys($rules),
+            $this->inUseKey(),
+            $field->attribute
+        );
+        
+        return $rules;
     }
 
     /**
@@ -269,7 +287,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  string $key
      * @return array
      */
-    public function getScopedFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
+    protected function getScopedFieldRules($field, ScopedRequest $request, $specificty = null, $key = '')
     {
         $method = 'get' . ucfirst($specificty) . 'Rules';
         

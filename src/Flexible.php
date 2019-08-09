@@ -426,12 +426,14 @@ class Flexible extends Field
      */
     public static function registerValidationKeys(array $keys, $group, $attribute)
     {
+        $validatedKeys = array_reduce($keys, function($carry, $key) use ($group, $attribute) {
+            $carry[$key] = FlexibleAttribute::make($attribute, $group);
+            return $carry;
+        }, []);
+
         static::$validatedKeys = array_merge(
             static::$validatedKeys,
-            array_reduce($keys, function($carry, $key) use ($group, $attribute) {
-                $carry[$key] = FlexibleAttribute::make($attribute, $group);
-                return $carry;
-            }, [])
+            $validatedKeys
         );
     }
 
