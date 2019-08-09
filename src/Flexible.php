@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
 use Whitecube\NovaFlexibleContent\Layouts\Preset;
