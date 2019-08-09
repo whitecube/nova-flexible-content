@@ -15,6 +15,7 @@
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
+                    :canRemove="canRemove"
                 />
             </div>
 
@@ -40,7 +41,7 @@
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative"
                     @click="toggleLayoutsDropdownOrAddDefault"
-                    v-if="this.limitCounter != 0"
+                    v-if="!field.populate && this.limitCounter != 0"
                 >
                     <span>{{ field.button }}</span>
                 </button>
@@ -68,6 +69,9 @@ export default {
                 groups.push(this.groups[key]);
                 return groups;
             }, []);
+        },
+        canRemove() {
+            return !this.field.populate;
         }
     },
 

@@ -12,6 +12,7 @@ use Whitecube\NovaFlexibleContent\Layouts\Preset;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
+use Illuminate\Support\Str;
 
 class Flexible extends Field
 {
@@ -56,6 +57,8 @@ class Flexible extends Field
      * @var array
      */
     protected static $validatedKeys = [];
+
+    protected $populate;
 
     /**
      * Create a fresh flexible field instance
@@ -305,7 +308,9 @@ class Flexible extends Field
             $this->resolver(Resolver::class);
         }
 
-        return $this->groups = $this->resolver->get($resource, $attribute, $this->layouts);
+        $this->groups = $this->resolver->get($resource, $attribute, $this->layouts);
+
+        return $this->doPopulate();
     }
 
     /**
@@ -445,5 +450,26 @@ class Flexible extends Field
     {
         return static::$validatedKeys[$key] ?? null;
     }
-    
+
+    public function populate()
+    {
+        $this->withMeta(['populate' => true]);
+        $this->populate = true;
+        return $this;
+    }
+
+    public function doPopulate()
+    {
+        if (!$this->populate)
+            return $this->groups;
+        $groups = $this->groups->map(function (Layout $layout) {
+            return $layout->name();
+        })->toArray();
+        $layouts = $this->layouts->reject(function (Layout $layout) use ($groups) {
+            return in_array($layout->name(), $groups);
+        })->map(function ($layout) {
+            return $layout->duplicate(Str::random(10));
+        });
+        return $this->groups = $this->groups->merge($layouts);
+    }
 }

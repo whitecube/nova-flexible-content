@@ -169,7 +169,28 @@ class Home extends Template
     // ...
 }
 ```
-
+### Populate all layouts
+If you want to populate all layouts once to fill all layouts and prevent delete or add any layout use `populate()`:
+```php
+use Whitecube\NovaFlexibleContent\Flexible;
+ public function fields(Request $request)
+{
+    return [
+        // ...
+         Flexible::make('Content')
+            ->addLayout('Simple content section', 'wysiwyg', [
+                Text::make('Title'),
+                Markdown::make('Content')
+            ])
+            ->addLayout('Video section', 'video', [
+                Text::make('Title'),
+                Text::make('Video Caption', 'caption')
+            ])
+            ->populate();
+    ];
+}
+```
+![Example of Populate all layouts](https://raw.githubusercontent.com/yassir3wad/nova-flexible-content/populate/populate.PNG)
 ## Contributing
 
 Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made and we would be very happy to merge useful pull requests.
