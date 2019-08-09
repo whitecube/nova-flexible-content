@@ -4,7 +4,7 @@
 
             <div v-if="order.length > 0">
                 <form-nova-flexible-content-group
-                    v-for="group,index in orderedGroups"
+                    v-for="group in orderedGroups"
                     :key="group.key"
                     :field="field"
                     :group="group"

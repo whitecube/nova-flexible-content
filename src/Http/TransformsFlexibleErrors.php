@@ -2,7 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent\Http;
 
-use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Flexible;
@@ -77,7 +77,15 @@ trait TransformsFlexibleErrors
      */
     protected function transformMessages($messages, $key, $attribute)
     {
-        // TODO
-        return $messages;
+        $search = str_replace('_', ' ', Str::snake($key));
+        $attribute = str_replace('_', ' ', Str::snake($attribute->name));
+
+        return array_map(function($message) use ($search, $attribute) {
+            return str_replace(
+                [$search, Str::upper($search), Str::ucfirst($search)], 
+                [$attribute, Str::upper($attribute), Str::ucfirst($attribute)],
+                $message
+            );
+        }, $messages);
     }
 }
