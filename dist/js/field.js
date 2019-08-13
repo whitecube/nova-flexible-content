@@ -11034,13 +11034,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 this.files = _extends({}, this.files, group.files);
             }
 
-            formData.append('___nova_flexible_content_fields[]', this.field.attribute);
+            this.appendFieldAttribute(formData, this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
             for (var file in this.files) {
                 formData.append(file, this.files[file]);
             }
+        },
+
+
+        /**
+         * Register given field attribute into the parsable flexible fields register
+         */
+        appendFieldAttribute: function appendFieldAttribute(formData, attribute) {
+            var registered = [];
+
+            if (formData.has('___nova_flexible_content_fields')) {
+                registered = JSON.parse(formData.get('___nova_flexible_content_fields'));
+            }
+
+            registered.push(attribute);
+
+            formData.set('___nova_flexible_content_fields', JSON.stringify(registered));
         },
 
 
@@ -11176,7 +11192,7 @@ var render = function() {
         _vm.order.length > 0
           ? _c(
               "div",
-              _vm._l(_vm.orderedGroups, function(group, index) {
+              _vm._l(_vm.orderedGroups, function(group) {
                 return _c("form-nova-flexible-content-group", {
                   key: group.key,
                   attrs: {

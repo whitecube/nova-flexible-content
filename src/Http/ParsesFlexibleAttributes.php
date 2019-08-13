@@ -23,7 +23,7 @@ trait ParsesFlexibleAttributes
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
         return (in_array($request->method(), ['POST','PUT']) &&
-                is_array($request->input(FlexibleAttribute::REGISTER)));
+                is_string($request->input(FlexibleAttribute::REGISTER)));
     }
 
     /**
@@ -34,7 +34,7 @@ trait ParsesFlexibleAttributes
      */
     protected function getParsedFlexibleInputs(Request $request)
     {
-        $this->registerFlexibleFields($request->input(FlexibleAttribute::REGISTER, []));
+        $this->registerFlexibleFields($request->input(FlexibleAttribute::REGISTER));
 
         return array_reduce(array_keys($request->all()), function($carry, $attribute) use ($request) {
             $value = $request->input($attribute);
@@ -145,14 +145,18 @@ trait ParsesFlexibleAttributes
     /**
      * Add flexible attributes to the register
      *
-     * @param  mixed $value
+     * @param  null|string $value
      * @param  null|string $group
      * @return void
      */
     protected function registerFlexibleFields($value, $group = null)
     {
+        if(!$value) {
+            return;
+        }
+
         if(!is_array($value)) {
-            return $this->registerFlexibleField($value, $group);
+            $value = json_decode($value);
         }
 
         foreach ($value as $attribute) {

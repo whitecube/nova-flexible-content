@@ -116,13 +116,28 @@ export default {
                 this.files = {...this.files, ...group.files};
             }
 
-            formData.append('___nova_flexible_content_fields[]', this.field.attribute);
+            this.appendFieldAttribute(formData, this.field.attribute);
             formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
             for(let file in this.files) {
                 formData.append(file, this.files[file]);
             }
+        },
+
+        /**
+         * Register given field attribute into the parsable flexible fields register
+         */
+        appendFieldAttribute(formData, attribute) {
+            let registered = [];
+
+            if(formData.has('___nova_flexible_content_fields')) {
+                registered = JSON.parse(formData.get('___nova_flexible_content_fields'));
+            }
+
+            registered.push(attribute);
+
+            formData.set('___nova_flexible_content_fields', JSON.stringify(registered));
         },
 
         /**
