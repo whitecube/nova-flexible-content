@@ -1,5 +1,5 @@
 <template>
-    <div class="relative flex bg-white mb-4" :id="group.key">
+    <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
         <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
             <button class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
                 <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
@@ -24,10 +24,10 @@
                 </div>
             </div>
         </div>
-        <div class="w-full">
+        <div class="-mb-1 flex flex-col min-h-full w-full">
             <div :class="titleStyle" v-if="group.title">
-                <div class="border-b leading-normal py-1 px-8"
-                    :class="{'border-60': collapsed, 'border-40': !collapsed}">
+                <div class="leading-normal py-1 px-8"
+                    :class="{'border-b border-40': !collapsed}">
                     <p class="text-80">{{ group.title }}</p>
                 </div>
             </div>
@@ -59,7 +59,7 @@ export default {
     data() {
         return {
             removeMessage: false,
-            collapsed: true
+            collapsed: this.group.collapsed
         };
     },
 
@@ -67,12 +67,12 @@ export default {
         titleStyle() {
             let classes = ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
             if (this.collapsed) {
-                classes.push('rounded-b-lg');
+                classes.push('border-b rounded-br-lg');
             }
             return classes;
         },
         containerStyle() {
-            let classes = ['border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
+            let classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
             if(!this.group.title) {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
@@ -122,7 +122,6 @@ export default {
          */
         expand() {
             this.collapsed = false;
-            console.log(this.field);
         },
 
         /**

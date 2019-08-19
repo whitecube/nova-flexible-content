@@ -168,6 +168,12 @@ class Flexible extends Field
         return $this;
     }
 
+    public function collapsed(bool $value)
+    {
+        $this->withMeta(['collapsed' => $value]);
+        return $this;
+    }
+
     /**
      * Push a layout instance into the layouts collection
      *
