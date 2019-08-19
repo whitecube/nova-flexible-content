@@ -6,4 +6,6 @@ Nova.booting((Vue, router, store) => {
     Vue.component('form-nova-flexible-content-group', require('./components/FormGroup'))
     Vue.component('icon-arrow-down', require('./components/icons/ArrowDown'))
     Vue.component('icon-arrow-up', require('./components/icons/ArrowUp'))
+    Vue.component('icon-plus-square', require('./components/icons/PlusSquare'))
+    Vue.component('icon-minus-square', require('./components/icons/MinusSquare'))
 })

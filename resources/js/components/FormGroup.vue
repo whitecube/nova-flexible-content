@@ -1,8 +1,33 @@
 <template>
-    <div class="relative bg-white pl-8 mb-4" :id="group.key">
+    <div class="relative flex bg-white mb-4" :id="group.key">
+        <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
+            <button class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
+                <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
+            </button>
+            <div v-if="!collapsed">
+                <button class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
+                    <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
+                </button>
+                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
+                    <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                </button>
+                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
+                    <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                </button>
+                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
+                    <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                </button>
+                <div v-if="removeMessage" class="confirm-message">
+                    <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
+                    <button @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
+                    <button @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+                </div>
+            </div>
+        </div>
         <div class="w-full">
             <div :class="titleStyle" v-if="group.title">
-                <div class="border-b border-40 leading-normal py-2 px-8">
+                <div class="border-b leading-normal py-1 px-8"
+                    :class="{'border-60': collapsed, 'border-40': !collapsed}">
                     <p class="text-80">{{ group.title }}</p>
                 </div>
             </div>
@@ -20,22 +45,6 @@
                 />
             </div>
         </div>
-        <div class="absolute z-10 bg-white border-t border-l border-b border-60 rounded-l pin-l pin-t w-8" >
-            <button class="group-control btn border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
-                <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
-            </button>
-            <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
-                <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
-            </button>
-            <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
-                <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
-            </button>
-            <div v-if="removeMessage" class="confirm-message">
-                <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
-                <button @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
-                <button @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
-            </div>
-        </div>
     </div>
 </template>
 
@@ -45,23 +54,31 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'field'],
+    props: ['errors', 'group', 'field', 'initialCollapsed'],
 
     data() {
         return {
             removeMessage: false,
+            collapsed: true
         };
     },
 
     computed: {
         titleStyle() {
-            return ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
+            let classes = ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
+            if (this.collapsed) {
+                classes.push('rounded-b-lg');
+            }
+            return classes;
         },
         containerStyle() {
             let classes = ['border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
             if(!this.group.title) {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
+            }
+            if (this.collapsed) {
+                classes.push('hidden');
             }
             return classes;
         }
@@ -99,6 +116,21 @@ export default {
                 this.remove()
             }
         },
+
+        /**
+         * Expand fields
+         */
+        expand() {
+            this.collapsed = false;
+            console.log(this.field);
+        },
+
+        /**
+         * Collapse fields
+         */
+        collapse() {
+            this.collapsed = true;
+        }
     },
 }
 </script>
