@@ -168,7 +168,7 @@ class Flexible extends Field
         return $this;
     }
 
-    public function collapsed(bool $value)
+    public function collapsed(bool $value = true)
     {
         $this->withMeta(['collapsed' => $value]);
         return $this;
