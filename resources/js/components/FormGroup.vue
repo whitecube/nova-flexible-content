@@ -54,7 +54,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'field', 'initialCollapsed'],
+    props: ['errors', 'group', 'field'],
 
     data() {
         return {
