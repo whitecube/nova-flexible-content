@@ -68,17 +68,16 @@ Flexible::make('Content')
     ->button('Add something amazing!');
 ```
 
+![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/add_something_amazing.png)
+
 #### Making the field full width
 
-You can make the flexible field full width, taking up all available space on the form,
-and moving the label above the field by doing the following:
+You can make the flexible field full width, taking up all available space on the form, and moving the label above the field by doing the following:
 
 ```php
 Flexible::make('Content')
     ->fullWidth()
 ```
-
-![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/add_something_amazing.png)
 
 #### Limiting layouts
 
