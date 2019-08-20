@@ -144,7 +144,7 @@ class ScopedRequest extends NovaRequest
     {
         $keys = array_keys($iterable);
 
-        if (count($keys) !== 3) {
+        if (count($keys) !== 3 || isset($iterable[0]['key'])) {
             return false;
         }
 
