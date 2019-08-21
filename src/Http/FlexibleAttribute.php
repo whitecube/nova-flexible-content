@@ -108,7 +108,7 @@ class FlexibleAttribute
             return false;
         }
 
-        return $value === static::FILE_INDICATOR . $this->original;
+        return strpos($value, static::FILE_INDICATOR) === 0;
     }
 
     /**
