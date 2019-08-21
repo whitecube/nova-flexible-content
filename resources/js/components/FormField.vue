@@ -177,7 +177,8 @@ export default {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
                     this.value[i].attributes,
-                    this.value[i].key
+                    this.value[i].key,
+                    this.field.collapsed
                 );
             }
         },
@@ -193,11 +194,13 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes, key) {
+        addGroup(layout, attributes, key, collapsed) {
             if(!layout) return;
 
+            collapsed = collapsed || false;
+
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.field, key);
+                group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
