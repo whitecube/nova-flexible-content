@@ -87,6 +87,20 @@ class FlexibleAttribute
     }
 
     /**
+     * Build an attribute from its components
+     *
+     * @param mixed $value
+     * @param  string $group
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public static function makeFromUpload($value, $group = null)
+    {
+        $original = substr(strval($value), strlen(static::FILE_INDICATOR));
+
+        return new static($original, $group);
+    }
+
+    /**
      * Check if attribute is a flexible fields register
      *
      * @return bool
@@ -112,6 +126,17 @@ class FlexibleAttribute
     }
 
     /**
+     * Return a FlexibleAttribute instance matching the target upload field
+     *
+     * @param mixed $value
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public function getFlexibleFileAttribute($value)
+    {
+        return static::makeFromUpload($value, $this->group);
+    }
+
+    /**
      * Check if attribute represents an array item
      *
      * @return bool
@@ -129,6 +154,76 @@ class FlexibleAttribute
     public function hasGroupInName()
     {
         return !is_null($this->group) && strpos($this->original, $this->groupPrefix()) === 0;
+    }
+
+    /**
+     * Get the group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    public function groupPrefix($group = null)
+    {
+        return static::formatGroupPrefix($group ?? $this->group);
+    }
+
+    /**
+     * Get a group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    static public function formatGroupPrefix($group)
+    {
+        if(!$group) {
+            return;
+        }
+
+        return $group . static::GROUP_SEPARATOR;
+    }
+
+    /**
+     * Set given value in given using the current attribute definition
+     *
+     * @param  array $attributes
+     * @param  string $value
+     * @return array
+     */
+    public function setDataIn(&$attributes, $value)
+    {
+        if(!$this->isAggregate()) {
+            $attributes[$this->name] = $value;
+            return $attributes;
+        }
+
+        if(!isset($attributes[$this->name])) {
+            $attributes[$this->name] = [];
+        } else if (!is_array($attributes[$this->name])) {
+            $attributes[$this->name] = [$attributes[$this->name]];
+        }
+
+        if($this->key === true) {
+            $attributes[$this->name][] = $value;
+        } else {
+            data_set($attributes[$this->name], $this->key, $value);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Return a new instance with appended key
+     *
+     * @param string $key
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public function nest($key)
+    {
+        $append = implode('', array_map(function($segment) {
+            return '[' . $segment . ']';
+        }, explode('.', $key)));
+
+        return new static($this->original . $append, $this->group);
     }
 
     /**
@@ -210,31 +305,5 @@ class FlexibleAttribute
         }
 
         $this->name = $name;
-    }
-
-    /**
-     * Get the group prefix string
-     *
-     * @param string $group
-     * @return null|string
-     */
-    public function groupPrefix($group = null)
-    {
-        return static::formatGroupPrefix($group ?? $this->group);
-    }
-
-    /**
-     * Get a group prefix string
-     *
-     * @param string $group
-     * @return null|string
-     */
-    static public function formatGroupPrefix($group)
-    {
-        if(!$group) {
-            return;
-        }
-
-        return $group . static::GROUP_SEPARATOR;
     }
 }

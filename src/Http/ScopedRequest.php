@@ -37,7 +37,7 @@ class ScopedRequest extends NovaRequest
         $this->replace($scope['input']);
 
         $this->files->replace(
-            $this->getScopeFiles($scope['files'], $scope['keep'])
+            $this->getScopeFiles($scope['files'], $group)
         );
 
         return $this;
@@ -55,7 +55,6 @@ class ScopedRequest extends NovaRequest
         $scope = [
             'input' => [],
             'files' => [],
-            'keep' => []
         ];
 
         foreach ($attributes as $attribute => $value) {
@@ -63,14 +62,14 @@ class ScopedRequest extends NovaRequest
 
             // Sub-objects could contain files that need to be kept
             if($attribute->isAggregate()) {
-                $scope['keep'] = array_merge($scope['keep'], $this->getNestedFiles($value));
+                $scope['files'] = array_merge($scope['files'], $this->getNestedFiles($value, $attribute->group));
                 $scope['input'][$attribute->name] = $value;
                 continue;
             }
 
             // Register Files
             if($attribute->isFlexibleFile($value)) {
-                $scope['files'][$attribute->name] = $value;
+                $scope['files'][] = $attribute->getFlexibleFileAttribute($value);
                 continue;
             }
 
@@ -91,7 +90,7 @@ class ScopedRequest extends NovaRequest
     protected function getNestedFiles($iterable, $group = null)
     {
         $files = [];
-        $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : null;
+        $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : $group;
 
         foreach ($iterable as $attribute => $value) {
             if(is_array($value)) {
@@ -103,7 +102,7 @@ class ScopedRequest extends NovaRequest
 
             if(!$attribute->isFlexibleFile($value)) continue;
 
-            $files[] = $value;
+            $files[] = $attribute->getFlexibleFileAttribute($value);
         }
 
         return $files;
@@ -112,23 +111,51 @@ class ScopedRequest extends NovaRequest
     /**
      * Get all useful files from current files list
      *
-     * @param  array  $toRename
-     * @param  array  $toKeep
+     * @param  array  $files
+     * @param  string  $group
      * @return array
      */
-    protected function getScopeFiles($toRename, $toKeep)
+    protected function getScopeFiles($files, $group)
+    {
+        $scope = [];
+        $files = collect($files)->keyBy('original');
+
+        foreach ($this->getFlattenedFiles() as $attribute => $file) {
+            $attribute = FlexibleAttribute::makeFromUpload($attribute, $group);
+
+            if(!($target = $files->get($attribute->original))) {
+                continue;
+            }
+
+            if(!$target->group || $target->group !== $group) {
+                $scope[$target->original] = $file;
+                continue;
+            }
+
+            $target->setDataIn($scope, $file);
+        }
+
+        return $scope;
+    }
+
+    /**
+     * Get the request's files as a "flat" (1 dimension) array
+     *
+     * @return array
+     */
+    protected function getFlattenedFiles($iterable = null, FlexibleAttribute $original = null)
     {
         $files = [];
 
-        foreach($this->files->all() as $attribute => $file) {
-            if(in_array($attribute, $toRename)) {
-                $files[array_search($attribute, $toRename)] = $file;
+        foreach ($iterable ?? $this->files->all() as $key => $value) {
+            $attribute = $original ? $original->nest($key) : FlexibleAttribute::make($key);
+
+            if(!is_array($value)) {
+                $files[$attribute->original] = $value;
                 continue;
             }
-            
-            if(in_array($attribute, $toKeep)) {
-                $files[$attribute] = $file;
-            }
+
+            $files = array_merge($files, $this->getFlattenedFiles($value, $attribute));
         }
 
         return $files;
