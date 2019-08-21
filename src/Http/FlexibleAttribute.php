@@ -149,11 +149,15 @@ class FlexibleAttribute
      */
     protected function setKey()
     {
-        preg_match('/^.+?(\[.*\])?$/', $this->original, $matches);
+        preg_match('/^.+?(\[.*\])?$/', $this->original, $arrayMatches);
 
-        if(!isset($matches[1])) return;
+        if(!isset($arrayMatches[1])) return;
 
-        $key = trim($matches[1], "[]'\" \t\n\r\0\x0B");
+        preg_match_all('/(?:\[([^\[\]]*)\])+?/', $arrayMatches[1], $keyMatches);
+
+        $key = implode('.', array_map(function($segment) {
+            return trim($segment, "'\" \t\n\r\0\x0B");
+        }, $keyMatches[1]));
 
         $this->key = strlen($key) ? $key : true;
     }
