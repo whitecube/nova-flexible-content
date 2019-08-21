@@ -79,7 +79,7 @@ class FlexibleAttribute
      */
     public static function make($name, $group = null, $key = null)
     {
-        $original = $group ? $group . static::GROUP_SEPARATOR : '';
+        $original = static::formatGroupPrefix($group) ?? '';
         $original .= $name;
         $original .= $key ? '[' . ($key !== true ? $key : '') . ']' : '';
 
@@ -122,6 +122,16 @@ class FlexibleAttribute
     }
 
     /**
+     * Check if the found group key is used in the attribute's name
+     *
+     * @return bool
+     */
+    public function hasGroupInName()
+    {
+        return !is_null($this->group) && strpos($this->original, $this->groupPrefix()) === 0;
+    }
+
+    /**
      * Check if given group identifier is included in original
      * attribute. If so, set it as the group property.
      *
@@ -136,7 +146,7 @@ class FlexibleAttribute
 
         $group = strval($group);
 
-        if(strpos($this->original, $group . static::GROUP_SEPARATOR) !== false) {
+        if(strpos($this->original, $this->groupPrefix($group)) !== false) {
             $this->group = $group;
         }
     }
@@ -156,10 +166,28 @@ class FlexibleAttribute
         preg_match_all('/(?:\[([^\[\]]*)\])+?/', $arrayMatches[1], $keyMatches);
 
         $key = implode('.', array_map(function($segment) {
-            return trim($segment, "'\" \t\n\r\0\x0B");
+            return $this->getCleanKeySegment($segment);
         }, $keyMatches[1]));
 
         $this->key = strlen($key) ? $key : true;
+    }
+
+    /**
+     * Formats a key segment (removes unwanted characters, removes
+     * group references from).
+     *
+     * @param string $segment
+     * @return string
+     */
+    protected function getCleanKeySegment($segment)
+    {
+        $segment = trim($segment, "'\" \t\n\r\0\x0B");
+
+        if($this->group && strpos($segment, $this->groupPrefix()) === 0) {
+            return (new static($segment, $this->group))->name;
+        }
+
+        return $segment;
     }
 
     /**
@@ -171,8 +199,8 @@ class FlexibleAttribute
     {
         $name = trim($this->original);
 
-        if($this->group) {
-            $position = strpos($name, $this->group) + strlen($this->group . static::GROUP_SEPARATOR);
+        if($this->hasGroupInName()) {
+            $position = strpos($name, $this->group) + strlen($this->groupPrefix());
             $name = substr($name, $position);
         }
 
@@ -182,5 +210,31 @@ class FlexibleAttribute
         }
 
         $this->name = $name;
+    }
+
+    /**
+     * Get the group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    public function groupPrefix($group = null)
+    {
+        return static::formatGroupPrefix($group ?? $this->group);
+    }
+
+    /**
+     * Get a group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    static public function formatGroupPrefix($group)
+    {
+        if(!$group) {
+            return;
+        }
+
+        return $group . static::GROUP_SEPARATOR;
     }
 }
