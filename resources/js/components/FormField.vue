@@ -1,5 +1,5 @@
 <template>
-    <default-field :field="field" :errors="errors" :full-width-content="true">
+    <component :is="field.fullWidth ? 'full-width-field' : 'default-field'" :field="field" :errors="errors" full-width-content>
         <template slot="field">
 
             <div v-if="order.length > 0">
@@ -47,10 +47,12 @@
             </div>
 
         </template>
-    </default-field>
+    </component>
 </template>
 
 <script>
+
+import FullWidthField from './FullWidthField';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
 
@@ -58,6 +60,8 @@ export default {
     mixins: [FormField, HandlesValidationErrors],
 
     props: ['resourceName', 'resourceId', 'resource', 'field'],
+
+    components: { FullWidthField },
 
     computed: {
         layouts() {
@@ -173,7 +177,8 @@ export default {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
                     this.value[i].attributes,
-                    this.value[i].key
+                    this.value[i].key,
+                    this.field.collapsed
                 );
             }
         },
@@ -189,11 +194,13 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes, key) {
+        addGroup(layout, attributes, key, collapsed) {
             if(!layout) return;
 
+            collapsed = collapsed || false;
+
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.field, key);
+                group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
