@@ -207,7 +207,7 @@ class Flexible extends Field
      * @param  string  $requestAttribute
      * @param  object  $model
      * @param  string  $attribute
-     * @return void
+     * @return null|Closure
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
@@ -217,9 +217,17 @@ class Flexible extends Field
 
         $this->buildGroups($model, $attribute);
 
-        $this->syncAndFillGroups($request, $requestAttribute);
+        $callbacks = collect($this->syncAndFillGroups($request, $requestAttribute));
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
+
+        if($callbacks->isEmpty()) {
+            return;
+        }
+
+        return function() use ($callbacks) {
+            $callbacks->each->__invoke();
+        };
     }
 
     /**
@@ -227,7 +235,7 @@ class Flexible extends Field
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  string  $requestAttribute
-     * @return void
+     * @return array
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
@@ -236,7 +244,9 @@ class Flexible extends Field
             return;
         }
 
-        $this->groups = collect($raw)->map(function($item, $key) use ($request) {
+        $callbacks = [];
+
+        $this->groups = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
@@ -245,10 +255,13 @@ class Flexible extends Field
 
             if(!$group) return;
 
-            $group->fill(ScopedRequest::scopeFrom($request, $attributes, $key));
+            $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
+            $callbacks = array_merge($callbacks, $group->fill($scope));
 
             return $group;
         });
+
+        return $callbacks;
     }
 
     /**

@@ -62,7 +62,7 @@ class ScopedRequest extends NovaRequest
 
             // Sub-objects could contain files that need to be kept
             if($attribute->isAggregate()) {
-                $scope['files'] = array_merge($scope['files'], $this->getNestedFiles($value, $attribute->group));
+                $scope['files'] = array_merge($scope['files'], $this->pullNestedFiles($value, $attribute->group));
                 $scope['input'][$attribute->name] = $value;
                 continue;
             }
@@ -81,29 +81,36 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Get nested file attributes
+     * Get & remove nested file attributes from given array
      *
      * @param  array  $iterable
      * @param  null|string  $group
      * @return array
      */
-    protected function getNestedFiles($iterable, $group = null)
+    protected function pullNestedFiles(&$iterable, $group = null)
     {
         $files = [];
         $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : $group;
 
-        foreach ($iterable as $attribute => $value) {
+        foreach ($iterable as $original => $value) {
             if(is_array($value)) {
-                $files = array_merge($files, $this->getNestedFiles($value, $key));
+                $files = array_merge($files, $this->pullNestedFiles($value, $key));
+                $iterable[$original] = $value ? $value : null;
                 continue;
             }
 
-            $attribute = FlexibleAttribute::make($attribute, $group);
+            $attribute = FlexibleAttribute::make($original, $group);
 
-            if(!$attribute->isFlexibleFile($value)) continue;
+            if(!$attribute->isFlexibleFile($value)) {
+                continue;
+            }
 
             $files[] = $attribute->getFlexibleFileAttribute($value);
+
+            $iterable[$original] = null;
         }
+
+        $iterable = array_filter($iterable);
 
         return $files;
     }
