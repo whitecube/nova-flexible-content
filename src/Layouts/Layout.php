@@ -195,7 +195,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function resolve($empty = false)
     {
         $this->fields->each(function($field) use ($empty) {
-            $field->resolve($empty ? [] : $this);
+            $field->resolve($empty ? $this->duplicate($this->inUseKey()) : $this);
         });
     }
 
