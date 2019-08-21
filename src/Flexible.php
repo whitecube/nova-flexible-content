@@ -79,6 +79,17 @@ class Flexible extends Field
     }
 
     /**
+     * Make the flexible content take up the full width
+     * of the form. Labels will sit above
+     *
+     * @return mixed
+     */
+    public function fullWidth()
+    {
+        return $this->withMeta(['fullWidth' => true]);
+    }
+
+    /**
      *  Prevent the 'Add Layout' button from appearing more than once
      *
      * @return $this

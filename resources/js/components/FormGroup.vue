@@ -154,7 +154,7 @@ export default {
         border-radius: 4px;
         padding: 6px 7px;
         border: 1px solid #B7CAD6;
-        fill: var(--20);
+        background-color: var(--20);
         white-space: nowrap;
     }
     [dir=rtl] .confirm-message{

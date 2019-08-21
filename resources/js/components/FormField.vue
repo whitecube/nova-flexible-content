@@ -1,5 +1,5 @@
 <template>
-    <default-field :field="field" :errors="errors" :full-width-content="true">
+    <component :is="field.fullWidth ? 'full-width-field' : 'default-field'" :field="field" :errors="errors" full-width-content>
         <template slot="field">
 
             <div v-if="order.length > 0">
@@ -47,10 +47,12 @@
             </div>
 
         </template>
-    </default-field>
+    </component>
 </template>
 
 <script>
+
+import FullWidthField from './FullWidthField';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
 
@@ -58,6 +60,8 @@ export default {
     mixins: [FormField, HandlesValidationErrors],
 
     props: ['resourceName', 'resourceId', 'resource', 'field'],
+
+    components: { FullWidthField },
 
     computed: {
         layouts() {
