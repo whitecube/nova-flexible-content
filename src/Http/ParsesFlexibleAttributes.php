@@ -126,7 +126,7 @@ trait ParsesFlexibleAttributes
         if($attribute->key === true) {
             $attributes[$attribute->name][] = $value;
         } else {
-            $attributes[$attribute->name][$attribute->key] = $value;
+            data_set($attributes[$attribute->name], $attribute->key, $value);
         }
     }
 
