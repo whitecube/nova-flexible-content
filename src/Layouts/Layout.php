@@ -195,7 +195,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function resolve($empty = false)
     {
         $this->fields->each(function($field) use ($empty) {
-            $field->resolve($empty ? [] : $this);
+            $field->resolve($empty ? $this->duplicate($this->inUseKey()) : $this);
         });
     }
 
@@ -230,13 +230,18 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Fill attributes using underlaying fields and incoming request
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return void
+     * @return array
      */
     public function fill(ScopedRequest $request)
     {
-        $this->fields->each(function($field) use ($request) {
-            $field->fill($request, $this);
-        });
+        return  $this->fields->map(function($field) use ($request) {
+                    return $field->fill($request, $this);
+                })
+                ->filter(function($callback) {
+                    return is_callable($callback);
+                })
+                ->values()
+                ->all();
     }
 
     /**
