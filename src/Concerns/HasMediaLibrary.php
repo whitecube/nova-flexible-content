@@ -33,7 +33,9 @@ trait HasMediaLibrary {
      */
     public function addMedia($file)
     {
-        return app(FileAdderFactory::class)->create($this->getMediaModel(), $file);
+        return app(FileAdderFactory::class)
+            ->create($this->getMediaModel(), $file)
+            ->preservingOriginal();
     }
 
     /**
