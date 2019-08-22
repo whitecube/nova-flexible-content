@@ -173,9 +173,9 @@ class ScopedRequest extends NovaRequest
         if (count($keys) !== 3) {
             return false;
         }
-
-        return  in_array('layout', $keys) 
-                && in_array('key', $keys)
-                && in_array('attributes', $keys);
+        
+        return  in_array('layout', $keys, true) 
+                && in_array('key', $keys, true)
+                && in_array('attributes', $keys, true);
     }
 }
