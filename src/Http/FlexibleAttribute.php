@@ -2,6 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent\Http;
 
+use Illuminate\Support\Arr;
+
 class FlexibleAttribute
 {
     /**
@@ -211,6 +213,28 @@ class FlexibleAttribute
             $attributes[$this->name][] = $value;
         } else {
             data_set($attributes[$this->name], $this->key, $value);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Remove current attribute from given array
+     *
+     * @param  array $attributes
+     * @return array
+     */
+    public function unsetDataIn(&$attributes)
+    {
+        if(!$this->isAggregate() || !is_array($attributes[$this->name])) {
+            unset($attributes[$this->name]);
+            return $attributes;
+        }
+
+        if($this->key === true) {
+            array_shift($attributes[$this->name]);
+        } else {
+            Arr::forget($attributes[$this->name], $this->key);
         }
 
         return $attributes;
