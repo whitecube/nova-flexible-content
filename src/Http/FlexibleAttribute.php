@@ -55,6 +55,13 @@ class FlexibleAttribute
     public $key;
 
     /**
+     * Whether the attribute begins with the file indicator
+     *
+     * @var bool
+     */
+    public $upload;
+
+    /**
      * Create a new attribute instance
      *
      * @param  string $original
@@ -64,6 +71,7 @@ class FlexibleAttribute
     public function __construct($original, $group = null)
     {
         $this->original = $original;
+        $this->setUpload();
         $this->setGroup($group);
         $this->setKey();
         $this->setName();
@@ -75,27 +83,15 @@ class FlexibleAttribute
      * @param  string $name
      * @param  string $group
      * @param  mixed $key
+     * @param  bool $upload
      * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
-    public static function make($name, $group = null, $key = null)
+    public static function make($name, $group = null, $key = null, $upload = false)
     {
-        $original = static::formatGroupPrefix($group) ?? '';
+        $original = $upload ? static::FILE_INDICATOR : '';
+        $original .= static::formatGroupPrefix($group) ?? '';
         $original .= $name;
         $original .= $key ? '[' . ($key !== true ? $key : '') . ']' : '';
-
-        return new static($original, $group);
-    }
-
-    /**
-     * Build an attribute from its components
-     *
-     * @param mixed $value
-     * @param  string $group
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
-     */
-    public static function makeFromUpload($value, $group = null)
-    {
-        $original = substr(strval($value), strlen(static::FILE_INDICATOR));
 
         return new static($original, $group);
     }
@@ -111,15 +107,17 @@ class FlexibleAttribute
     }
 
     /**
-     * Check if attribute and value match a probable file
+     * Check if attribute or given value match a probable file
      *
      * @param mixed $value
      * @return bool
      */
-    public function isFlexibleFile($value)
+    public function isFlexibleFile($value = null)
     {
-        if(!$value || !is_string($value)) {
+        if(!is_null($value) && !is_string($value)) {
             return false;
+        } else if (is_null($value)) {
+            return $this->upload;
         }
 
         return strpos($value, static::FILE_INDICATOR) === 0;
@@ -133,7 +131,7 @@ class FlexibleAttribute
      */
     public function getFlexibleFileAttribute($value)
     {
-        return static::makeFromUpload($value, $this->group);
+        return new static($value, $this->group);
     }
 
     /**
@@ -153,7 +151,14 @@ class FlexibleAttribute
      */
     public function hasGroupInName()
     {
-        return !is_null($this->group) && strpos($this->original, $this->groupPrefix()) === 0;
+        if(is_null($this->group)) {
+            return false;
+        }
+
+        $position = strpos($this->original, $this->groupPrefix());
+        $index = $this->isFlexibleFile() ? strlen(static::FILE_INDICATOR) : 0;
+
+        return ($position === $index);
     }
 
     /**
@@ -227,6 +232,17 @@ class FlexibleAttribute
     }
 
     /**
+     * Check attribute is an "upload" attribute and define it on the object
+     *
+     * @param  mixed $group
+     * @return void
+     */
+    protected function setUpload()
+    {
+        $this->upload = $this->isFlexibleFile($this->original);
+    }
+
+    /**
      * Check if given group identifier is included in original
      * attribute. If so, set it as the group property.
      *
@@ -293,6 +309,11 @@ class FlexibleAttribute
     protected function setName()
     {
         $name = trim($this->original);
+
+        if($this->isFlexibleFile()) {
+            $position = strpos($name, static::FILE_INDICATOR) + strlen(static::FILE_INDICATOR);
+            $name = substr($name, $position);
+        }
 
         if($this->hasGroupInName()) {
             $position = strpos($name, $this->group) + strlen($this->groupPrefix());

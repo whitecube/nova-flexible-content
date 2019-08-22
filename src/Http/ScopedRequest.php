@@ -128,7 +128,7 @@ class ScopedRequest extends NovaRequest
         $files = collect($files)->keyBy('original');
 
         foreach ($this->getFlattenedFiles() as $attribute => $file) {
-            $attribute = FlexibleAttribute::makeFromUpload($attribute, $group);
+            $attribute = new FlexibleAttribute($attribute, $group);
 
             if(!($target = $files->get($attribute->original))) {
                 continue;
