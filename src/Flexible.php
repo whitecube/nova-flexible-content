@@ -51,6 +51,13 @@ class Flexible extends Field
     protected static $validatedKeys = [];
 
     /**
+     * All the validated attributes
+     *
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    public static $model;
+
+    /**
      * Create a fresh flexible field instance
      *
      * @param  string  $name
@@ -212,6 +219,8 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
+        $this->registerModel($resource);
+
         $this->buildGroups($resource, $attribute);
 
         $this->value = $this->resolveGroups($this->groups);
@@ -231,6 +240,8 @@ class Flexible extends Field
         if (!$request->exists($requestAttribute)) return;
 
         $attribute = $attribute ?? $this->attribute;
+
+        $this->registerModel($model);
 
         $this->buildGroups($model, $attribute);
 
@@ -492,5 +503,34 @@ class Flexible extends Field
     public static function getValidationKey($key)
     {
         return static::$validatedKeys[$key] ?? null;
+    }
+
+    /**
+     * Registers a reference to the origin model for nested & contained fields
+     *
+     * @param  mixed $model
+     * @return void
+     */
+    protected function registerModel($model)
+    {
+        if(is_a($model, \Laravel\Nova\Resource::class)) {
+            $model = $model->model();
+        }
+
+        if(!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
+            return;
+        }
+
+        static::$model = $model;
+    }
+
+    /**
+     * Return the previously registered origin model
+     *
+     * @return null|\Illuminate\Database\Eloquent\Model
+     */
+    public static function getOriginModel()
+    {
+        return static::$model;
     }
 }

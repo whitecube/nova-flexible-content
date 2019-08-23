@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
+use Whitecube\NovaFlexibleContent\Flexible;
 use Spatie\MediaLibrary\MediaRepository;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -21,7 +22,13 @@ trait HasMediaLibrary {
      */
     protected function getMediaModel() : HasMedia
     {
-        return resolve(NovaRequest::class)->findModelOrFail();
+        $model = Flexible::getOriginModel();
+
+        if(is_null($model) || !($model instanceof HasMedia)) {
+            throw new \Exception('Origin HasMedia model not found.');
+        }
+
+        return $model;
     }
 
     /**
