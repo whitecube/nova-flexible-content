@@ -219,7 +219,7 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        $this->registerModel($resource);
+        $this->registerOriginModel($resource);
 
         $this->buildGroups($resource, $attribute);
 
@@ -241,7 +241,7 @@ class Flexible extends Field
 
         $attribute = $attribute ?? $this->attribute;
 
-        $this->registerModel($model);
+        $this->registerOriginModel($model);
 
         $this->buildGroups($model, $attribute);
 
@@ -511,10 +511,12 @@ class Flexible extends Field
      * @param  mixed $model
      * @return void
      */
-    protected function registerModel($model)
+    protected function registerOriginModel($model)
     {
-        if(is_a($model, \Laravel\Nova\Resource::class)) {
+        if (is_a($model, \Laravel\Nova\Resource::class)) {
             $model = $model->model();
+        } else if (is_a($model, \Whitecube\NovaPage\Pages\Template::class)) {
+            $model = $model->getOriginal();
         }
 
         if(!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
