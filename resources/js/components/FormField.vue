@@ -21,7 +21,7 @@
             <div class="z-20 relative" v-if="layouts">
                 <div class="relative" v-if="layouts.length > 1">
                     <div v-if="isLayoutsDropdownOpen"
-                        class="overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                        class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
                     >
                         <div>
                             <ul class="list-reset">
