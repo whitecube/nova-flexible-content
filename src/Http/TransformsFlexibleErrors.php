@@ -3,22 +3,21 @@
 namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
+use Illuminate\Http\JsonResponse;
 
 trait TransformsFlexibleErrors
 {
     /**
      * Updates given response's errors for the concerned flexible fields
      *
-     * @param  \Illuminate\Http\JsonResponse  $response
-     * @return \Illuminate\Http\JsonResponse
+     * @param  $response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function transformFlexibleErrors(JsonResponse $response)
+    protected function transformFlexibleErrors($response)
     {
-        if ($response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY) {
+        if ($response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY && get_class($response) === JsonResponse::class) {
             $response->setData($this->updateResponseErrors($response->original));
         }
 
