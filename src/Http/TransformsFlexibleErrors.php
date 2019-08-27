@@ -12,10 +12,10 @@ trait TransformsFlexibleErrors
     /**
      * Updates given response's errors for the concerned flexible fields
      *
-     * @param  $response
+     * @param Response $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function transformFlexibleErrors($response)
+    protected function transformFlexibleErrors(Response $response)
     {
         if ($response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY && get_class($response) === JsonResponse::class) {
             $response->setData($this->updateResponseErrors($response->original));
