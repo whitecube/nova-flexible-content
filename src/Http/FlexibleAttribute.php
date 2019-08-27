@@ -2,6 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent\Http;
 
+use Illuminate\Support\Arr;
+
 class FlexibleAttribute
 {
     /**
@@ -55,6 +57,13 @@ class FlexibleAttribute
     public $key;
 
     /**
+     * Whether the attribute begins with the file indicator
+     *
+     * @var bool
+     */
+    public $upload;
+
+    /**
      * Create a new attribute instance
      *
      * @param  string $original
@@ -64,6 +73,7 @@ class FlexibleAttribute
     public function __construct($original, $group = null)
     {
         $this->original = $original;
+        $this->setUpload();
         $this->setGroup($group);
         $this->setKey();
         $this->setName();
@@ -75,11 +85,13 @@ class FlexibleAttribute
      * @param  string $name
      * @param  string $group
      * @param  mixed $key
+     * @param  bool $upload
      * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
-    public static function make($name, $group = null, $key = null)
+    public static function make($name, $group = null, $key = null, $upload = false)
     {
-        $original = $group ? $group . static::GROUP_SEPARATOR : '';
+        $original = $upload ? static::FILE_INDICATOR : '';
+        $original .= static::formatGroupPrefix($group) ?? '';
         $original .= $name;
         $original .= $key ? '[' . ($key !== true ? $key : '') . ']' : '';
 
@@ -97,18 +109,31 @@ class FlexibleAttribute
     }
 
     /**
-     * Check if attribute and value match a probable file
+     * Check if attribute or given value match a probable file
      *
      * @param mixed $value
      * @return bool
      */
-    public function isFlexibleFile($value)
+    public function isFlexibleFile($value = null)
     {
-        if(!$value || !is_string($value)) {
+        if(!is_null($value) && !is_string($value)) {
             return false;
+        } else if (is_null($value)) {
+            return $this->upload;
         }
 
-        return $value === static::FILE_INDICATOR . $this->original;
+        return strpos($value, static::FILE_INDICATOR) === 0;
+    }
+
+    /**
+     * Return a FlexibleAttribute instance matching the target upload field
+     *
+     * @param mixed $value
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public function getFlexibleFileAttribute($value)
+    {
+        return new static($value, $this->group);
     }
 
     /**
@@ -119,6 +144,126 @@ class FlexibleAttribute
     public function isAggregate()
     {
         return !is_null($this->key);
+    }
+
+    /**
+     * Check if the found group key is used in the attribute's name
+     *
+     * @return bool
+     */
+    public function hasGroupInName()
+    {
+        if(is_null($this->group)) {
+            return false;
+        }
+
+        $position = strpos($this->original, $this->groupPrefix());
+        $index = $this->isFlexibleFile() ? strlen(static::FILE_INDICATOR) : 0;
+
+        return ($position === $index);
+    }
+
+    /**
+     * Get the group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    public function groupPrefix($group = null)
+    {
+        return static::formatGroupPrefix($group ?? $this->group);
+    }
+
+    /**
+     * Get a group prefix string
+     *
+     * @param string $group
+     * @return null|string
+     */
+    static public function formatGroupPrefix($group)
+    {
+        if(!$group) {
+            return;
+        }
+
+        return $group . static::GROUP_SEPARATOR;
+    }
+
+    /**
+     * Set given value in given using the current attribute definition
+     *
+     * @param  array $attributes
+     * @param  string $value
+     * @return array
+     */
+    public function setDataIn(&$attributes, $value)
+    {
+        if(!$this->isAggregate()) {
+            $attributes[$this->name] = $value;
+            return $attributes;
+        }
+
+        if(!isset($attributes[$this->name])) {
+            $attributes[$this->name] = [];
+        } else if (!is_array($attributes[$this->name])) {
+            $attributes[$this->name] = [$attributes[$this->name]];
+        }
+
+        if($this->key === true) {
+            $attributes[$this->name][] = $value;
+        } else {
+            data_set($attributes[$this->name], $this->key, $value);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Remove current attribute from given array
+     *
+     * @param  array $attributes
+     * @return array
+     */
+    public function unsetDataIn(&$attributes)
+    {
+        if(!$this->isAggregate() || !is_array($attributes[$this->name])) {
+            unset($attributes[$this->name]);
+            return $attributes;
+        }
+
+        if($this->key === true) {
+            array_shift($attributes[$this->name]);
+        } else {
+            Arr::forget($attributes[$this->name], $this->key);
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Return a new instance with appended key
+     *
+     * @param string $key
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public function nest($key)
+    {
+        $append = implode('', array_map(function($segment) {
+            return '[' . $segment . ']';
+        }, explode('.', $key)));
+
+        return new static($this->original . $append, $this->group);
+    }
+
+    /**
+     * Check attribute is an "upload" attribute and define it on the object
+     *
+     * @param  mixed $group
+     * @return void
+     */
+    protected function setUpload()
+    {
+        $this->upload = $this->isFlexibleFile($this->original);
     }
 
     /**
@@ -136,7 +281,7 @@ class FlexibleAttribute
 
         $group = strval($group);
 
-        if(strpos($this->original, $group . static::GROUP_SEPARATOR) !== false) {
+        if(strpos($this->original, $this->groupPrefix($group)) !== false) {
             $this->group = $group;
         }
     }
@@ -149,13 +294,35 @@ class FlexibleAttribute
      */
     protected function setKey()
     {
-        preg_match('/^.+?(\[.*\])?$/', $this->original, $matches);
+        preg_match('/^.+?(\[.*\])?$/', $this->original, $arrayMatches);
 
-        if(!isset($matches[1])) return;
+        if(!isset($arrayMatches[1])) return;
 
-        $key = trim($matches[1], "[]'\" \t\n\r\0\x0B");
+        preg_match_all('/(?:\[([^\[\]]*)\])+?/', $arrayMatches[1], $keyMatches);
+
+        $key = implode('.', array_map(function($segment) {
+            return $this->getCleanKeySegment($segment);
+        }, $keyMatches[1]));
 
         $this->key = strlen($key) ? $key : true;
+    }
+
+    /**
+     * Formats a key segment (removes unwanted characters, removes
+     * group references from).
+     *
+     * @param string $segment
+     * @return string
+     */
+    protected function getCleanKeySegment($segment)
+    {
+        $segment = trim($segment, "'\" \t\n\r\0\x0B");
+
+        if($this->group && strpos($segment, $this->groupPrefix()) === 0) {
+            return (new static($segment, $this->group))->name;
+        }
+
+        return $segment;
     }
 
     /**
@@ -167,8 +334,13 @@ class FlexibleAttribute
     {
         $name = trim($this->original);
 
-        if($this->group) {
-            $position = strpos($name, $this->group) + strlen($this->group . static::GROUP_SEPARATOR);
+        if($this->isFlexibleFile()) {
+            $position = strpos($name, static::FILE_INDICATOR) + strlen(static::FILE_INDICATOR);
+            $name = substr($name, $position);
+        }
+
+        if($this->hasGroupInName()) {
+            $position = strpos($name, $this->group) + strlen($this->groupPrefix());
             $name = substr($name, $position);
         }
 

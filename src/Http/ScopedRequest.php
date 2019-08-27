@@ -29,16 +29,15 @@ class ScopedRequest extends NovaRequest
      */
     public function scopeInto($group, $attributes)
     {
-        $scope = $this->getScopeState($group, $attributes);
+        [$input, $files] = $this->getScopeState($group, $attributes);
         
-        $scope['input']['_method'] = $this->input('_method');
-        $scope['input']['_retrieved_at'] = $this->input('_retrieved_at');
+        $input['_method'] = $this->input('_method');
+        $input['_retrieved_at'] = $this->input('_retrieved_at');
 
-        $this->replace($scope['input']);
+        $this->handleScopeFiles($files, $input, $group);
 
-        $this->files->replace(
-            $this->getScopeFiles($scope['files'], $scope['keep'])
-        );
+        $this->replace($input);
+        $this->files->replace($files);
 
         return $this;
     }
@@ -52,37 +51,34 @@ class ScopedRequest extends NovaRequest
      */
     protected function getScopeState($group, $attributes)
     {
-        $scope = [
-            'input' => [],
-            'files' => [],
-            'keep' => []
-        ];
+        $input = [];
+        $files = [];
 
         foreach ($attributes as $attribute => $value) {
             $attribute = FlexibleAttribute::make($attribute, $group, is_array($value));
 
             // Sub-objects could contain files that need to be kept
             if($attribute->isAggregate()) {
-                $scope['keep'] = array_merge($scope['keep'], $this->getNestedFiles($value));
-                $scope['input'][$attribute->name] = $value;
+                $files = array_merge($files, $this->getNestedFiles($value, $attribute->group));
+                $input[$attribute->name] = $value;
                 continue;
             }
 
             // Register Files
             if($attribute->isFlexibleFile($value)) {
-                $scope['files'][$attribute->name] = $value;
+                $files[] = $attribute->getFlexibleFileAttribute($value);
                 continue;
             }
 
             // Register regular attributes
-            $scope['input'][$attribute->name] = $value;
+            $input[$attribute->name] = $value;
         }
 
-        return $scope;
+        return [$input, $files];
     }
 
     /**
-     * Get nested file attributes
+     * Get nested file attributes from given array
      *
      * @param  array  $iterable
      * @param  null|string  $group
@@ -91,19 +87,21 @@ class ScopedRequest extends NovaRequest
     protected function getNestedFiles($iterable, $group = null)
     {
         $files = [];
-        $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : null;
+        $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : $group;
 
-        foreach ($iterable as $attribute => $value) {
+        foreach ($iterable as $original => $value) {
             if(is_array($value)) {
                 $files = array_merge($files, $this->getNestedFiles($value, $key));
                 continue;
             }
 
-            $attribute = FlexibleAttribute::make($attribute, $group);
+            $attribute = FlexibleAttribute::make($original, $group);
 
-            if(!$attribute->isFlexibleFile($value)) continue;
+            if(!$attribute->isFlexibleFile($value)) {
+                continue;
+            }
 
-            $files[] = $value;
+            $files[] = $attribute->getFlexibleFileAttribute($value);
         }
 
         return $files;
@@ -112,23 +110,51 @@ class ScopedRequest extends NovaRequest
     /**
      * Get all useful files from current files list
      *
-     * @param  array  $toRename
-     * @param  array  $toKeep
+     * @param  array  $files
+     * @param  array  $input
+     * @param  string  $group
+     * @return void
+     */
+    protected function handleScopeFiles(&$files, &$input, $group)
+    {
+        $attributes = collect($files)->keyBy('original');
+        $scope = [];
+
+        foreach ($this->getFlattenedFiles() as $attribute => $file) {
+            if(!($target = $attributes->get($attribute))) {
+                continue;
+            }
+
+            if(!$target->group || $target->group !== $group) {
+                $scope[$target->original] = $file;
+                continue;
+            }
+
+            $target->setDataIn($scope, $file);
+            $target->unsetDataIn($input);
+        }
+
+        $files = $scope;
+    }
+
+    /**
+     * Get the request's files as a "flat" (1 dimension) array
+     *
      * @return array
      */
-    protected function getScopeFiles($toRename, $toKeep)
+    protected function getFlattenedFiles($iterable = null, FlexibleAttribute $original = null)
     {
         $files = [];
 
-        foreach($this->files->all() as $attribute => $file) {
-            if(in_array($attribute, $toRename)) {
-                $files[array_search($attribute, $toRename)] = $file;
+        foreach ($iterable ?? $this->files->all() as $key => $value) {
+            $attribute = $original ? $original->nest($key) : FlexibleAttribute::make($key);
+
+            if(!is_array($value)) {
+                $files[$attribute->original] = $value;
                 continue;
             }
-            
-            if(in_array($attribute, $toKeep)) {
-                $files[$attribute] = $file;
-            }
+
+            $files = array_merge($files, $this->getFlattenedFiles($value, $attribute));
         }
 
         return $files;
@@ -147,9 +173,9 @@ class ScopedRequest extends NovaRequest
         if (count($keys) !== 3) {
             return false;
         }
-
-        return  in_array('layout', $keys) 
-                && in_array('key', $keys)
-                && in_array('attributes', $keys);
+        
+        return  in_array('layout', $keys, true) 
+                && in_array('key', $keys, true)
+                && in_array('attributes', $keys, true);
     }
 }

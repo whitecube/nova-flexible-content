@@ -51,6 +51,13 @@ class Flexible extends Field
     protected static $validatedKeys = [];
 
     /**
+     * All the validated attributes
+     *
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    public static $model;
+
+    /**
      * Create a fresh flexible field instance
      *
      * @param  string  $name
@@ -76,6 +83,17 @@ class Flexible extends Field
     public function button($label)
     {
         return $this->withMeta(['button' => $label]);
+    }
+
+    /**
+     * Make the flexible content take up the full width
+     * of the form. Labels will sit above
+     *
+     * @return mixed
+     */
+    public function fullWidth()
+    {
+        return $this->withMeta(['fullWidth' => true]);
     }
 
     /**
@@ -168,6 +186,12 @@ class Flexible extends Field
         return $this;
     }
 
+    public function collapsed(bool $value = true)
+    {
+        $this->withMeta(['collapsed' => $value]);
+        return $this;
+    }
+
     /**
      * Push a layout instance into the layouts collection
      *
@@ -195,6 +219,8 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
+        $this->registerOriginModel($resource);
+
         $this->buildGroups($resource, $attribute);
 
         $this->value = $this->resolveGroups($this->groups);
@@ -207,7 +233,7 @@ class Flexible extends Field
      * @param  string  $requestAttribute
      * @param  object  $model
      * @param  string  $attribute
-     * @return void
+     * @return null|Closure
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
@@ -215,11 +241,21 @@ class Flexible extends Field
 
         $attribute = $attribute ?? $this->attribute;
 
+        $this->registerOriginModel($model);
+
         $this->buildGroups($model, $attribute);
 
-        $this->syncAndFillGroups($request, $requestAttribute);
+        $callbacks = collect($this->syncAndFillGroups($request, $requestAttribute));
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
+
+        if($callbacks->isEmpty()) {
+            return;
+        }
+
+        return function() use ($callbacks) {
+            $callbacks->each->__invoke();
+        };
     }
 
     /**
@@ -227,7 +263,7 @@ class Flexible extends Field
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  string  $requestAttribute
-     * @return void
+     * @return array
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
@@ -236,7 +272,9 @@ class Flexible extends Field
             return;
         }
 
-        $this->groups = collect($raw)->map(function($item, $key) use ($request) {
+        $callbacks = [];
+
+        $this->groups = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
@@ -245,10 +283,13 @@ class Flexible extends Field
 
             if(!$group) return;
 
-            $group->fill(ScopedRequest::scopeFrom($request, $attributes, $key));
+            $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
+            $callbacks = array_merge($callbacks, $group->fill($scope));
 
             return $group;
         });
+
+        return $callbacks;
     }
 
     /**
@@ -462,5 +503,36 @@ class Flexible extends Field
     public static function getValidationKey($key)
     {
         return static::$validatedKeys[$key] ?? null;
+    }
+
+    /**
+     * Registers a reference to the origin model for nested & contained fields
+     *
+     * @param  mixed $model
+     * @return void
+     */
+    protected function registerOriginModel($model)
+    {
+        if (is_a($model, \Laravel\Nova\Resource::class)) {
+            $model = $model->model();
+        } else if (is_a($model, \Whitecube\NovaPage\Pages\Template::class)) {
+            $model = $model->getOriginal();
+        }
+
+        if(!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
+            return;
+        }
+
+        static::$model = $model;
+    }
+
+    /**
+     * Return the previously registered origin model
+     *
+     * @return null|\Illuminate\Database\Eloquent\Model
+     */
+    public static function getOriginModel()
+    {
+        return static::$model;
     }
 }
