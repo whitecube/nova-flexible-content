@@ -3,10 +3,10 @@
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
 use Whitecube\NovaFlexibleContent\Flexible;
+use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
 use Spatie\MediaLibrary\MediaRepository;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\FileAdder\FileAdderFactory;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
@@ -41,7 +41,7 @@ trait HasMediaLibrary {
     public function addMedia($file)
     {
         return app(FileAdderFactory::class)
-            ->create($this->getMediaModel(), $file)
+            ->create($this->getMediaModel(), $file, '_' . $this->inUseKey())
             ->preservingOriginal();
     }
 
@@ -55,7 +55,7 @@ trait HasMediaLibrary {
      */
     public function getMedia(string $collectionName = 'default', $filters = []): Collection
     {
-        return app(MediaRepository::class)->getCollection($this->getMediaModel(), $collectionName, $filters);
+        return app(MediaRepository::class)->getCollection($this->getMediaModel(), $collectionName . '_' . $this->inUseKey(), $filters);
     }
 
 }
