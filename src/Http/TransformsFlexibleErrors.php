@@ -17,7 +17,8 @@ trait TransformsFlexibleErrors
      */
     protected function shouldTransformFlexibleErrors(Response $response)
     {
-        return ($response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY && is_a($response, JsonResponse::class));
+        return  $response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY
+                && is_a($response, JsonResponse::class);
     }
 
     /**
@@ -28,7 +29,10 @@ trait TransformsFlexibleErrors
      */
     protected function transformFlexibleErrors(Response $response)
     {
-        $response->setData($this->updateResponseErrors($response->original));
+        $response->setData(
+            $this->updateResponseErrors($response->original)
+        );
+
         return $response;
     }
 
