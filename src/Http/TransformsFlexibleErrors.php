@@ -3,9 +3,9 @@
 namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Flexible;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 trait TransformsFlexibleErrors
 {
@@ -24,7 +24,7 @@ trait TransformsFlexibleErrors
      * Updates given response's errors for the concerned flexible fields
      *
      * @param Response $response
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return \Illuminate\Http\Response
      */
     protected function transformFlexibleErrors(Response $response)
     {
