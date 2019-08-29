@@ -4,7 +4,7 @@ namespace Whitecube\NovaFlexibleContent\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
 use Whitecube\NovaFlexibleContent\Http\TransformsFlexibleErrors;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
@@ -19,7 +19,7 @@ class InterceptFlexibleAttributes
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next) : Response
     {
