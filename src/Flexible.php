@@ -155,6 +155,11 @@ class Flexible extends Field
             return $this;
         }
 
+        if($count === 6) {
+            $this->registerLayout(new Layout($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]));
+            return $this;
+        }
+
         if($count !== 1) {
             throw new \Exception('Invalid "addLayout" method call. Expected 1 or 3 arguments, ' . $count . ' given.');
         }
