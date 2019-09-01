@@ -4,7 +4,7 @@
             <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
                 <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
             </button>
-            <div v-if="!collapsed">
+           <!--  <div v-if="!collapsed"> -->
                 <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
@@ -21,7 +21,7 @@
                     <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
                     <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
                     <button type="button" @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
-                </div>
+                <!-- </div> -->
             </div>
         </div>
         <div class="-mb-1 flex flex-col min-h-full w-full">
