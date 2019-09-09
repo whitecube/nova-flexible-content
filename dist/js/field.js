@@ -230,7 +230,7 @@ var Group = function () {
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = Array.from(this.values())[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = this.values().entries[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var item = _step.value;
 
                     if (item[0].indexOf('___upload-') == 0) {

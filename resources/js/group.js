@@ -34,7 +34,7 @@ export default class Group {
             files: {}
         };
 
-        for (var item of Array.from(this.values())) {
+        for (var item of this.values().entries) {
             if (item[0].indexOf('___upload-') == 0) {
                 // Previously nested file attribute
                 data.files[item[0]] = item[1];
