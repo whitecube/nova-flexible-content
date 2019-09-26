@@ -1,26 +1,26 @@
 <template>
     <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
         <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
-            <button class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
+            <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
                 <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
             </button>
             <div v-if="!collapsed">
-                <button class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
+                <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
+                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
                     <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
                 </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
+                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
                     <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
                 </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
+                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
                     <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
                 </button>
                 <div v-if="removeMessage" class="confirm-message">
                     <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
-                    <button @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
-                    <button @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+                    <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
+                    <button type="button" @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
                 </div>
             </div>
         </div>
@@ -59,8 +59,15 @@ export default {
     data() {
         return {
             removeMessage: false,
-            collapsed: this.group.collapsed
+            collapsed: this.group.collapsed,
+            mounted: false,
         };
+    },
+    
+    mounted: function () {
+        this.$nextTick(function () {
+            this.mounted = true;
+        })
     },
 
     computed: {
@@ -77,7 +84,7 @@ export default {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
             }
-            if (this.collapsed) {
+            if (this.collapsed && this.mounted) {
                 classes.push('hidden');
             }
             return classes;

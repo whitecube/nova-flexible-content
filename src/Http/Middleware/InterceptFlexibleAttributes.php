@@ -23,13 +23,19 @@ class InterceptFlexibleAttributes
      */
     public function handle(Request $request, Closure $next) : Response
     {
-        if($this->requestHasParsableFlexibleInputs($request)) {
-            $request->merge($this->getParsedFlexibleInputs($request));
-            $request->request->remove(FlexibleAttribute::REGISTER);
-
-            return $this->transformFlexibleErrors($next($request));
+        if (!$this->requestHasParsableFlexibleInputs($request)) {
+            return $next($request);
         }
 
-        return $next($request);
+        $request->merge($this->getParsedFlexibleInputs($request));
+        $request->request->remove(FlexibleAttribute::REGISTER);
+
+        $response = $next($request);
+
+        if (!$this->shouldTransformFlexibleErrors($response)) {
+            return $response;
+        }
+
+        return $this->transformFlexibleErrors($response);
     }
 }
