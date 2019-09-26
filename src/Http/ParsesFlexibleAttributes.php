@@ -101,7 +101,7 @@ trait ParsesFlexibleAttributes
      * @param  string $group
      * @param  string $attribute
      * @param  string $value
-     * @return array
+     * @return void
      */
     protected function fillFlexibleAttributes(&$attributes, $group, $attribute, $value)
     {
@@ -112,22 +112,7 @@ trait ParsesFlexibleAttributes
             return;
         }
 
-        if(!$attribute->isAggregate()) {
-            $attributes[$attribute->name] = $value;
-            return;
-        }
-
-        if(!isset($attributes[$attribute->name])) {
-            $attributes[$attribute->name] = [];
-        } else if (!is_array($attributes[$attribute->name])) {
-            $attributes[$attribute->name] = [$attributes[$attribute->name]];
-        }
-
-        if($attribute->key === true) {
-            $attributes[$attribute->name][] = $value;
-        } else {
-            $attributes[$attribute->name][$attribute->key] = $value;
-        }
+        $attribute->setDataIn($attributes, $value);
     }
 
     /**
