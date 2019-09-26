@@ -59,8 +59,15 @@ export default {
     data() {
         return {
             removeMessage: false,
-            collapsed: this.group.collapsed
+            collapsed: this.group.collapsed,
+            mounted: false,
         };
+    },
+    
+    mounted: function () {
+        this.$nextTick(function () {
+            this.mounted = true;
+        })
     },
 
     computed: {
@@ -77,7 +84,7 @@ export default {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
             }
-            if (this.collapsed) {
+            if (this.collapsed && this.mounted) {
                 classes.push('hidden');
             }
             return classes;
