@@ -233,7 +233,7 @@ First, create the new Resolver class. For convenience, this can be achieved usin
 ```
 php artisan flexible:resolver {classname?}
 
-// Ex: php artisan flexible:preset WysiwygPageResolver
+// Ex: php artisan flexible:resolver WysiwygPageResolver
 ```
 
 It will place the new Resolver class in your project's `app/Nova/Flexible/Resolvers` directory. Each Resolver should implement the `Whitecube\NovaFlexibleContent\Value\ResolverInterface` contract and therefore feature at least two methods: `set` and `get`.
