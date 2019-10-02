@@ -40,7 +40,7 @@
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative"
                     @click="toggleLayoutsDropdownOrAddDefault"
-                    v-if="this.limitCounter != 0"
+                    v-if="this.limitCounter != 0 && !field.readonly"
                 >
                     <span>{{ field.button }}</span>
                 </button>
