@@ -158,6 +158,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Resolve the field for display and return the result.
+     *
+     * @return array
+     */
+    public function getResolvedForDisplay()
+    {
+        return $this->resolveForDisplay($this->getAttributes());
+    }
+
+    /**
      * Get an empty cloned instance
      *
      * @param  string  $key
@@ -187,7 +197,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
-     * Resolve fields using given attributes
+     * Resolve fields using given attributes.
      *
      * @param  boolean $empty
      * @return void
@@ -199,6 +209,21 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         });
     }
 
+    /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay($attributes);
+        });
+
+        return $this->getResolvedValue();
+    }
+  
     /**
      * Get the layout's resolved representation. Best used
      * after a resolve() call
