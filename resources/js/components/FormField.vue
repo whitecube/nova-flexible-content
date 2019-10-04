@@ -1,15 +1,17 @@
 <template>
-    <default-field :field="field" :errors="errors" :full-width-content="true">
+    <component :is="field.fullWidth ? 'full-width-field' : 'default-field'" :field="field" :errors="errors" full-width-content>
         <template slot="field">
 
             <div v-if="order.length > 0">
                 <form-nova-flexible-content-group
                     v-for="group in orderedGroups"
                     :key="group.key"
+                    :field="field"
                     :group="group"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
+                    :errors="errors"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -19,7 +21,7 @@
             <div class="z-20 relative" v-if="layouts">
                 <div class="relative" v-if="layouts.length > 1">
                     <div v-if="isLayoutsDropdownOpen"
-                        class="overflow-hidden absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                        class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
                     >
                         <div>
                             <ul class="list-reset">
@@ -38,16 +40,19 @@
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative"
                     @click="toggleLayoutsDropdownOrAddDefault"
+                    v-if="this.limitCounter != 0 && !field.readonly"
                 >
                     <span>{{ field.button }}</span>
                 </button>
             </div>
 
         </template>
-    </default-field>
+    </component>
 </template>
 
 <script>
+
+import FullWidthField from './FullWidthField';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
 
@@ -55,6 +60,8 @@ export default {
     mixins: [FormField, HandlesValidationErrors],
 
     props: ['resourceName', 'resourceId', 'resource', 'field'],
+
+    components: { FullWidthField },
 
     computed: {
         layouts() {
@@ -74,6 +81,7 @@ export default {
             order: [],
             groups: {},
             files: {},
+            limitCounter: this.field.limit
         };
     },
 
@@ -112,12 +120,28 @@ export default {
                 this.files = {...this.files, ...group.files};
             }
 
-            formData.append(this.field.attribute, JSON.stringify(this.value));
+            this.appendFieldAttribute(formData, this.field.attribute);
+            formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
             for(let file in this.files) {
                 formData.append(file, this.files[file]);
             }
+        },
+
+        /**
+         * Register given field attribute into the parsable flexible fields register
+         */
+        appendFieldAttribute(formData, attribute) {
+            let registered = [];
+
+            if(formData.has('___nova_flexible_content_fields')) {
+                registered = JSON.parse(formData.get('___nova_flexible_content_fields'));
+            }
+
+            registered.push(attribute);
+
+            formData.set('___nova_flexible_content_fields', JSON.stringify(registered));
         },
 
         /**
@@ -153,7 +177,8 @@ export default {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
                     this.value[i].attributes,
-                    this.value[i].key
+                    this.value[i].key,
+                    this.field.collapsed
                 );
             }
         },
@@ -169,16 +194,22 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes, key) {
+        addGroup(layout, attributes, key, collapsed) {
             if(!layout) return;
 
+            collapsed = collapsed || false;
+
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.field, key);
+                group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
 
             this.isLayoutsDropdownOpen = false;
+
+            if (this.limitCounter > 0) {
+                this.limitCounter--;
+            }
         },
 
         /**
@@ -213,6 +244,10 @@ export default {
 
             this.order.splice(index, 1);
             delete this.groups[key];
+
+            if (this.limitCounter >= 0) {
+                this.limitCounter++;
+            }
         }
     }
 }

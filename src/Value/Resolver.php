@@ -56,7 +56,11 @@ class Resolver implements ResolverInterface
     {
         $value = data_get($resource, str_replace('->', '.', $attribute)) ?? [];
 
-        if (is_string($value)) $value = json_decode($value) ?? [];
+        if($value instanceof Collection) {
+            $value = $value->toArray();
+        } else if (is_string($value)) {
+            $value = json_decode($value) ?? [];
+        }
 
         // Fail silently in case data is invalid
         if (!is_array($value)) return [];

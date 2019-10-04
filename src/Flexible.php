@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent;
 
+use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
@@ -43,6 +44,20 @@ class Flexible extends Field
     protected $resolver;
 
     /**
+     * All the validated attributes
+     *
+     * @var array
+     */
+    protected static $validatedKeys = [];
+
+    /**
+     * All the validated attributes
+     *
+     * @var \Illuminate\Database\Eloquent\Model
+     */
+    public static $model;
+
+    /**
      * Create a fresh flexible field instance
      *
      * @param  string  $name
@@ -55,6 +70,8 @@ class Flexible extends Field
         parent::__construct($name, $attribute, $resolveCallback);
 
         $this->button('Add layout');
+
+        $this->hideFromIndex();
     }
 
     /**
@@ -66,6 +83,42 @@ class Flexible extends Field
     public function button($label)
     {
         return $this->withMeta(['button' => $label]);
+    }
+
+    /**
+     * Make the flexible content take up the full width
+     * of the form. Labels will sit above
+     *
+     * @return mixed
+     */
+    public function fullWidth()
+    {
+        return $this->withMeta(['fullWidth' => true]);
+    }
+
+    /**
+     *  Prevent the 'Add Layout' button from appearing more than once
+     *
+     * @return $this
+     */
+    public function limit($limit = 1)
+    {
+        return $this->withMeta(['limit' => $limit]);
+    }
+
+    /**
+     * Confirm remove
+     *
+     * @return $this
+     */
+    public function confirmRemove($label = '', $yes = 'Delete', $no = 'Cancel')
+    {
+        return $this->withMeta([
+            'confirmRemove'         => true,
+            'confirmRemoveMessage'  => $label,
+            'confirmRemoveYes'      => $yes,
+            'confirmRemoveNo'       => $no,
+        ]);
     }
 
     /**
@@ -133,6 +186,12 @@ class Flexible extends Field
         return $this;
     }
 
+    public function collapsed(bool $value = true)
+    {
+        $this->withMeta(['collapsed' => $value]);
+        return $this;
+    }
+
     /**
      * Push a layout instance into the layouts collection
      *
@@ -159,6 +218,8 @@ class Flexible extends Field
     public function resolve($resource, $attribute = null)
     {
         $attribute = $attribute ?? $this->attribute;
+
+        $this->registerOriginModel($resource);
 
         $this->buildGroups($resource, $attribute);
 
@@ -188,17 +249,29 @@ class Flexible extends Field
      * @param  string  $requestAttribute
      * @param  object  $model
      * @param  string  $attribute
-     * @return void
+     * @return null|Closure
      */
     protected function fillAttribute(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
+        if (!$request->exists($requestAttribute)) return;
+
         $attribute = $attribute ?? $this->attribute;
+
+        $this->registerOriginModel($model);
 
         $this->buildGroups($model, $attribute);
 
-        $this->syncAndFillGroups($request, $requestAttribute);
+        $callbacks = collect($this->syncAndFillGroups($request, $requestAttribute));
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
+
+        if($callbacks->isEmpty()) {
+            return;
+        }
+
+        return function() use ($callbacks) {
+            $callbacks->each->__invoke();
+        };
     }
 
     /**
@@ -206,29 +279,53 @@ class Flexible extends Field
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  string  $requestAttribute
-     * @return void
+     * @return array
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
-        $raw = json_decode($request[$requestAttribute]);
-
-        if(!is_array($raw)) {
-            throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
+        if(!($raw = $this->extractValue($request, $requestAttribute))) {
+            $this->groups = collect();
+            return;
         }
 
-        $this->groups = collect($raw)->map(function($item, $key) use ($request) {
-            $layout = $item->layout;
-            $key = $item->key;
-            $attributes = (array) $item->attributes;
+        $callbacks = [];
+
+        $this->groups = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
+            $layout = $item['layout'];
+            $key = $item['key'];
+            $attributes = $item['attributes'];
 
             $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
 
             if(!$group) return;
 
-            $group->fill(ScopedRequest::scopeFrom($request, $attributes, $key));
+            $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
+            $callbacks = array_merge($callbacks, $group->fill($scope));
 
             return $group;
         });
+
+        return $callbacks;
+    }
+
+    /**
+     * Find the flexible's value in given request
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string  $attribute
+     * @return null|array
+     */
+    protected function extractValue(NovaRequest $request, $attribute)
+    {
+        $value = $request[$attribute];
+
+        if(!$value) return;
+
+        if(!is_array($value)) {
+            throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
+        }
+
+        return $value;
     }
 
     /**
@@ -267,7 +364,7 @@ class Flexible extends Field
      * @return Illuminate\Support\Collection
      */
     protected function buildGroups($resource, $attribute)
-    {      
+    {
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
         }
@@ -302,5 +399,170 @@ class Flexible extends Field
         if(!$layout) return;
 
         return $layout->duplicate($key);
+    }
+
+    /**
+     * Get the validation rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getRules(NovaRequest $request)
+    {
+        return parent::getRules($request);
+    }
+
+    /**
+     * Get the creation rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array|string
+     */
+    public function getCreationRules(NovaRequest $request)
+    {
+        return array_merge_recursive(
+            parent::getCreationRules($request),
+            $this->getFlexibleRules($request, 'creation')
+        );
+    }
+
+    /**
+     * Get the update rules for this field & its contained fields.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @return array
+     */
+    public function getUpdateRules(NovaRequest $request)
+    {
+        return array_merge_recursive(
+            parent::getUpdateRules($request),
+            $this->getFlexibleRules($request, 'update')
+        );
+    }
+
+    /**
+     * Retrieve contained fields rules and assign them to nested array attributes
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string $specificty
+     * @return array
+     */
+    protected function getFlexibleRules(NovaRequest $request, $specificty)
+    {
+        if(!($value = $this->extractValue($request, $this->attribute))) {
+            return [];
+        }
+
+        $rules = $this->generateRules($request, $value, $specificty);
+
+        if(!is_a($request, ScopedRequest::class)) {
+            // We're not in a nested flexible, meaning we're
+            // assuming the field is located at the root of
+            // the model's attributes. Therefore, we should now
+            // register all the collected validation rules for later
+            // reference (see Http\TransformsFlexibleErrors).
+            static::registerValidationKeys($rules);
+
+            // Then, transform the rules into an array that's actually 
+            // usable by Laravel's Validator.
+            $rules = $this->getCleanedRules($rules);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Format all contained fields rules and return them.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  array $value
+     * @param  string $specificty
+     * @return array
+     */
+    protected function generateRules(NovaRequest $request, $value, $specificty)
+    {
+        return collect($value)->map(function ($item, $key) use ($request, $specificty) {
+                    $group = $this->newGroup($item['layout'], $item['key']);
+
+                    if(!$group) return [];
+
+                    $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
+                    return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
+                })
+                ->collapse()
+                ->all();
+    }
+
+    /**
+     * Transform Flexible rules array into an actual validator rules array
+     *
+     * @param  array $rules
+     * @return array
+     */
+    protected function getCleanedRules(array $rules)
+    {
+        return array_map(function($field) {
+            return $field['rules'];
+        }, $rules);
+    }
+
+    /**
+     * Add validation keys to the valdiatedKeys register, which will be
+     * used for transforming validation errors later in the request cycle.
+     *
+     * @param  array $rules
+     * @return void
+     */
+    protected static function registerValidationKeys(array $rules)
+    {
+        $validatedKeys = array_map(function($field) {
+            return $field['attribute'];
+        }, $rules);
+
+        static::$validatedKeys = array_merge(
+            static::$validatedKeys, $validatedKeys
+        );
+    }
+
+    /**
+     * Return a previously registered validation key
+     *
+     * @param  string $key
+     * @return null|\Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     */
+    public static function getValidationKey($key)
+    {
+        return static::$validatedKeys[$key] ?? null;
+    }
+
+    /**
+     * Registers a reference to the origin model for nested & contained fields
+     *
+     * @param  mixed $model
+     * @return void
+     */
+    protected function registerOriginModel($model)
+    {
+        if (is_a($model, \Laravel\Nova\Resource::class)) {
+            $model = $model->model();
+        } else if (is_a($model, \Whitecube\NovaPage\Pages\Template::class)) {
+            $model = $model->getOriginal();
+        }
+
+        if(!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
+            return;
+        }
+
+        static::$model = $model;
+    }
+
+    /**
+     * Return the previously registered origin model
+     *
+     * @return null|\Illuminate\Database\Eloquent\Model
+     */
+    public static function getOriginModel()
+    {
+        return static::$model;
     }
 }

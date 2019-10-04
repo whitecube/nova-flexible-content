@@ -2,14 +2,19 @@
 
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
+use ArrayAccess;
 use JsonSerializable;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
+use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
+use Illuminate\Contracts\Support\Arrayable;
 
-class Layout implements LayoutInterface, JsonSerializable
+class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
     use HasAttributes;
+    use HidesAttributes;
     use HasFlexible;
 
     /**
@@ -76,7 +81,7 @@ class Layout implements LayoutInterface, JsonSerializable
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
-        $this->setRawAttributes($attributes);
+        $this->setRawAttributes($this->cleanAttributes($attributes));
     }
 
     /**
@@ -120,6 +125,16 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
+     * Retrieve the key currently in use in the views
+     *
+     * @return string
+     */
+    public function inUseKey()
+    {
+        return $this->_key ?? $this->key();
+    }
+
+    /**
      * Check if this group matches the given key
      *
      * @param string $key
@@ -137,7 +152,9 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function getResolved()
     {
-        return $this->resolve($this->getAttributes());
+        $this->resolve();
+
+        return $this->getResolvedValue();
     }
 
     /**
@@ -182,16 +199,14 @@ class Layout implements LayoutInterface, JsonSerializable
     /**
      * Resolve fields using given attributes.
      *
-     * @param  array  $attributes
-     * @return array
+     * @param  boolean $empty
+     * @return void
      */
-    public function resolve(array $attributes = [])
+    public function resolve($empty = false)
     {
-        $this->fields->each(function($field) use ($attributes) {
-            $field->resolve($attributes);
+        $this->fields->each(function($field) use ($empty) {
+            $field->resolve($empty ? $this->duplicate($this->inUseKey()) : $this);
         });
-
-        return $this->getResolvedValue();
     }
 
     /**
@@ -208,15 +223,15 @@ class Layout implements LayoutInterface, JsonSerializable
 
         return $this->getResolvedValue();
     }
-
+  
     /**
-     * Returns the final value of the layout.
+     * Get the layout's resolved representation. Best used
+     * after a resolve() call
      *
-     * Should only be called after all the fields are resolved.
-     *
-     * @return array
-     **/
-    protected function getResolvedValue()
+     * @param  boolean $empty
+     * @return void
+     */
+    public function getResolvedValue()
     {
         return [
             'layout' => $this->name,
@@ -225,7 +240,7 @@ class Layout implements LayoutInterface, JsonSerializable
             // field resolving because we need to keep track of the current
             // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
-            'key' => $this->_key ?? $this->key,
+            'key' => $this->inUseKey(),
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple
@@ -240,13 +255,81 @@ class Layout implements LayoutInterface, JsonSerializable
      * Fill attributes using underlaying fields and incoming request
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return void
+     * @return array
      */
     public function fill(ScopedRequest $request)
     {
-        $this->fields->each(function($field) use ($request) {
-            $field->fill($request, $this);
-        });
+        return  $this->fields->map(function($field) use ($request) {
+                    return $field->fill($request, $this);
+                })
+                ->filter(function($callback) {
+                    return is_callable($callback);
+                })
+                ->values()
+                ->all();
+    }
+
+    /**
+     * Get validation rules for fields concerned by given request
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  string $specificty
+     * @param  string $key
+     * @return array
+     */
+    public function generateRules(ScopedRequest $request, $specificty, $key)
+    {
+        return  $this->fields->map(function($field) use ($request, $specificty, $key) {
+                    return $this->getScopedFieldRules($field, $request, $specificty, $key);
+                })
+                ->collapse()
+                ->all();
+    }
+
+    /**
+     * Get validation rules for fields concerned by given request
+     *
+     * @param  \Laravel\Nova\Fields\Field $field
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  null|string $specificty
+     * @param  string $key
+     * @return array
+     */
+    protected function getScopedFieldRules($field, ScopedRequest $request, $specificty, $key)
+    {
+        $method = 'get' . ucfirst($specificty) . 'Rules';
+
+        $rules = call_user_func([$field, $method], $request);
+        
+        return  collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field) {
+                    $key = $key . '.attributes.' . $attribute;
+                    return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
+                })
+                ->filter()
+                ->all();
+    }
+
+    /**
+     * Wrap the rules in an array containing field information for later use
+     *
+     * @param  \Laravel\Nova\Fields\Field $field
+     * @param  array $rules
+     * @return null|array
+     */
+    protected function wrapScopedFieldRules($field, array $rules)
+    {
+        if(!$rules) {
+            return;
+        }
+
+        if(is_a($rules['attribute'] ?? null, FlexibleAttribute::class)) {
+            return $rules;
+        }
+
+        return [
+            'attribute' => FlexibleAttribute::make($field->attribute, $this->inUseKey()),
+            'rules' => $rules,
+        ];
     }
 
     /**
@@ -273,6 +356,89 @@ class Layout implements LayoutInterface, JsonSerializable
     }
 
     /**
+     * Determine if the given attribute exists.
+     *
+     * @param  mixed  $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return ! is_null($this->getAttribute($offset));
+    }
+
+    /**
+     * Get the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getAttribute($offset);
+    }
+
+    /**
+     * Set the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->setAttribute($offset, $value);
+    }
+
+    /**
+     * Unset the value for a given offset.
+     *
+     * @param  mixed  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->attributes[$offset]);
+    }
+
+    /**
+     * Determine if an attribute or relation exists on the model.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
+     * Unset an attribute on the model.
+     *
+     * @param  string  $key
+     * @return void
+     */
+    public function __unset($key)
+    {
+        $this->offsetUnset($key);
+    }
+
+    /**
+     * Transform empty attribute values to null
+     *
+     * @param  array $attributes
+     * @return array
+     */
+    protected function cleanAttributes($attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            if(!is_string($value) || strlen($value)) continue;
+            $attributes[$key] = null;
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Get the attributes that should be converted to dates.
      *
      * @return array
@@ -280,6 +446,16 @@ class Layout implements LayoutInterface, JsonSerializable
     protected function getDates()
     {
         return $this->dates ?? [];
+    }
+
+    /**
+     * Get the format for database stored dates.
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return $this->dateFormat ?: 'Y-m-d H:i:s';
     }
 
     /**
@@ -309,8 +485,8 @@ class Layout implements LayoutInterface, JsonSerializable
      */
     public function jsonSerialize()
     {
-        // Calling an empty "resolve" call first in order to empty all fields
-        $this->resolve();
+        // Calling an empty "resolve" first in order to empty all fields
+        $this->resolve(true);
 
         return [
             'name' => $this->name,
@@ -346,4 +522,15 @@ class Layout implements LayoutInterface, JsonSerializable
 
         return substr(bin2hex($bytes), 0, 16);
     }
+
+    /**
+     * Convert the model instance to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->attributesToArray();
+    }
+
 }
