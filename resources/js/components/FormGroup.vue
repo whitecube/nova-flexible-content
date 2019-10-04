@@ -8,19 +8,21 @@
                 <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
-                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
-                    <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
-                </button>
-                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
-                    <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
-                </button>
-                <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
-                    <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
-                </button>
-                <div v-if="removeMessage" class="confirm-message">
-                    <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
-                    <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
-                    <button type="button" @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+                <div v-if="!readonly">
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
+                        <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                    </button>
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
+                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                    </button>
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
+                        <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                    </button>
+                    <div v-if="removeMessage" class="confirm-message">
+                        <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
+                        <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
+                        <button type="button" @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,14 +62,8 @@ export default {
         return {
             removeMessage: false,
             collapsed: this.group.collapsed,
-            mounted: false,
+            readonly: this.group.readonly,
         };
-    },
-    
-    mounted: function () {
-        this.$nextTick(function () {
-            this.mounted = true;
-        })
     },
 
     computed: {
@@ -84,7 +80,7 @@ export default {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
             }
-            if (this.collapsed && this.mounted) {
+            if (this.collapsed) {
                 classes.push('hidden');
             }
             return classes;

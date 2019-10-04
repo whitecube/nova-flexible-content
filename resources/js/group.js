@@ -5,7 +5,8 @@ export default class Group {
         this.title = title;
         this.fields = fields;
         this.key = key || this.getTemporaryUniqueKey(field.attribute);
-        this.collapsed = collapsed,
+        this.collapsed = collapsed;
+        this.readonly = field.readonly;
 
         this.renameFields();
     }
