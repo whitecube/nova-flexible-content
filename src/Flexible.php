@@ -160,7 +160,10 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        $layout = new $layout();
+
+        if(!($layout instanceof LayoutInterface)) {
+            $layout = new $layout();
+        }
 
         if(!($layout instanceof LayoutInterface)) {
             throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
@@ -463,7 +466,7 @@ class Flexible extends Field
             // reference (see Http\TransformsFlexibleErrors).
             static::registerValidationKeys($rules);
 
-            // Then, transform the rules into an array that's actually 
+            // Then, transform the rules into an array that's actually
             // usable by Laravel's Validator.
             $rules = $this->getCleanedRules($rules);
         }
