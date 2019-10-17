@@ -19,7 +19,16 @@ class FieldServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app['router']->pushMiddlewareToGroup('nova', InterceptFlexibleAttributes::class);
+        $router = $this->app['router'];
+        if ($router->hasMiddlewareGroup('nova')) {
+            $this->app['router']->pushMiddlewareToGroup( 'nova', InterceptFlexibleAttributes::class );
+        }
+        elseif (! $this->app->configurationIsCached()) {
+            $this->app['config']->set('nova.middleware', array_merge(
+                $this->app['config']->get('nova.middleware', []),
+                [InterceptFlexibleAttributes::class]
+            ));
+        }
         
         Nova::serving(function (ServingNova $event) {
             Nova::script('nova-flexible-content', __DIR__.'/../dist/js/field.js');
