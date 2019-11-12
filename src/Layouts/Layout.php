@@ -115,6 +115,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Retrieve the layout's fields as a collection
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function collectionFields()
+    {
+        return $this->fields;
+    }
+
+    /**
      * Retrieve the layout's unique key
      *
      * @return string
