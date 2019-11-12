@@ -12,16 +12,16 @@ use Laravel\Nova\Http\Requests\NovaRequest;
  * @param  $model
  * @return boolean
  */
-function deleteFile(NovaRequest $request, $model)
+function deleteFile(NovaRequest $request, $model, $field)
 {
-    $path = explode('.', $this->group->originalField);
+    $path = explode('.', $field->group->originalField);
     $path[] = 'attributes';
-    $path[] = $this->attribute;
+    $path[] = $field->attribute;
     $mainField = array_shift($path);
     $data = $model->{$mainField};
 
     foreach ($data as $i => $group) {
-        if ($this->group->inUseKey() !== $group['key']) {
+        if ($field->group->inUseKey() !== $group['key']) {
             continue;
         }
 
