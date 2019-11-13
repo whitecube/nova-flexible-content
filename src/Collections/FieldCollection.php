@@ -37,12 +37,14 @@ class FieldCollection extends NovaFieldCollection
                     continue;
                 }
 
-                return $group->collectionFields()->first(function ($field) use ($attribute_parts, $group) {
+                $field = $group->collectionFields()->first(function ($field) use ($attribute_parts, $group) {
                     $field->group = $group;
 
                     return isset($field->attribute) &&
                         $field->attribute == $attribute_parts[1];
                 }, $default);
+
+                return $this->addDeleteCallback($field);
             }
         }
 
@@ -52,6 +54,13 @@ class FieldCollection extends NovaFieldCollection
         }, $default);
     }
 
+    /**
+     * Flatten all groups into a single array
+     *
+     * @param  Field  $field
+     * @param  $parentGroup
+     * @return array
+     */
     private function flattenGroups(Field $field, $parentGroup = null)
     {
         $flattened = [];
@@ -67,5 +76,37 @@ class FieldCollection extends NovaFieldCollection
             $flattened[] = $group;
         }
         return $flattened;
+    }
+
+    /**
+     * Add the delete callback helper
+     *
+     * @param Field|null $field
+     * @return  Field
+     */
+    private function addDeleteCallback(?Field $field)
+    {
+        if (!$field) {
+            return $field;
+        }
+
+        if (!isset($field->deleteCallback)) {
+            return $field;
+        }
+
+        $callback = false;
+        if (is_callable($field->deleteCallback)) {
+            $callback = $field->deleteCallback;
+        }
+
+        $field->delete(function(NovaRequest $request, $model) use ($callback) {
+            if ($callback && $callback() === true) {
+                return;
+            }
+
+            return \Whitecube\NovaFlexibleContent\deleteFile($request, $model, $this);
+        });
+
+        return $field;
     }
 }
