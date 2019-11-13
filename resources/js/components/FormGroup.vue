@@ -18,6 +18,18 @@
                     <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
                         <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
                     </button>
+                    <portal to="modals">
+                        <transition name="fade">
+                            <delete-flexible-content-group-modal
+                                v-if="removeMessage"
+                                @confirm="remove"
+                                @close="removeMessage=false"
+                                :message="field.confirmRemoveMessage"
+                                :yes="field.confirmRemoveYes"
+                                :no="field.confirmRemoveNo"
+                            />
+                        </transition>
+                    </portal>
                     <div v-if="removeMessage" class="confirm-message">
                         <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
                         <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
