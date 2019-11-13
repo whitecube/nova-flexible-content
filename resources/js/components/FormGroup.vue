@@ -30,11 +30,6 @@
                             />
                         </transition>
                     </portal>
-                    <div v-if="removeMessage" class="confirm-message">
-                        <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
-                        <button type="button" @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
-                        <button type="button" @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
-                    </div>
                 </div>
             </div>
         </div>
