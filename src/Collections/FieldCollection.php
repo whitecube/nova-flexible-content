@@ -86,11 +86,7 @@ class FieldCollection extends NovaFieldCollection
      */
     private function addDeleteCallback(?Field $field)
     {
-        if (!$field) {
-            return $field;
-        }
-
-        if (!isset($field->deleteCallback)) {
+        if (!$field || !isset($field->deleteCallback)) {
             return $field;
         }
 
@@ -100,8 +96,8 @@ class FieldCollection extends NovaFieldCollection
         }
 
         $field->delete(function(NovaRequest $request, $model) use ($callback) {
-            if ($callback && $callback() === true) {
-                return;
+            if ($callback && $callback->call($this, ...func_get_args())) {
+                return true;
             }
 
             return \Whitecube\NovaFlexibleContent\deleteFile($request, $model, $this);
