@@ -82,7 +82,7 @@ class FieldCollection extends NovaFieldCollection
      * Add the delete callback helper
      *
      * @param Field|null $field
-     * @return  Field
+     * @return  Field|null
      */
     private function addDeleteCallback(?Field $field)
     {
