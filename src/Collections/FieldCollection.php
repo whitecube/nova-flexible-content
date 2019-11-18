@@ -96,7 +96,7 @@ class FieldCollection extends NovaFieldCollection
         }
 
         $field->delete(function(NovaRequest $request, $model) use ($callback, $field) {
-            if ($callback && $callback->call($field, ...func_get_args())) {
+            if ($callback && $callback->call($field, ...func_get_args()) === true) {
                 return true;
             }
 
