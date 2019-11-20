@@ -180,9 +180,9 @@ class Flexible extends Field
      * @param string $classname
      * @return $this
      */
-    public function preset($classname)
+    public function preset($classname, $params = [])
     {
-        $preset = resolve($classname);
+        $preset = resolve($classname, $params);
 
         $preset->handle($this);
 
