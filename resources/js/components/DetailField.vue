@@ -6,6 +6,9 @@
                     :index="index"
                     :last="(index === groups.length - 1)"
                     :group="group"
+                    :resource="resource"
+                    :resourceName="resourceName"
+                    :resourceId="resourceId"
                 />
             </div>
         </template>
