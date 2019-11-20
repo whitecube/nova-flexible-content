@@ -178,6 +178,7 @@ class Flexible extends Field
      * Apply a field configuration preset
      *
      * @param string $classname
+     * @param array $params
      * @return $this
      */
     public function preset($classname, $params = [])
