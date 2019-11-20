@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    props: ['group', 'index', 'last'],
+    props: ['group', 'index', 'last', 'resource', 'resourceName', 'resourceId'],
 
     computed: {
         componentStyle() {
