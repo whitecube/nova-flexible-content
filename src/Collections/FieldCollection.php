@@ -63,6 +63,10 @@ class FieldCollection extends NovaFieldCollection
      */
     private function flattenGroups(Field $field, $parentGroup = null)
     {
+        if (!$field->groups()) {
+            return [];
+        }
+
         $flattened = [];
         foreach ($field->groups() as $i => $group) {
             $group->originalField = ($parentGroup ? $group->originalField . '.attributes.' : '') . $field->attribute;
