@@ -17,20 +17,13 @@ function deleteFile(NovaRequest $request, $model, $field)
     $path = explode('.', $field->group->originalField);
     $path[] = 'attributes';
     $path[] = $field->attribute;
+
     $mainField = array_shift($path);
     $data = $model->{$mainField};
 
-    foreach ($data as $i => $group) {
-        if ($field->group->inUseKey() !== $group['key']) {
-            continue;
-        }
+    Arr::set($data, implode('.', $path), '');
 
-        Arr::set($group, implode('.', $path), '');
-
-        $data[$i] = $group;
-        $model->{$mainField} = $data;
-    }
-
+    $model->{$mainField} = $data;
     $model->save();
     return true;
 }

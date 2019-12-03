@@ -26,8 +26,9 @@ class FieldCollection extends NovaFieldCollection
             $attribute_parts = explode('__', $attribute, 2);
 
             $groups = [];
-            foreach ($fields as $field) {
+            foreach ($fields as $i => $field) {
                 if ($field instanceof Flexible) {
+                    $field->index = $i;
                     $groups = array_merge($groups, $this->flattenGroups($field));
                 }
             }
@@ -68,10 +69,11 @@ class FieldCollection extends NovaFieldCollection
         }
 
         $flattened = [];
-        foreach ($field->groups() as $i => $group) {
-            $group->originalField = ($parentGroup ? $group->originalField . '.attributes.' : '') . $field->attribute;
 
-            foreach ($group->fields() as $groupField) {
+        foreach ($field->groups() as $groupIndex => $group) {
+            $group->originalField = ($parentGroup ? $parentGroup->originalField . (isset($field->index) ? '.' . $field->index : '') . '.attributes.' : '') . $field->attribute . '.' . $groupIndex;
+
+            foreach ($group->collectionFields() as $groupField) {
                 if ($groupField instanceof Flexible) {
                     $flattened = array_merge($flattened, $this->flattenGroups($groupField, $group));
                 }
