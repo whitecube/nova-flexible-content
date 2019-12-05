@@ -19,16 +19,14 @@
                         <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
                     </button>
                     <portal to="modals">
-                        <transition name="fade">
-                            <delete-flexible-content-group-modal
-                                v-if="removeMessage"
-                                @confirm="remove"
-                                @close="removeMessage=false"
-                                :message="field.confirmRemoveMessage"
-                                :yes="field.confirmRemoveYes"
-                                :no="field.confirmRemoveNo"
-                            />
-                        </transition>
+                        <delete-flexible-content-group-modal
+                            v-if="removeMessage"
+                            @confirm="remove"
+                            @close="removeMessage=false"
+                            :message="field.confirmRemoveMessage"
+                            :yes="field.confirmRemoveYes"
+                            :no="field.confirmRemoveNo"
+                        />
                     </portal>
                 </div>
             </div>
