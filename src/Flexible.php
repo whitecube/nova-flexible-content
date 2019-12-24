@@ -75,6 +75,16 @@ class Flexible extends Field
     }
 
     /**
+     * Get the field layouts
+     *
+     * @return Collection
+     */
+    public function layouts()
+    {
+        return $this->layouts;
+    }
+
+    /**
      * Set the button's label
      *
      * @param string $label
@@ -131,7 +141,7 @@ class Flexible extends Field
     {
         $resolver = new $classname();
 
-        if(!($resolver instanceof ResolverInterface)) {
+        if (!($resolver instanceof ResolverInterface)) {
             throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
         }
 
@@ -150,12 +160,12 @@ class Flexible extends Field
     {
         $count = count($arguments);
 
-        if($count === 3) {
+        if ($count === 3) {
             $this->registerLayout(new Layout($arguments[0], $arguments[1], $arguments[2]));
             return $this;
         }
 
-        if($count !== 1) {
+        if ($count !== 1) {
             throw new \Exception('Invalid "addLayout" method call. Expected 1 or 3 arguments, ' . $count . ' given.');
         }
 
@@ -165,7 +175,7 @@ class Flexible extends Field
             $layout = new $layout();
         }
 
-        if(!($layout instanceof LayoutInterface)) {
+        if (!($layout instanceof LayoutInterface)) {
             throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
         }
 
@@ -204,7 +214,7 @@ class Flexible extends Field
      */
     protected function registerLayout(LayoutInterface $layout)
     {
-        if(!$this->layouts) {
+        if (!$this->layouts) {
             $this->layouts = new LayoutsCollection();
             $this->withMeta(['layouts' => $this->layouts]);
         }
@@ -269,11 +279,11 @@ class Flexible extends Field
 
         $this->value = $this->resolver->set($model, $attribute, $this->groups);
 
-        if($callbacks->isEmpty()) {
+        if ($callbacks->isEmpty()) {
             return;
         }
 
-        return function() use ($callbacks) {
+        return function () use ($callbacks) {
             $callbacks->each->__invoke();
         };
     }
@@ -287,21 +297,21 @@ class Flexible extends Field
      */
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
-        if(!($raw = $this->extractValue($request, $requestAttribute))) {
+        if (!($raw = $this->extractValue($request, $requestAttribute))) {
             $this->groups = collect();
             return;
         }
 
         $callbacks = [];
 
-        $this->groups = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
+        $this->groups = collect($raw)->map(function ($item, $key) use ($request, &$callbacks) {
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
 
             $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
 
-            if(!$group) return;
+            if (!$group) return;
 
             $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
             $callbacks = array_merge($callbacks, $group->fill($scope));
@@ -323,9 +333,9 @@ class Flexible extends Field
     {
         $value = $request[$attribute];
 
-        if(!$value) return;
+        if (!$value) return;
 
-        if(!is_array($value)) {
+        if (!is_array($value)) {
             throw new \Exception("Unable to parse incoming Flexible content, data should be an array.");
         }
 
@@ -340,7 +350,7 @@ class Flexible extends Field
      */
     protected function resolveGroups($groups)
     {
-        return $groups->map(function($group) {
+        return $groups->map(function ($group) {
             return $group->getResolved();
         });
     }
@@ -369,7 +379,7 @@ class Flexible extends Field
      */
     protected function buildGroups($resource, $attribute)
     {
-        if(!$this->resolver) {
+        if (!$this->resolver) {
             $this->resolver(Resolver::class);
         }
 
@@ -384,7 +394,7 @@ class Flexible extends Field
      */
     protected function findGroup($key)
     {
-        return $this->groups->first(function($group) use ($key) {
+        return $this->groups->first(function ($group) use ($key) {
             return $group->matches($key);
         });
     }
@@ -400,7 +410,7 @@ class Flexible extends Field
     {
         $layout = $this->layouts->find($layout);
 
-        if(!$layout) return;
+        if (!$layout) return;
 
         return $layout->duplicate($key);
     }
@@ -453,13 +463,13 @@ class Flexible extends Field
      */
     protected function getFlexibleRules(NovaRequest $request, $specificty)
     {
-        if(!($value = $this->extractValue($request, $this->attribute))) {
+        if (!($value = $this->extractValue($request, $this->attribute))) {
             return [];
         }
 
         $rules = $this->generateRules($request, $value, $specificty);
 
-        if(!is_a($request, ScopedRequest::class)) {
+        if (!is_a($request, ScopedRequest::class)) {
             // We're not in a nested flexible, meaning we're
             // assuming the field is located at the root of
             // the model's attributes. Therefore, we should now
@@ -486,15 +496,15 @@ class Flexible extends Field
     protected function generateRules(NovaRequest $request, $value, $specificty)
     {
         return collect($value)->map(function ($item, $key) use ($request, $specificty) {
-                    $group = $this->newGroup($item['layout'], $item['key']);
+            $group = $this->newGroup($item['layout'], $item['key']);
 
-                    if(!$group) return [];
+            if (!$group) return [];
 
-                    $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
-                    return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
-                })
-                ->collapse()
-                ->all();
+            $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
+            return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
+        })
+            ->collapse()
+            ->all();
     }
 
     /**
@@ -505,7 +515,7 @@ class Flexible extends Field
      */
     protected function getCleanedRules(array $rules)
     {
-        return array_map(function($field) {
+        return array_map(function ($field) {
             return $field['rules'];
         }, $rules);
     }
@@ -519,12 +529,13 @@ class Flexible extends Field
      */
     protected static function registerValidationKeys(array $rules)
     {
-        $validatedKeys = array_map(function($field) {
+        $validatedKeys = array_map(function ($field) {
             return $field['attribute'];
         }, $rules);
 
         static::$validatedKeys = array_merge(
-            static::$validatedKeys, $validatedKeys
+            static::$validatedKeys,
+            $validatedKeys
         );
     }
 
@@ -553,7 +564,7 @@ class Flexible extends Field
             $model = $model->getOriginal();
         }
 
-        if(!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
+        if (!is_a($model, \Illuminate\Database\Eloquent\Model::class)) {
             return;
         }
 
