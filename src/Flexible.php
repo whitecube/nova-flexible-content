@@ -75,6 +75,26 @@ class Flexible extends Field
     }
 
     /**
+     * Get the field layouts
+     *
+     * @return Collection
+     */
+    public function layouts()
+    {
+        return $this->layouts;
+    }
+
+    /**
+     * Get the field groups
+     *
+     * @return Collection
+     */
+    public function groups()
+    {
+        return $this->groups;
+    }
+
+    /**
      * Set the button's label
      *
      * @param string $label
