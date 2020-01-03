@@ -20,7 +20,7 @@
 
             <component
                 :layouts="layouts"
-                :is="field.menu"
+                :is="field.menu.component"
                 :field="field"
                 :limit-counter="limitCounter"
                 :errors="errors"

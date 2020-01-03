@@ -112,6 +112,19 @@ Flexible::make('Content')->menu('flexible-drop-menu');
 
 // searchable select field
 Flexible::make('Content')->menu('flexible-search-menu');
+
+// customized searchable select field
+Flexible::make('Content')
+    ->menu(
+        'flexible-search-menu', 
+        [
+            'selectLabel' => 'Press enter to select',
+            // the property on the layout entry
+            'label' => 'title',
+            // 'top', 'bottom', 'auto'
+            'openDirection' => 'bottom',
+        ]
+    );
 ```
 
 All you're doing here is defining which Vue component needs to be used.

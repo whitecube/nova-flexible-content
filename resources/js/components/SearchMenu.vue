@@ -2,7 +2,7 @@
     <div class="w-full" v-if="layouts">
 
         <div class="flex">
-            <div class="w-2/5">
+            <div class="w-2/5" v-if="layouts.length === 1">
                 <button
                     type="button"
                     tabindex="0"
@@ -13,21 +13,18 @@
                     <span>{{ field.button }}</span>
                 </button>
             </div>
-            <div class="w-3/5">
+            <div class="w-4/5">
                 <div v-if="layouts.length > 1" style="min-width: 300px;">
-                    <div v-if="isLayoutsDropdownOpen">
                         <div>
                             <multiselect v-model="selectedLayout" :options="layouts"
                                          :custom-label="renderLayoutName"
-                                         placeholder="Select one"
-                                         label="title"
-                                         openDirection="bottom"
+                                         :placeholder="field.button"
                                          @input="selectLayout"
+                                         v-bind="attributes"
                                          track-by="name">
 
                             </multiselect>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -50,6 +47,16 @@
                 selectedLayout: null,
                 isLayoutsDropdownOpen: false
             };
+        },
+
+        computed: {
+            attributes() {
+                return {
+                    selectLabel: this.field.menu.data.selectLabel || 'Press enter to select',
+                    label: this.field.menu.data.label || 'title',
+                    openDirection: this.field.menu.data.openDirection || 'bottom',
+                }
+            }
         },
 
         methods: {
