@@ -17,6 +17,7 @@
         "axios": "^0.19.0"
     },
     "dependencies": {
-        "vue": "^2.5.0"
+        "vue": "^2.5.0",
+        "vue-multiselect": "^2.1.6"
     }
 }
