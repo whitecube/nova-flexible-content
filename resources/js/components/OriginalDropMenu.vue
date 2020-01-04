@@ -9,7 +9,7 @@
                         <li v-for="layout in layouts" class="border-b border-40">
                             <a @click="addGroup(layout)"
                                class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
-                                <div><p class="text-90">{{ layout.title }} sdfsdf</p></div>
+                                <div><p class="text-90">{{ layout.title }}</p></div>
                             </a>
                         </li>
                     </ul>
