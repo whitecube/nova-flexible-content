@@ -102,6 +102,35 @@ Flexible::make('Content')->confirmRemove($label = '', $yes = 'Delete', $no = 'Ca
 
 ![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/confirm_remove.png)
 
+#### Layout selection menu
+
+You can customize the way your user selects a layout, you can choose between 'flexible-drop-menu' and 'flexible-search-menu' or create your own custom menu component.
+
+```php
+// Default, simple list of all layouts
+Flexible::make('Content')->menu('flexible-drop-menu');
+
+// searchable select field
+Flexible::make('Content')->menu('flexible-search-menu');
+
+// customized searchable select field
+Flexible::make('Content')
+    ->menu(
+        'flexible-search-menu', 
+        [
+            'selectLabel' => 'Press enter to select',
+            // the property on the layout entry
+            'label' => 'title',
+            // 'top', 'bottom', 'auto'
+            'openDirection' => 'bottom',
+        ]
+    );
+```
+
+All you're doing here is defining which Vue component needs to be used.
+
+You can take `resources/js/components/OriginalDropMenu.vue` or `resources/js/components/SearchMenu.vue` as a starting point.
+
 ## Custom Layout Classes
 
 Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be  shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class.

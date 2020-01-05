@@ -71,7 +71,22 @@ class Flexible extends Field
 
         $this->button('Add layout');
 
+        // The original menu as default
+        $this->menu('flexible-drop-menu');
+
         $this->hideFromIndex();
+    }
+
+    /**
+     * @param string $component The name of the component to use for the menu
+     *
+     * @param array  $data
+     *
+     * @return $this
+     */
+    public function menu($component, $data = [])
+    {
+        return $this->withMeta(['menu' => compact('component', 'data')]);
     }
 
     /**
