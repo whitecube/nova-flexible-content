@@ -15,7 +15,7 @@
             </div>
             <div class="w-4/5">
                 <div v-if="layouts.length > 1" style="min-width: 300px;">
-                        <div>
+                        <div class="flexible-search-menu-multiselect">
                             <multiselect v-model="selectedLayout" :options="layouts"
                                          :custom-label="renderLayoutName"
                                          :placeholder="field.button"
