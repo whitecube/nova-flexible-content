@@ -14,7 +14,7 @@ trait HasFlexible {
      *
      * @param string $attribute
      * @param array  $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function flexible($attribute, $layoutMapping = [])
     {
@@ -32,7 +32,7 @@ trait HasFlexible {
      *
      * @param mixed $value
      * @param array $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function toFlexible($value, $layoutMapping = [])
     {
@@ -132,7 +132,7 @@ trait HasFlexible {
      * @param string $key
      * @param array  $attributes
      * @param array  $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
