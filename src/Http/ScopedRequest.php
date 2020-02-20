@@ -13,7 +13,7 @@ class ScopedRequest extends NovaRequest
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $from
      * @param  array  $attributes
      * @param  string  $group
-     * @return Whitecube\NovaFlexibleContent\Http\ScopedRequest
+     * @return \Whitecube\NovaFlexibleContent\Http\ScopedRequest
      */
     public static function scopeFrom(NovaRequest $from, $attributes, $group)
     {
