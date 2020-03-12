@@ -42,7 +42,7 @@ class Resolver implements ResolverInterface
             if(!$layout) return;
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
-        })->filter();
+        })->filter()->values();
     }
 
     /**
