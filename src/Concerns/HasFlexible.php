@@ -18,7 +18,7 @@ trait HasFlexible {
      */
     public function flexible($attribute, $layoutMapping = [])
     {
-        $flexible = data_get($this, $attribute);
+        $flexible = data_get($this->attributes, $attribute);
 
         if(app()->getProvider(NovaServiceProvider::class)) {
             return $flexible;
