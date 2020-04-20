@@ -10,6 +10,7 @@ use Spatie\MediaLibrary\FileAdder\FileAdderFactory;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 
 trait HasMediaLibrary {
 
@@ -56,6 +57,25 @@ trait HasMediaLibrary {
     public function getMedia(string $collectionName = 'default', $filters = []): Collection
     {
         return app(MediaRepository::class)->getCollection($this->getMediaModel(), $collectionName, $filters);
+    } 
+
+    /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay(
+                is_subclass_of($field, Media::class) ? $this->getMediaModel() : $attributes
+            );
+        });
+
+        return $this->getResolvedValue();
     }
 
+    // this needs for some errors after saving
+    abstract public function registerMediaCollections();
 }
