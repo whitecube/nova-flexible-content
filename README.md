@@ -77,7 +77,7 @@ Flexible::make('Content')
 
 ### Using Flexible values in views
 
-If you are using Laravel 6 and under, or don't want to use casts, please [use an accessor on your model with the HasFlexible trait](#).
+If you are using Laravel 6 and under, or don't want to use casts, please [use an accessor on your model with the HasFlexible trait](https://whitecube.github.io/nova-flexible-content/#/?id=with-the-hasflexible-trait).
 
 Laravel 7 brings custom casts to the table, and flexible content fields are the perfect use case for them. The field stores its values as a single JSON string, meaning this string needs to be parsed before it can be used in your application. This can be done trivially by using the `FlexibleCast` class in this package:
 
@@ -111,7 +111,7 @@ class MyFlexibleCast extends FlexibleCast
 }
 ```
 
-If you need more control, you can [override the `getLayoutMappings` method](#) instead.
+If you need more control, you can [override the `getLayoutMappings` method](https://whitecube.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings) instead.
 
 #### The Layouts Collection
 
