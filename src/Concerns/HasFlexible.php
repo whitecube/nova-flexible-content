@@ -20,11 +20,23 @@ trait HasFlexible {
     {
         $flexible = data_get($this, $attribute);
 
+        return $this->cast($flexible, $layoutMapping);
+    }
+
+    /**
+     * Cast a Flexible Content value
+     *
+     * @param array $value
+     * @param array $layoutMapping
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     */
+    public function cast($value, $layoutMapping = [])
+    {
         if(app()->getProvider(NovaServiceProvider::class)) {
-            return $flexible;
+            return $value;
         }
-        
-        return $this->toFlexible($flexible ?: null, $layoutMapping);
+
+        return $this->toFlexible($value ?: null, $layoutMapping);
     }
 
     /**
