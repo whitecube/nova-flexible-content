@@ -2,6 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent\Value;
 
+use Illuminate\Support\Collection;
+
 class Resolver implements ResolverInterface
 {
 
