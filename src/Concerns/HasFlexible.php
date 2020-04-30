@@ -14,17 +14,29 @@ trait HasFlexible {
      *
      * @param string $attribute
      * @param array  $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function flexible($attribute, $layoutMapping = [])
     {
-        $flexible = $this->attributes[$attribute] ?? null;
+        $flexible = data_get($this->attributes, $attribute);
 
+        return $this->cast($flexible, $layoutMapping);
+    }
+
+    /**
+     * Cast a Flexible Content value
+     *
+     * @param array $value
+     * @param array $layoutMapping
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     */
+    public function cast($value, $layoutMapping = [])
+    {
         if(app()->getProvider(NovaServiceProvider::class)) {
-            return $flexible;
+            return $value;
         }
-        
-        return $this->toFlexible($flexible ?: null, $layoutMapping);
+
+        return $this->toFlexible($value ?: null, $layoutMapping);
     }
 
     /**
@@ -32,7 +44,7 @@ trait HasFlexible {
      *
      * @param mixed $value
      * @param array $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function toFlexible($value, $layoutMapping = [])
     {
@@ -132,7 +144,7 @@ trait HasFlexible {
      * @param string $key
      * @param array  $attributes
      * @param array  $layoutMapping
-     * @return Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {

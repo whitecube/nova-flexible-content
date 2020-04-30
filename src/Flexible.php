@@ -71,7 +71,22 @@ class Flexible extends Field
 
         $this->button('Add layout');
 
+        // The original menu as default
+        $this->menu('flexible-drop-menu');
+
         $this->hideFromIndex();
+    }
+
+    /**
+     * @param string $component The name of the component to use for the menu
+     *
+     * @param array  $data
+     *
+     * @return $this
+     */
+    public function menu($component, $data = [])
+    {
+        return $this->withMeta(['menu' => compact('component', 'data')]);
     }
 
     /**
@@ -178,11 +193,12 @@ class Flexible extends Field
      * Apply a field configuration preset
      *
      * @param string $classname
+     * @param array $params
      * @return $this
      */
-    public function preset($classname)
+    public function preset($classname, $params = [])
     {
-        $preset = resolve($classname);
+        $preset = resolve($classname, $params);
 
         $preset->handle($this);
 
@@ -379,7 +395,7 @@ class Flexible extends Field
      * Find an existing group based on its key
      *
      * @param  string $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function findGroup($key)
     {
@@ -393,7 +409,7 @@ class Flexible extends Field
      *
      * @param  string $layout
      * @param  string $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function newGroup($layout, $key)
     {

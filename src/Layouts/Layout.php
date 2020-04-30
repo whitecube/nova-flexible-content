@@ -171,7 +171,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get an empty cloned instance
      *
      * @param  string  $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     public function duplicate($key)
     {
@@ -183,7 +183,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @param  string  $key
      * @param  array  $attributes
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {

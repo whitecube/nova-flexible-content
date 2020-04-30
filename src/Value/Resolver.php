@@ -2,6 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent\Value;
 
+use Illuminate\Support\Collection;
+
 class Resolver implements ResolverInterface
 {
 
@@ -42,7 +44,7 @@ class Resolver implements ResolverInterface
             if(!$layout) return;
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
-        })->filter();
+        })->filter()->values();
     }
 
     /**
