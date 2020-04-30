@@ -51,13 +51,17 @@ class FieldServiceProvider extends ServiceProvider
     public function addMiddleware()
     {
         $router = $this->app['router'];
+        
         if ($router->hasMiddlewareGroup('nova')) {
-            $router->pushMiddlewareToGroup( 'nova', InterceptFlexibleAttributes::class );
+            $router->pushMiddlewareToGroup('nova', InterceptFlexibleAttributes::class);
+            
+            return;
         }
-        elseif (! $this->app->configurationIsCached()) {
+        
+        if (! $this->app->configurationIsCached()) {
             config()->set('nova.middleware', array_merge(
                 config('nova.middleware', []),
-                [ InterceptFlexibleAttributes::class ]
+                [InterceptFlexibleAttributes::class]
             ));
         }
     }
