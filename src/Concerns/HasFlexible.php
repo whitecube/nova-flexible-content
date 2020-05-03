@@ -149,16 +149,19 @@ trait HasFlexible {
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
+        $classname = array_key_exists($name, $layoutMapping)
+            ? $layoutMapping[$name]
+            : Layout::class;
+
+        $layout = new $classname($name, $name, [], $key, $attributes);
+
         $model = is_a($this, FlexibleCast::class)
             ? $this->model
             : $this;
 
-        if(array_key_exists($name, $layoutMapping)) {
-            $classname = $layoutMapping[$name];
-            return new $classname($name, $name, [], $key, $attributes, $model);
-        }
+        $layout->setModel($model);
 
-        return new Layout($name, $name, [], $key, $attributes, $model);
+        return $layout;
     }
 
 }

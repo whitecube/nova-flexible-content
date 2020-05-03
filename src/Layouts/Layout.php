@@ -10,6 +10,7 @@ use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 
 class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
@@ -88,15 +89,27 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], $model = null, callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
     {
-        $this->model = $model;
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
+    }
+
+    /**
+     * Set the parent model instance
+     *
+     * @param Model $model
+     * @return $this
+     */
+    public function setModel(Model $model)
+    {
+        $this->model = $model;
+
+        return $this;
     }
 
     /**
