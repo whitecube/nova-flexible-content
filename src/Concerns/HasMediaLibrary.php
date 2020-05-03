@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
 trait HasMediaLibrary {
@@ -69,6 +70,23 @@ trait HasMediaLibrary {
     public function getSuffix()
     {
         return '_' . $this->inUseKey();
+    }
+    
+    /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay(
+                is_subclass_of($field, Media::class) ? $this->getMediaModel() : $attributes
+            );
+        });
+
+        return $this->getResolvedValue();
     }
 
 }
