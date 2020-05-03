@@ -5,9 +5,9 @@ namespace Whitecube\NovaFlexibleContent\FileAdder;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
-use Spatie\MediaLibrary\FileAdder\FileAdder as OriginalFileAdder;
+use Spatie\MediaLibrary\MediaCollections\FileAdder as OriginalFileAdder;
 use Spatie\MediaLibrary\Helpers\File;
-use Spatie\MediaLibrary\Models\Media;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class FileAdder extends OriginalFileAdder
 {

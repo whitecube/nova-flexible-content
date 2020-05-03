@@ -3,9 +3,9 @@
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\FileAdder;
-use Spatie\MediaLibrary\MediaCollections\FileAdderFactory;
 use Spatie\MediaLibrary\MediaCollections\MediaRepository;
+use Whitecube\NovaFlexibleContent\FileAdder\FileAdder;
+use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
 use Whitecube\NovaFlexibleContent\Flexible;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -38,9 +38,9 @@ trait HasMediaLibrary {
      *
      * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $file
      *
-     * @return \Spatie\MediaLibrary\FileAdder\FileAdder
+     * @return \Spatie\MediaLibrary\MediaCollections\FileAdder
      */
-    public function addMedia($file) : FileAdder
+    public function addMedia($file) : \Spatie\MediaLibrary\MediaCollections\FileAdder
     {
         return app(FileAdderFactory::class)
             ->create($this->getMediaModel(), $file, $this->getSuffix())
