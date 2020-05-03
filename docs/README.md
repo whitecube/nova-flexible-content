@@ -450,6 +450,54 @@ public function set($model, $attribute, $groups)
 }
 ```
 
+## Usage with ebess/advanced-nova-media-library
+By popular demand, we have added compatibility with the advanced-nova-media-library field.
+This requires a few extra steps, as follows:
+
+1. You must use a [custom layout class](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the `Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
+3. The parent model must implement `Spatie\MediaLibrary\HasMedia` and use the `Spatie\MediaLibrary\InteractsWithMedia` trait.
+
+Quick example, consider `Post` has a flexible field with a `SliderLayout`:
+
+```php
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+
+class Post extends Model implements HasMedia
+{
+    use HasFlexible;
+    use InteractsWithMedia;
+}
+```
+
+```php
+use Spatie\MediaLibrary\HasMedia;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
+use Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary;
+
+class SliderLayout extends Layout implements HasMedia
+{
+    use HasMediaLibrary;
+
+    protected $name = 'sliderlayout';
+    protected $title = 'SliderLayout';
+
+    public function fields()
+    {
+        return [
+            Images::make('Images', 'images')
+        ];
+    }
+
+}
+```
+
+You can now call `getMedia('images')` on your `SliderLayout` instance.
+
 ## Contributing
 
 Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made and we would be very happy to merge useful pull requests.
