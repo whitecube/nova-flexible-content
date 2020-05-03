@@ -2,27 +2,29 @@
 
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\FileAdder;
+use Spatie\MediaLibrary\MediaCollections\FileAdderFactory;
+use Spatie\MediaLibrary\MediaCollections\MediaRepository;
 use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
-use Spatie\MediaLibrary\MediaRepository;
-use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\HasMedia;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
 trait HasMediaLibrary {
 
-    use HasMediaTrait;
+    use InteractsWithMedia;
 
     /**
      * Return the underlying model implementing the HasMedia interface
      *
-     * @return \Spatie\MediaLibrary\HasMedia\HasMedia
+     * @return \Spatie\MediaLibrary\HasMedia
      */
     protected function getMediaModel() : HasMedia
     {
-        $model = Flexible::getOriginModel();
+        $model = Flexible::getOriginModel() ?? $this->model;
 
         if(is_null($model) || !($model instanceof HasMedia)) {
             throw new \Exception('Origin HasMedia model not found.');
@@ -38,10 +40,10 @@ trait HasMediaLibrary {
      *
      * @return \Spatie\MediaLibrary\FileAdder\FileAdder
      */
-    public function addMedia($file)
+    public function addMedia($file) : FileAdder
     {
         return app(FileAdderFactory::class)
-            ->create($this->getMediaModel(), $file, '_' . $this->inUseKey())
+            ->create($this->getMediaModel(), $file, $this->getSuffix())
             ->preservingOriginal();
     }
 
@@ -55,7 +57,18 @@ trait HasMediaLibrary {
      */
     public function getMedia(string $collectionName = 'default', $filters = []): Collection
     {
-        return app(MediaRepository::class)->getCollection($this->getMediaModel(), $collectionName . '_' . $this->inUseKey(), $filters);
+        return app(MediaRepository::class)
+            ->getCollection($this->getMediaModel(), $collectionName . $this->getSuffix(), $filters);
+    }
+  
+    /**
+     * Get the media collection name suffix.
+     *
+     * @return string
+     */
+    public function getSuffix()
+    {
+        return '_' . $this->inUseKey();
     }
 
 }

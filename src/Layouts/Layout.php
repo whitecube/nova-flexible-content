@@ -71,6 +71,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected $removeCallbackMethod;
 
+  
+     * The parent model instance
+     *
+     * @var Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
     /**
      * Create a new base Layout instance
      *
@@ -80,8 +87,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], $model = null, callable $removeCallbackMethod = null)
     {
+        $this->model = $model;
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
@@ -164,10 +172,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Resolve the field for display and return the result.
+     *
+     * @return array
+     */
+    public function getResolvedForDisplay()
+    {
+        return $this->resolveForDisplay($this->getAttributes());
+    }
+
+    /**
      * Get an empty cloned instance
      *
      * @param  string  $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     public function duplicate($key)
     {
@@ -179,7 +197,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @param  string  $key
      * @param  array  $attributes
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {
@@ -193,7 +211,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
-     * Resolve fields using given attributes
+     * Resolve fields using given attributes.
      *
      * @param  boolean $empty
      * @return void
@@ -205,6 +223,21 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         });
     }
 
+    /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay($attributes);
+        });
+
+        return $this->getResolvedValue();
+    }
+  
     /**
      * Get the layout's resolved representation. Best used
      * after a resolve() call

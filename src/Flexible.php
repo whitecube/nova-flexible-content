@@ -71,7 +71,22 @@ class Flexible extends Field
 
         $this->button('Add layout');
 
+        // The original menu as default
+        $this->menu('flexible-drop-menu');
+
         $this->hideFromIndex();
+    }
+
+    /**
+     * @param string $component The name of the component to use for the menu
+     *
+     * @param array  $data
+     *
+     * @return $this
+     */
+    public function menu($component, $data = [])
+    {
+        return $this->withMeta(['menu' => compact('component', 'data')]);
     }
 
     /**
@@ -165,7 +180,10 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        $layout = new $layout();
+
+        if(!($layout instanceof LayoutInterface)) {
+            $layout = new $layout();
+        }
 
         if(!($layout instanceof LayoutInterface)) {
             throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
@@ -180,11 +198,12 @@ class Flexible extends Field
      * Apply a field configuration preset
      *
      * @param string $classname
+     * @param array $params
      * @return $this
      */
-    public function preset($classname)
+    public function preset($classname, $params = [])
     {
-        $preset = resolve($classname);
+        $preset = resolve($classname, $params);
 
         $preset->handle($this);
 
@@ -229,6 +248,22 @@ class Flexible extends Field
         $this->buildGroups($resource, $attribute);
 
         $this->value = $this->resolveGroups($this->groups);
+    }
+
+    /**
+     * Resolve the field's value for display on index and detail views.
+     *
+     * @param mixed $resource
+     * @param string|null $attribute
+     * @return void
+     */
+    public function resolveForDisplay($resource, $attribute = null)
+    {
+        $attribute = $attribute ?? $this->attribute;
+
+        $this->buildGroups($resource, $attribute);
+
+        $this->value = $this->resolveGroupsForDisplay($this->groups);
     }
 
     /**
@@ -352,6 +387,20 @@ class Flexible extends Field
     }
 
     /**
+     * Resolve all contained groups and their fields for display on index and
+     * detail views.
+     *
+     * @param Illuminate\Support\Collection $groups
+     * @return Illuminate\Support\Collection
+     */
+    protected function resolveGroupsForDisplay($groups)
+    {
+        return $groups->map(function ($group) {
+            return $group->getResolvedForDisplay();
+        });
+    }
+
+    /**
      * Define the field's actual layout groups (as "base models") based
      * on the field's current model & attribute
      *
@@ -372,7 +421,7 @@ class Flexible extends Field
      * Find an existing group based on its key
      *
      * @param  string $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function findGroup($key)
     {
@@ -386,7 +435,7 @@ class Flexible extends Field
      *
      * @param  string $layout
      * @param  string $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function newGroup($layout, $key)
     {
@@ -459,7 +508,7 @@ class Flexible extends Field
             // reference (see Http\TransformsFlexibleErrors).
             static::registerValidationKeys($rules);
 
-            // Then, transform the rules into an array that's actually 
+            // Then, transform the rules into an array that's actually
             // usable by Laravel's Validator.
             $rules = $this->getCleanedRules($rules);
         }
