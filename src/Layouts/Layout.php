@@ -71,7 +71,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected $removeCallbackMethod;
 
-  
+
+    /**
      * The parent model instance
      *
      * @var Illuminate\Database\Eloquent\Model
