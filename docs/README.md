@@ -116,7 +116,7 @@ Flexible::make('Content')->menu('flexible-search-menu');
 // customized searchable select field
 Flexible::make('Content')
     ->menu(
-        'flexible-search-menu', 
+        'flexible-search-menu',
         [
             'selectLabel' => 'Press enter to select',
             // the property on the layout entry
@@ -130,6 +130,130 @@ Flexible::make('Content')
 All you're doing here is defining which Vue component needs to be used.
 
 You can take `resources/js/components/OriginalDropMenu.vue` or `resources/js/components/SearchMenu.vue` as a starting point.
+
+## Using Flexible values in views
+
+The field stores its values as a single JSON string, meaning this string needs to be parsed before it can be used in your application.
+
+### With casts
+
+This can be done trivially by using the `FlexibleCast` class in this package:
+
+```php
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+
+class MyModel extends Model
+{
+    protected $casts = [
+        'flexible-content' => FlexibleCast::class
+    ];
+}
+```
+
+#### Writing a custom flexible cast
+
+By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will create the file in the `App\Casts` directory.
+
+Then easily map your custom layout classes to the proper keys:
+
+```php
+namespace App\Casts;
+
+class MyFlexibleCast extends FlexibleCast
+{
+    protected $layouts = [
+        'wysiwyg' => \App\Nova\Flexible\Layouts\WysiwygLayout::class,
+        'video' => \App\Nova\Flexible\Layouts\VideoLayout::class,
+    ];
+}
+```
+
+#### Having more control over the layout mappings
+
+If you need to do complex things with your mappings instead of having a static array as shown above, you can override the `getLayoutMappings` method on your cast.
+
+```php
+namespace App\Casts;
+
+class MyFlexibleCast extends FlexibleCast
+{
+    protected function getLayoutMappings()
+    {
+        $mappings = [];
+        
+        // Conditionally add mappings however you want
+        
+        return $mappings;
+    }
+}
+```
+
+### With the `HasFlexible` trait
+
+By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Whitecube\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
+
+```php
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+
+class MyModel extends Model
+{
+    use HasFlexible;
+
+    public function getFlexibleContentAttribute()
+    {
+        return $this->flexible('flexible-content');
+    }
+}
+```
+
+By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible to specify the mapping rules as follows:
+
+```php
+public function getFlexibleContentAttribute()
+{
+    return $this->flexible('flexible-content', [
+        'wysiwyg' => \App\Nova\Flexible\Layouts\WysiwygLayout::class,
+        'video' => \App\Nova\Flexible\Layouts\VideoLayout::class,
+    ]);
+}
+```
+
+## Layouts
+
+### The Layouts Collection
+
+Collections returned by `FlexibleCast` or the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
+
+### The Layout instance
+
+Layouts are some kind of _fake models_. They use Laravel's `HasAttributes` trait, which means you can define accessors & mutators for the layout's attributes.
+
+Each Layout (or custom layout extending the base Layout) already implements the `HasFlexible` trait, meaning you can directly use the `$layout->flexible('my-sub-layout')` method to parse nested flexible content values.
+
+Furthermore, it's also possible to access the Layout's properties using the following methods:
+
+##### `name()`
+
+Returns the layout's name.
+
+##### `title()`
+
+Returns the layout's title (as shown in Nova).
+
+##### `key()`
+
+Returns the layout's unique key (the layout's unique identifier).
+
+
+## Going further
+
+When using the Flexible Content field, you'll quickly come across of some use cases where the basics described above are not enough. That's why we developed the package in an extendable way, making it possible to easily add custom behaviors and/or capabilities to Field and its output.
 
 ## Custom Layout Classes
 
@@ -191,7 +315,7 @@ php artisan flexible:layout {classname?} {name?}
 
 ## Predefined Preset Classes
 
-In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. 
+In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions.
 
 ```php
 namespace App\Nova\Flexible\Presets;
@@ -335,5 +459,5 @@ Thanks!
 
 ## Made with ❤️ for open source
 At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.
-So when we have an opportunity to give something back, we're super excited!  
+So when we have an opportunity to give something back, we're super excited!
 We hope you will enjoy this small contribution from us and would love to [hear from you](mailto:hello@whitecube.be) if you find it useful in your projects.

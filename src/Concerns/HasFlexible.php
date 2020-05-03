@@ -6,6 +6,7 @@ use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
+use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 trait HasFlexible {
 
@@ -18,13 +19,25 @@ trait HasFlexible {
      */
     public function flexible($attribute, $layoutMapping = [])
     {
-        $flexible = data_get($this, $attribute);
+        $flexible = data_get($this->attributes, $attribute);
 
+        return $this->cast($flexible, $layoutMapping);
+    }
+
+    /**
+     * Cast a Flexible Content value
+     *
+     * @param array $value
+     * @param array $layoutMapping
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     */
+    public function cast($value, $layoutMapping = [])
+    {
         if(app()->getProvider(NovaServiceProvider::class)) {
-            return $flexible;
+            return $value;
         }
-        
-        return $this->toFlexible($flexible ?: null, $layoutMapping);
+
+        return $this->toFlexible($value ?: null, $layoutMapping);
     }
 
     /**
@@ -136,12 +149,16 @@ trait HasFlexible {
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
+        $model = is_a($this, FlexibleCast::class)
+            ? $this->model
+            : $this;
+
         if(array_key_exists($name, $layoutMapping)) {
             $classname = $layoutMapping[$name];
-            return new $classname($name, $name, [], $key, $attributes);
+            return new $classname($name, $name, [], $key, $attributes, $model);
         }
 
-        return new Layout($name, $name, [], $key, $attributes);
+        return new Layout($name, $name, [], $key, $attributes, $model);
     }
 
 }

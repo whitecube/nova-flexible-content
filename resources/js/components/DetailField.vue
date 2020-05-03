@@ -54,7 +54,8 @@ export default {
                 layout.name,
                 layout.title,
                 item.attributes,
-                this.field
+                this.field,
+                item.key
             );
         },
     }

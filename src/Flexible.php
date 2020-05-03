@@ -170,6 +170,11 @@ class Flexible extends Field
             return $this;
         }
 
+        if($count === 6) {
+            $this->registerLayout(new Layout($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]));
+            return $this;
+        }
+
         if($count !== 1) {
             throw new \Exception('Invalid "addLayout" method call. Expected 1 or 3 arguments, ' . $count . ' given.');
         }
@@ -309,7 +314,7 @@ class Flexible extends Field
 
         $callbacks = [];
 
-        $this->groups = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
+        $new_groups  = collect($raw)->map(function($item, $key) use ($request, &$callbacks) {
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
@@ -324,9 +329,30 @@ class Flexible extends Field
             return $group;
         });
 
+        $this->fireRemoveCallbacks($new_groups);
+
+        $this->groups = $new_groups;
+
         return $callbacks;
     }
 
+    /**
+     * Fire's the remove callbacks on the layouts
+     *
+     * @param $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     */
+    protected function fireRemoveCallbacks($new_groups) {
+        $new_group_keys = $new_groups->map(function($item) {
+            return $item->inUseKey();
+        });
+        $removed_groups = $this->groups->filter(function ($item) use ($new_group_keys) {
+            return !$new_group_keys->contains($item->inUseKey());
+        })->each(function ($group) {
+            if (method_exists($group, 'fireRemoveCallback')) {
+                $group->fireRemoveCallback($this);
+            }
+        });
+    }
     /**
      * Find the flexible's value in given request
      *
