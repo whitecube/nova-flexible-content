@@ -261,6 +261,8 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
+        $this->registerOriginModel($resource);
+
         $this->buildGroups($resource, $attribute);
 
         $this->value = $this->resolveGroupsForDisplay($this->groups);
