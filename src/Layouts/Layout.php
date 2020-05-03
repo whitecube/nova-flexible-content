@@ -67,6 +67,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $dates = [];
 
     /**
+     * The callback to be called when this layout is removed
+     */
+    protected $removeCallbackMethod;
+
+  
      * The parent model instance
      *
      * @var Illuminate\Database\Eloquent\Model
@@ -82,13 +87,14 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], $model = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], $model = null, callable $removeCallbackMethod = null)
     {
         $this->model = $model;
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
+        $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
     }
 
@@ -315,6 +321,32 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
                 })
                 ->filter()
                 ->all();
+    }
+
+    /**
+     * The method to call when this layout is removed
+     *
+     * @param mixed $group The parent grouping
+     */
+    public function fireRemoveCallback($flexible)
+    {
+        if (is_callable($this->removeCallbackMethod)) {
+            return $this->removeCallbackMethod($flexible, $this);
+        }
+
+        return $this->removeCallback($flexible, $this);
+    }
+
+    /**
+     * The default behaviour when removed
+     *
+     * @param  mixed $group The group
+     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     *
+     * @return mixed
+     */
+    protected function removeCallback($flexible, $layout) {
+        return;
     }
 
     /**

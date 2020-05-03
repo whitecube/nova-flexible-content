@@ -43,7 +43,7 @@ trait HasMediaLibrary {
     public function addMedia($file) : FileAdder
     {
         return app(FileAdderFactory::class)
-            ->create($this->getMediaModel(), $file)
+            ->create($this->getMediaModel(), $file, $this->getSuffix())
             ->preservingOriginal();
     }
 
@@ -58,7 +58,17 @@ trait HasMediaLibrary {
     public function getMedia(string $collectionName = 'default', $filters = []): Collection
     {
         return app(MediaRepository::class)
-            ->getCollection($this->getMediaModel(), $collectionName, $filters);
+            ->getCollection($this->getMediaModel(), $collectionName . $this->getSuffix(), $filters);
+    }
+  
+    /**
+     * Get the media collection name suffix.
+     *
+     * @return string
+     */
+    public function getSuffix()
+    {
+        return '_' . $this->inUseKey();
     }
 
 }

@@ -60,9 +60,17 @@ export default class Group {
      * Generate a unique string for current group
      */
     getTemporaryUniqueKey(attribute) {
-        return Math.random().toString(36).substring(2, 15)
-            + Math.random().toString(36).substring(2, 15)
-            + '-' + this.name;
+        return this.randomString(16);
+    }
+
+    randomString(len, charSet) {
+        charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var randomString = '';
+        for (var i = 0; i < len; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz,randomPoz+1);
+        }
+        return randomString;
     }
 
     /**
