@@ -14,8 +14,15 @@ class FlexibleCast implements CastsAttributes
      */
     protected $layouts = [];
 
+    /**
+     * @var Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
     public function get($model, string $key, $value, array $attributes)
     {
+        $this->model = $model;
+
         return $this->cast($value, $this->getLayoutMapping());
     }
 

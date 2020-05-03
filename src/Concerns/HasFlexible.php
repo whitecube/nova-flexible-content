@@ -6,6 +6,7 @@ use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
+use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 trait HasFlexible {
 
@@ -148,12 +149,16 @@ trait HasFlexible {
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
+        $model = is_a($this, FlexibleCast::class)
+            ? $this->model
+            : $this;
+
         if(array_key_exists($name, $layoutMapping)) {
             $classname = $layoutMapping[$name];
-            return new $classname($name, $name, [], $key, $attributes);
+            return new $classname($name, $name, [], $key, $attributes, $model);
         }
 
-        return new Layout($name, $name, [], $key, $attributes);
+        return new Layout($name, $name, [], $key, $attributes, $model);
     }
 
 }

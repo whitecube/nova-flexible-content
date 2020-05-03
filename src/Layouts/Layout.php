@@ -67,6 +67,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $dates = [];
 
     /**
+     * The parent model instance
+     *
+     * @var Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
+    /**
      * Create a new base Layout instance
      *
      * @param string $title
@@ -75,8 +82,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [])
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], $model = null)
     {
+        $this->model = $model;
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = collect($fields ?? $this->fields());
