@@ -105,7 +105,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param Model $model
      * @return $this
      */
-    public function setModel(Model $model)
+    public function setModel($model)
     {
         $this->model = $model;
 
@@ -251,7 +251,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $this->getResolvedValue();
     }
-  
+
     /**
      * Get the layout's resolved representation. Best used
      * after a resolve() call
@@ -328,7 +328,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $method = 'get' . ucfirst($specificty) . 'Rules';
 
         $rules = call_user_func([$field, $method], $request);
-        
+
         return  collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field) {
                     $key = $key . '.attributes.' . $attribute;
                     return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
