@@ -79,6 +79,7 @@ export default class Group {
     renameFields() {
         for (var i = this.fields.length - 1; i >= 0; i--) {
             this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
+            this.fields[i].validationKey = this.fields[i].attribute;
         }
     }
 
