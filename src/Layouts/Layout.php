@@ -6,6 +6,7 @@ use ArrayAccess;
 use JsonSerializable;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
@@ -201,7 +202,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get an empty cloned instance
      *
      * @param  string  $key
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return Layout
      */
     public function duplicate($key)
     {
@@ -213,7 +214,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @param  string  $key
      * @param  array  $attributes
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return Layout
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {
@@ -273,8 +274,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get the layout's resolved representation. Best used
      * after a resolve() call
      *
-     * @param  boolean $empty
-     * @return void
+     * @return array
      */
     public function getResolvedValue()
     {
@@ -299,7 +299,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Fill attributes using underlaying fields and incoming request
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param ScopedRequest $request
      * @return array
      */
     public function fill(ScopedRequest $request)
@@ -317,7 +317,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Get validation rules for fields concerned by given request
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  ScopedRequest $request
      * @param  string $specificty
      * @param  string $key
      * @return array
@@ -335,7 +335,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get validation rules for fields concerned by given request
      *
      * @param  \Laravel\Nova\Fields\Field $field
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  ScopedRequest $request
      * @param  null|string $specificty
      * @param  string $key
      * @return array
@@ -357,9 +357,10 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The method to call when this layout is removed
      *
-     * @param mixed $group The parent grouping
+     * @param Flexible $flexible
+     * @return mixed
      */
-    public function fireRemoveCallback($flexible)
+    public function fireRemoveCallback(Flexible $flexible)
     {
         if (is_callable($this->removeCallbackMethod)) {
             return $this->removeCallbackMethod($flexible, $this);
@@ -371,12 +372,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The default behaviour when removed
      *
-     * @param  mixed $group The group
+     * @param  Flexible $flexible
      * @param  Whitecube\NovaFlexibleContent\Layout $layout
      *
      * @return mixed
      */
-    protected function removeCallback($flexible, $layout) {
+    protected function removeCallback(Flexible $flexible, $layout) {
         return;
     }
 
@@ -569,8 +570,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Returns an unique key for this group if it's not already the case
      *
-     * @param  string  $key
+     * @param string $key
      * @return string
+     * @throws \Exception
      */
     protected function getProcessedKey($key)
     {
