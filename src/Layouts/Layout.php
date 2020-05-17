@@ -4,6 +4,8 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
+use Laravel\Nova\Fields\FieldCollection;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
@@ -49,7 +51,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The layout's registered fields
      *
-     * @var \Illuminate\Support\Collection
+     * @var \Laravel\Nova\Fields\FieldCollection
      */
     protected $fields;
 
@@ -93,7 +95,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
-        $this->fields = collect($fields ?? $this->fields());
+        $this->fields = new FieldCollection($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
@@ -217,7 +219,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     {
         $fields = array_map(function($field) {
             return clone $field;
-        }, $this->fields());
+        }, $this->fields->toArray());
         
         return new static(
             $this->title,
@@ -254,6 +256,17 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         });
 
         return $this->getResolvedValue();
+    }
+
+    /**
+     * Filter the layout's fields for detail view
+     *
+     * @param NovaRequest $request
+     * @param $resource
+     */
+    public function filterForDetail(NovaRequest $request, $resource)
+    {
+        $this->fields = $this->fields->filterForDetail($request, $resource);
     }
 
     /**

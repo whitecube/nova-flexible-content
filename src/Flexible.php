@@ -269,6 +269,22 @@ class Flexible extends Field
     }
 
     /**
+     * Check showing on detail.
+     *
+     * @param NovaRequest $request
+     * @param $resource
+     * @return bool
+     */
+    public function isShownOnDetail(NovaRequest $request, $resource): bool
+    {
+        $this->layouts = $this->layouts->each(function($layout) use ($request, $resource) {
+            $layout->filterForDetail($request, $resource);
+        });
+
+        return parent::isShownOnDetail($request, $resource);
+    }
+
+    /**
      * Hydrate the given attribute on the model based on the incoming request.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -355,6 +371,7 @@ class Flexible extends Field
             }
         });
     }
+
     /**
      * Find the flexible's value in given request
      *
