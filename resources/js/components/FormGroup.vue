@@ -35,7 +35,10 @@
             <div :class="titleStyle" v-if="group.title">
                 <div class="leading-normal py-1 px-8"
                     :class="{'border-b border-40': !collapsed}">
-                    <p class="text-80">{{ group.title }}</p>
+                    <p class="text-80">
+                      <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
+                      {{ group.title }}
+                    </p>
                 </div>
             </div>
             <div :class="containerStyle">
@@ -61,7 +64,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'field'],
+    props: ['errors', 'group', 'index', 'field'],
 
     data() {
         return {
