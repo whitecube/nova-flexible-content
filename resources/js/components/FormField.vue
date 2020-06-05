@@ -4,10 +4,11 @@
 
             <div v-if="order.length > 0">
                 <form-nova-flexible-content-group
-                    v-for="group in orderedGroups"
+                    v-for="(group, index) in orderedGroups"
                     :key="group.key"
                     :field="field"
                     :group="group"
+                    :index="index"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
