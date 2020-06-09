@@ -91,6 +91,10 @@ trait TransformsFlexibleErrors
         $search = str_replace('_', ' ', Str::snake($key));
         $attribute = str_replace('_', ' ', Str::snake($attribute->name));
 
+        if(!Str::startsWith($translated = trans('validation.attributes.'.$attribute), 'validation.attributes.')) {
+            $attribute = $translated;
+        }
+
         return array_map(function($message) use ($search, $attribute) {
             return str_replace(
                 [$search, Str::upper($search), Str::ucfirst($search)], 
