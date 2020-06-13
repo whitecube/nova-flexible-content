@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent\Http;
 
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Whitecube\NovaFlexibleContent\Flexible;
 use Illuminate\Http\JsonResponse;
@@ -91,8 +92,9 @@ trait TransformsFlexibleErrors
         $search = str_replace('_', ' ', Str::snake($key));
         $attribute = str_replace('_', ' ', Str::snake($attribute->name));
 
-        if(!Str::startsWith($translated = trans('validation.attributes.'.$attribute), 'validation.attributes.')) {
-            $attribute = $translated;
+        // We translate the attribute if it exists
+        if(Lang::has('validation.attributes.'.$attribute)) {
+            $attribute = trans('validation.attributes.'.$attribute);
         }
 
         return array_map(function($message) use ($search, $attribute) {
