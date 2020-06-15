@@ -1,35 +1,31 @@
 <template>
-    <div class="w-full" v-if="layouts">
+    <div class="w-3/5" v-if="layouts">
 
-        <div class="flex">
-            <div class="w-2/5" v-if="layouts.length === 1">
+        <div v-if="this.limitCounter != 0">
+            <div v-if="layouts.length === 1">
                 <button
                     type="button"
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative float-left"
                     @click="toggleLayoutsDropdownOrAddDefault"
-                    v-if="this.limitCounter != 0"
                 >
                     <span>{{ field.button }}</span>
                 </button>
             </div>
-            <div class="w-4/5">
-                <div v-if="layouts.length > 1" style="min-width: 300px;">
-                        <div class="flexible-search-menu-multiselect">
-                            <multiselect v-model="selectedLayout" :options="layouts"
-                                         :custom-label="renderLayoutName"
-                                         :placeholder="field.button"
-                                         @input="selectLayout"
-                                         v-bind="attributes"
-                                         track-by="name">
-
-                            </multiselect>
-                        </div>
+            <div v-if="layouts.length > 1">
+                <div style="min-width: 300px;">
+                    <div class="flexible-search-menu-multiselect">
+                        <multiselect v-model="selectedLayout" :options="layouts"
+                                     :custom-label="renderLayoutName"
+                                     :placeholder="field.button"
+                                     @input="selectLayout"
+                                     v-bind="attributes"
+                                     track-by="name"
+                        ></multiselect>
+                    </div>
                 </div>
             </div>
         </div>
-
-
     </div>
 </template>
 
