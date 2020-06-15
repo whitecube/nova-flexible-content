@@ -16,6 +16,7 @@
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
+                    @duplicate="duplicate(group.key)"
                 />
             </div>
 
@@ -218,6 +219,13 @@ export default {
             if (this.limitCounter >= 0) {
                 this.limitCounter++;
             }
+        },
+
+        /**
+         * Duplicate a group
+         */
+        duplicate(key) {
+            this.addGroup(this.getLayout(this.groups[key].name));
         }
     }
 }

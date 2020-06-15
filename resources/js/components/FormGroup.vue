@@ -15,6 +15,9 @@
                     <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
                         <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
                     </button>
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Duplicate" @click.prevent="duplicate">
+                        <icon type="duplicate" view-box="0 0 20 20" width="16" height="16" />
+                    </button>
                     <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
                         <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
                     </button>
@@ -140,7 +143,14 @@ export default {
          */
         collapse() {
             this.collapsed = true;
-        }
+        },
+
+        /**
+         * Duplicate
+         */
+        duplicate() {
+            this.$emit('duplicate')
+        },
     },
 }
 </script>

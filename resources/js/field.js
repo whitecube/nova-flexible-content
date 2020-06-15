@@ -11,4 +11,5 @@ Nova.booting((Vue, router, store) => {
     Vue.component('icon-arrow-up', require('./components/icons/ArrowUp'))
     Vue.component('icon-plus-square', require('./components/icons/PlusSquare'))
     Vue.component('icon-minus-square', require('./components/icons/MinusSquare'))
+    Vue.component('icon-duplicate', require('./components/icons/Duplicate'))
 })
