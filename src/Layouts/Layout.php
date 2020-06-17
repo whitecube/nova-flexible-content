@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
+use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Flexible;
@@ -218,9 +219,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {
-        $fields = array_map(function($field) {
-            return clone $field;
-        }, $this->fields->toArray());
+        $fields = $this->fields->map(function($field) {
+            return $this->cloneField($field);
+        });
         
         return new static(
             $this->title,
@@ -231,6 +232,25 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         );
     }
 
+    /**
+     * Create a working field clone instance
+     *
+     * @param  \Laravel\Nova\Fields\Field $original
+     * @return \Laravel\Nova\Fields\Field
+     */
+    protected function cloneField(Field $original) {
+        $field = clone $original;
+
+        $callables = ['displayCallback','resolveCallback','fillCallback','requiredCallback'];
+
+        foreach ($callables as $callable) {
+            if(!is_a($field->$callable, \Closure::class)) continue;
+            $field->$callable = $field->$callable->bindTo($field);
+        }
+
+        return $field;
+    }
+    
     /**
      * Resolve fields using given attributes.
      *
