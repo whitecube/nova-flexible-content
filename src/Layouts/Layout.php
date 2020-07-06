@@ -244,7 +244,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $callables = ['displayCallback','resolveCallback','fillCallback','requiredCallback'];
 
         foreach ($callables as $callable) {
-            if(!is_a($field->$callable, \Closure::class)) continue;
+            if(!is_a($field->$callable ?? null, \Closure::class)) continue;
             $field->$callable = $field->$callable->bindTo($field);
         }
 
