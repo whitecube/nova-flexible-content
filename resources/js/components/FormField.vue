@@ -61,11 +61,19 @@ export default {
     },
 
     data() {
+
+        let layoutLimit = [];
+
+        this.field.layouts.map(function(value, key) {
+            layoutLimit[value.name] = value.limit;
+        });
+
         return {
             order: [],
             groups: {},
             files: {},
-            limitCounter: this.field.limit
+            limitCounter: this.field.limit,
+            layoutLimit: layoutLimit
         };
     },
 
@@ -169,6 +177,11 @@ export default {
         addGroup(layout, attributes, key, collapsed) {
             if(!layout) return;
 
+            if(this.layoutLimit[layout.name] == 0) {
+                this.$toasted.show("this layout is limited to "+layout.limit, { type: 'error' })
+                return;
+            }
+
             collapsed = collapsed || false;
 
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
@@ -176,6 +189,10 @@ export default {
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+
+            if(this.layoutLimit[layout.name] != null) {
+                this.layoutLimit[layout.name]--;
+            }
 
             if (this.limitCounter > 0) {
                 this.limitCounter--;
@@ -208,12 +225,21 @@ export default {
          * Remove a group
          */
         remove(key) {
+            let group, layout;
+
+            group = this.groups[key].serialize();
+            layout = this.getLayout(group.layout);
+            
             let index = this.order.indexOf(key);
 
             if(index < 0) return;
 
             this.order.splice(index, 1);
             delete this.groups[key];
+
+            if(this.layoutLimit[layout.name] != null) {
+                this.layoutLimit[layout.name]++;
+            }
 
             if (this.limitCounter >= 0) {
                 this.limitCounter++;
