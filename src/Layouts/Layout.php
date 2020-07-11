@@ -25,7 +25,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The layout's limit
      *
-     * @var string
+     * @var int
      */
     protected $limit;
 
