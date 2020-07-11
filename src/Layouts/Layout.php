@@ -23,6 +23,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     use HasFlexible;
 
     /**
+     * The layout's limit
+     *
+     * @var int
+     */
+    protected $limit;
+
+    /**
      * The layout's name
      *
      * @var string
@@ -581,6 +588,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $this->resolve(true);
 
         return [
+            'limit' => $this->limit,
             'name' => $this->name,
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize()
