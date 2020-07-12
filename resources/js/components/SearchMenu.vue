@@ -48,7 +48,7 @@
         computed: {
             attributes() {
                 return {
-                    selectLabel: this.field.menu.data.selectLabel || 'Press enter to select',
+                    selectLabel: this.field.menu.data.selectLabel || __('Press enter to select'),
                     label: this.field.menu.data.label || 'title',
                     openDirection: this.field.menu.data.openDirection || 'bottom',
                 }
