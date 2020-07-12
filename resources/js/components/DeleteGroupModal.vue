@@ -8,7 +8,7 @@
         >
             <slot>
                 <div class="p-8">
-                    <heading :level="2" class="mb-6">Delete Group</heading>
+                    <heading :level="2" class="mb-6">{{ __('Delete Group') }}</heading>
                     <p class="text-80 leading-normal" v-if="message">
                         {{ message }}
                     </p>
