@@ -62,10 +62,10 @@ export default {
 
     data() {
 
-        let layoutLimit = [];
+        let layoutCounter = [];
 
         this.field.layouts.map(function(value, key) {
-            layoutLimit[value.name] = value.limit;
+            layoutCounter[value.name] = value.limit;
         });
 
         return {
@@ -73,7 +73,7 @@ export default {
             groups: {},
             files: {},
             limitCounter: this.field.limit,
-            layoutLimit: layoutLimit
+            layoutCounter: layoutCounter
         };
     },
 
@@ -177,8 +177,11 @@ export default {
         addGroup(layout, attributes, key, collapsed) {
             if(!layout) return;
 
-            if(this.layoutLimit[layout.name] == 0) {
-                this.$toasted.show("this layout is limited to "+layout.limit, { type: 'error' })
+            if(this.layoutCounter[layout.name] === 0) {
+                Nova.error(this.__('The layout :customLayout is limited to :layoutLimit', {
+                    customLayout: layout.name,
+                    layoutLimit: layout.limit,
+                }));
                 return;
             }
 
@@ -190,8 +193,8 @@ export default {
             this.groups[group.key] = group;
             this.order.push(group.key);
 
-            if(this.layoutLimit[layout.name] != null) {
-                this.layoutLimit[layout.name]--;
+            if(this.layoutCounter[layout.name] !== null) {
+                this.layoutCounter[layout.name]--;
             }
 
             if (this.limitCounter > 0) {
@@ -225,11 +228,8 @@ export default {
          * Remove a group
          */
         remove(key) {
-            let group, layout;
-
-            group = this.groups[key].serialize();
-            layout = this.getLayout(group.layout);
             
+            let layout = this.groups[key].name;
             let index = this.order.indexOf(key);
 
             if(index < 0) return;
@@ -237,8 +237,8 @@ export default {
             this.order.splice(index, 1);
             delete this.groups[key];
 
-            if(this.layoutLimit[layout.name] != null) {
-                this.layoutLimit[layout.name]++;
+            if(this.layoutCounter[layout.name] !== null) {
+                this.layoutCounter[layout.name]++;
             }
 
             if (this.limitCounter >= 0) {
