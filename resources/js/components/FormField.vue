@@ -28,6 +28,7 @@
                 :resource-name="resourceName"
                 :resource-id="resourceId"
                 :resource="resource"
+                :layouts-counter="layoutsCounter"
                 @addGroup="addGroup($event)"
             />
 
@@ -65,8 +66,13 @@ export default {
             order: [],
             groups: {},
             files: {},
-            limitCounter: this.field.limit
+            limitCounter: this.field.limit,
+            layoutsCounter: {}
         };
+    },
+
+    mounted() {
+        this.updateLayoutsCount();
     },
 
     methods: {
@@ -180,7 +186,23 @@ export default {
             if (this.limitCounter > 0) {
                 this.limitCounter--;
             }
+
+            this.updateLayoutsCount();
         },
+
+        updateLayoutsCount() {
+            let key, layout;
+            this.layoutsCounter = {};
+            
+            for (key in this.groups) {
+                layout = this.groups[key].name;
+
+                this.layoutsCounter[layout] = (this.layoutsCounter[layout] === undefined)
+                    ? 1
+                    : this.layoutsCounter[layout] + 1;
+            }
+        },
+
 
         /**
          * Move a group up
@@ -218,6 +240,8 @@ export default {
             if (this.limitCounter >= 0) {
                 this.limitCounter++;
             }
+
+            this.updateLayoutsCount();
         }
     }
 }
