@@ -1,10 +1,17 @@
 <template>
-    <component :is="field.fullWidth ? 'full-width-field' : 'default-field'" :field="field" :errors="errors" full-width-content>
+    <component
+        :dusk="field.attribute"
+        :is="field.fullWidth ? 'full-width-field' : 'default-field'"
+        :field="field"
+        :errors="errors"
+        full-width-content>
         <template slot="field">
 
-            <div v-if="order.length > 0">
+            <div
+                v-if="order.length > 0">
                 <form-nova-flexible-content-group
                     v-for="(group, index) in orderedGroups"
+                    :dusk="field.attribute + '-' + index"
                     :key="group.key"
                     :field="field"
                     :group="group"

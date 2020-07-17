@@ -4,6 +4,7 @@
         <div v-if="this.limitCounter != 0">
             <div v-if="layouts.length === 1">
                 <button
+                    dusk="toggle-layouts-dropdown-or-add-default"
                     type="button"
                     tabindex="0"
                     class="btn btn-default btn-primary inline-flex items-center relative float-left"
@@ -15,12 +16,13 @@
             <div v-if="layouts.length > 1">
                 <div style="min-width: 300px;">
                     <div class="flexible-search-menu-multiselect">
-                        <multiselect v-model="selectedLayout" :options="layouts"
-                                     :custom-label="renderLayoutName"
-                                     :placeholder="field.button"
-                                     @input="selectLayout"
-                                     v-bind="attributes"
-                                     track-by="name"
+                        <multiselect
+                            v-model="selectedLayout" :options="layouts"
+                             :custom-label="renderLayoutName"
+                             :placeholder="field.button"
+                             @input="selectLayout"
+                             v-bind="attributes"
+                             track-by="name"
                         ></multiselect>
                     </div>
                 </div>
