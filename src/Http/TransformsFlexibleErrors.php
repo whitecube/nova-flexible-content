@@ -2,25 +2,37 @@
 
 namespace Whitecube\NovaFlexibleContent\Http;
 
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
+use Whitecube\NovaFlexibleContent\Flexible;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 
 trait TransformsFlexibleErrors
 {
     /**
+     * Checks whether the given response's flexible errors can and should be transformed
+     *
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @return bool
+     */
+    protected function shouldTransformFlexibleErrors(Response $response)
+    {
+        return  $response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY
+                && is_a($response, JsonResponse::class);
+    }
+
+    /**
      * Updates given response's errors for the concerned flexible fields
      *
-     * @param  \Illuminate\Http\JsonResponse  $response
-     * @return \Illuminate\Http\JsonResponse
+     * @param Response $response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function transformFlexibleErrors(JsonResponse $response)
+    protected function transformFlexibleErrors(Response $response)
     {
-        if ($response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY) {
-            $response->setData($this->updateResponseErrors($response->original));
-        }
+        $response->setData(
+            $this->updateResponseErrors($response->original)
+        );
 
         return $response;
     }
@@ -79,6 +91,11 @@ trait TransformsFlexibleErrors
     {
         $search = str_replace('_', ' ', Str::snake($key));
         $attribute = str_replace('_', ' ', Str::snake($attribute->name));
+
+        // We translate the attribute if it exists
+        if(Lang::has('validation.attributes.'.$attribute)) {
+            $attribute = trans('validation.attributes.'.$attribute);
+        }
 
         return array_map(function($message) use ($search, $attribute) {
             return str_replace(

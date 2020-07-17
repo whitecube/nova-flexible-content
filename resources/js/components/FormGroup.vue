@@ -1,26 +1,33 @@
 <template>
     <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
         <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
-            <button class="group-control btn border-r border-40 w-8 h-8 block" title="Expand" @click.prevent="expand" v-if="collapsed">
+            <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" :title="__('Expand')" @click.prevent="expand" v-if="collapsed">
                 <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
             </button>
             <div v-if="!collapsed">
-                <button class="group-control btn border-r border-40 w-8 h-8 block" title="Collapse" @click.prevent="collapse">
+                <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" :title="__('Collapse')" @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move up" @click.prevent="moveUp">
-                    <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
-                </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Move down" @click.prevent="moveDown">
-                    <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
-                </button>
-                <button class="group-control btn border-t border-r border-40 w-8 h-8 block" title="Delete" @click.prevent="confirmRemove">
-                    <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
-                </button>
-                <div v-if="removeMessage" class="confirm-message">
-                    <span v-if="field.confirmRemoveMessage">{{ field.confirmRemoveMessage }}</span>
-                    <button @click.prevent="remove" class="text-danger btn mx-1 focus:outline-none">{{ field.confirmRemoveYes }}</button>
-                    <button @click.prevent="removeMessage=false" class="text-80 btn focus:outline-none">{{ field.confirmRemoveNo }}</button>
+                <div v-if="!readonly">
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Move up')" @click.prevent="moveUp">
+                        <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                    </button>
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Move down')" @click.prevent="moveDown">
+                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                    </button>
+                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Delete')" @click.prevent="confirmRemove">
+                        <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                    </button>
+                    <portal to="modals">
+                        <delete-flexible-content-group-modal
+                            v-if="removeMessage"
+                            @confirm="remove"
+                            @close="removeMessage=false"
+                            :message="field.confirmRemoveMessage"
+                            :yes="field.confirmRemoveYes"
+                            :no="field.confirmRemoveNo"
+                        />
+                    </portal>
                 </div>
             </div>
         </div>
@@ -28,7 +35,10 @@
             <div :class="titleStyle" v-if="group.title">
                 <div class="leading-normal py-1 px-8"
                     :class="{'border-b border-40': !collapsed}">
-                    <p class="text-80">{{ group.title }}</p>
+                    <p class="text-80">
+                      <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
+                      {{ group.title }}
+                    </p>
                 </div>
             </div>
             <div :class="containerStyle">
@@ -54,12 +64,13 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'field'],
+    props: ['errors', 'group', 'index', 'field'],
 
     data() {
         return {
             removeMessage: false,
-            collapsed: this.group.collapsed
+            collapsed: this.group.collapsed,
+            readonly: this.group.readonly,
         };
     },
 

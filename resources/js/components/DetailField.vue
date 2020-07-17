@@ -6,6 +6,9 @@
                     :index="index"
                     :last="(index === groups.length - 1)"
                     :group="group"
+                    :resource="resource"
+                    :resourceName="resourceName"
+                    :resourceId="resourceId"
                 />
             </div>
         </template>
@@ -51,7 +54,8 @@ export default {
                 layout.name,
                 layout.title,
                 item.attributes,
-                this.field
+                this.field,
+                item.key
             );
         },
     }

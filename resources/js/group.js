@@ -5,7 +5,8 @@ export default class Group {
         this.title = title;
         this.fields = fields;
         this.key = key || this.getTemporaryUniqueKey(field.attribute);
-        this.collapsed = collapsed,
+        this.collapsed = collapsed;
+        this.readonly = field.readonly;
 
         this.renameFields();
     }
@@ -59,9 +60,17 @@ export default class Group {
      * Generate a unique string for current group
      */
     getTemporaryUniqueKey(attribute) {
-        return Math.random().toString(36).substring(2, 15)
-            + Math.random().toString(36).substring(2, 15)
-            + '-' + this.name;
+        return this.randomString(16);
+    }
+
+    randomString(len, charSet) {
+        charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var randomString = '';
+        for (var i = 0; i < len; i++) {
+            var randomPoz = Math.floor(Math.random() * charSet.length);
+            randomString += charSet.substring(randomPoz,randomPoz+1);
+        }
+        return randomString;
     }
 
     /**
@@ -70,6 +79,7 @@ export default class Group {
     renameFields() {
         for (var i = this.fields.length - 1; i >= 0; i--) {
             this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
+            this.fields[i].validationKey = this.fields[i].attribute;
         }
     }
 

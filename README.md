@@ -10,7 +10,7 @@ An easy & complete Flexible Field for Laravel Nova, perfect for repeated and fle
 
 ## Quick start
 
-Here's a very condensed guide to get you started asap.  
+Here's a very condensed guide to get you started asap.
 See the full docs at [https://whitecube.github.io/nova-flexible-content](https://whitecube.github.io/nova-flexible-content)
 
 ### Install
@@ -25,12 +25,12 @@ A flexible field allows easy management of repeatable and orderable groups of fi
 
 #### Adding layouts
 
-A layout represents a group of fields that can be repeated inside the Flexible field. You can add as many different layouts as you wish. If only one layout is defined the field will behave like a simple Repeater and by adding more layouts you'll obtain a Flexible Content. Both concepts are similar to [their cousins in Wordpress' ACF Plugin](https://www.advancedcustomfields.com/add-ons/).
+A layout represents a group of fields that can be repeated inside the Flexible field. You can add as many layouts as you wish. If only one layout is defined the field will behave like a simple Repeater and by adding more layouts you'll obtain a Flexible Content. Both concepts are similar to [their cousins in Wordpress' ACF Plugin](https://www.advancedcustomfields.com/add-ons/).
 
 Layouts can be added using the following method on your Flexible fields:
 ```php
  addLayout(string $title, string $name, array $fields)
- ```
+```
 
 The `$name` parameter is used to store the chosen layout in the field's value. Choose it wisely, you'll probably use it to identify the layouts in your application.
 
@@ -77,44 +77,45 @@ Flexible::make('Content')
 
 ### Using Flexible values in views
 
-The field stores its values as a single JSON string, meaning this string needs to be parsed before it can be used in your application. Of course, you could cast the attribute to a collection in your models, but you'll end up with complex `stdClass` objects making it more difficult to interract with the layout's attributes.
+If you are using Laravel 6 and under, or don't want to use casts, please [use an accessor on your model with the HasFlexible trait](https://whitecube.github.io/nova-flexible-content/#/?id=with-the-hasflexible-trait).
 
-By implementing the `HasFlexible` trait on your models, you can call the `flexible($attribute)` method, which will automatically transform the attribute's value into a fully parsed `Whitecube\NovaFlexibleContent\Layouts\Collection`. Feel free to apply this `flexible()` call directly in your blade views or to extract it into an attribute's mutator method as shown below:
+Laravel 7 brings custom casts to the table, and flexible content fields are the perfect use case for them. The field stores its values as a single JSON string, meaning this string needs to be parsed before it can be used in your application. This can be done trivially by using the `FlexibleCast` class in this package:
 
 ```php
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 class MyModel extends Model
 {
-    use HasFlexible;
-
-    public function getFlexibleContentAttribute()
-    {
-        return $this->flexible('flexible-content');
-    }
+    protected $casts = [
+        'flexible-content' => FlexibleCast::class
+    ];
 }
 ```
 
-By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible to specify the mapping rules as follows:
+By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts into [Custom Layout instances](https://github.com/whitecube/nova-flexible-content#custom-layout-classes), it is also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will create the file in the `App\Casts` directory.
+
+Then easily map your custom layout classes to the proper keys:
 
 ```php
-public function getFlexibleContentAttribute()
+namespace App\Casts;
+
+class MyFlexibleCast extends FlexibleCast
 {
-    return $this->flexible('flexible-content', [
+    protected $layouts = [
         'wysiwyg' => \App\Nova\Flexible\Layouts\WysiwygLayout::class,
         'video' => \App\Nova\Flexible\Layouts\VideoLayout::class,
-    ]);
+    ]
 }
 ```
 
-Each Layout (or custom layout extending the base Layout) is already implementing the `HasFlexible` trait, meaning you can directly use the `$layout->flexible('my-sub-layout')` method to parse nested flexible content values.
+If you need more control, you can [override the `getLayoutMappings` method](https://whitecube.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings) instead.
 
 #### The Layouts Collection
 
-Collections returned by the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
+Collections returned by the `FlexibleCast` cast and the `HasFlexible` trait extend the original `Illuminate\Support\Collection`. These custom layout collections expose a `find(string $name)` method which returns the first layout having the given layout `$name`.
 
 #### The Layout instance
 
@@ -138,23 +139,23 @@ When using the Flexible Content field, you'll quickly come across of some use ca
 
 ### Custom Layout Classes
 
-Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be shared with other `Flexible` fields. The answer to this is to extract your Layout into its own class. [See the docs for more information on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-layout-classes).
 
 ### Predefined Preset Classes
 
-In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=predefined-preset-classes).
+In addition to reusable Layout classes, you can go a step further and create `Preset` classes for your Flexible fields. These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout` definitions. [See the docs for more information on this](https://whitecube.github.io/nova-flexible-content/#/?id=predefined-preset-classes).
 
 ### Custom Resolver Classes
 
 By default, the field takes advantage of a **JSON column** on your model's table. In some cases, you'd really like to use this field, but for some reason a JSON attribute is just not the way to go. For example, you could want to store the values in another table (meaning you'll be using the Flexible Content field instead of a traditional BelongsToMany or HasMany field). No worries, we've got you covered!
 
-Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more infomation on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
+Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more information on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
 ### Usage with nova-page
 
-Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! First of all create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.
+Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! First create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.
 
-As explained in the documentation, you can [acces nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your blade views using `{{ Page::get('attribute') }}`. When requesting the flexible content like this, it returns a raw json string describing the flexible content, which is of course not very useful. Instead, you can simply implement the `Whitecube\NovaFlexibleContent\Concerns\HasFlexible` trait on your page Templates, which will expose the `Page::flexible('attribute')` facade method and will take care of the flexible content's transformation.
+As explained in the documentation, you can [access nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your blade views using `{{ Page::get('attribute') }}`. When requesting the flexible content like this, it returns a raw JSON string describing the flexible content, which is of course not very useful. Instead, you can simply implement the `Whitecube\NovaFlexibleContent\Concerns\HasFlexible` trait on your page Templates, which will expose the `Page::flexible('attribute')` facade method and will take care of the flexible content's transformation.
 
 ```php
 namespace App\Nova\Templates;
@@ -170,9 +171,13 @@ class Home extends Template
 }
 ```
 
+## 💖 Sponsorships
+
+If you are reliant on this package in your production applications, consider [sponsoring us](https://github.com/sponsors/whitecube)! It is the best way to help us keep doing what we love to do: making great open source software.
+
 ## Contributing
 
-Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made and we would be very happy to merge useful pull requests.
+Feel free to suggest changes, ask for new features or fix bugs yourself. We're sure there are still a lot of improvements that could be made, and we would be very happy to merge useful pull requests.
 
 Thanks!
 

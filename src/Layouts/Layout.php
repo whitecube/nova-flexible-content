@@ -4,12 +4,17 @@ namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
+use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\FieldCollection;
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 
 class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
@@ -48,7 +53,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The layout's registered fields
      *
-     * @var \Illuminate\Support\Collection
+     * @var \Laravel\Nova\Fields\FieldCollection
      */
     protected $fields;
 
@@ -67,6 +72,19 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $dates = [];
 
     /**
+     * The callback to be called when this layout is removed
+     */
+    protected $removeCallbackMethod;
+
+
+    /**
+     * The parent model instance
+     *
+     * @var Illuminate\Database\Eloquent\Model
+     */
+    protected $model;
+
+    /**
      * Create a new base Layout instance
      *
      * @param string $title
@@ -75,13 +93,27 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $key
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [])
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
-        $this->fields = collect($fields ?? $this->fields());
+        $this->fields = new FieldCollection($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
+        $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
+    }
+
+    /**
+     * Set the parent model instance
+     *
+     * @param Model $model
+     * @return $this
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+
+        return $this;
     }
 
     /**
@@ -158,10 +190,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Resolve the field for display and return the result.
+     *
+     * @return array
+     */
+    public function getResolvedForDisplay()
+    {
+        return $this->resolveForDisplay($this->getAttributes());
+    }
+
+    /**
      * Get an empty cloned instance
      *
      * @param  string  $key
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return Layout
      */
     public function duplicate($key)
     {
@@ -173,21 +215,44 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @param  string  $key
      * @param  array  $attributes
-     * @return Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return Layout
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {
+        $fields = $this->fields->map(function($field) {
+            return $this->cloneField($field);
+        });
+        
         return new static(
             $this->title,
             $this->name,
-            $this->fields->all(),
+            $fields,
             $key,
             $attributes
         );
     }
 
     /**
-     * Resolve fields using given attributes
+     * Create a working field clone instance
+     *
+     * @param  \Laravel\Nova\Fields\Field $original
+     * @return \Laravel\Nova\Fields\Field
+     */
+    protected function cloneField(Field $original) {
+        $field = clone $original;
+
+        $callables = ['displayCallback','resolveCallback','fillCallback','requiredCallback'];
+
+        foreach ($callables as $callable) {
+            if(!is_a($field->$callable ?? null, \Closure::class)) continue;
+            $field->$callable = $field->$callable->bindTo($field);
+        }
+
+        return $field;
+    }
+    
+    /**
+     * Resolve fields using given attributes.
      *
      * @param  boolean $empty
      * @return void
@@ -200,11 +265,36 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Resolve fields for display using given attributes.
+     *
+     * @param array $attributes
+     * @return array
+     */
+    public function resolveForDisplay(array $attributes = [])
+    {
+        $this->fields->each(function ($field) use ($attributes) {
+            $field->resolveForDisplay($attributes);
+        });
+
+        return $this->getResolvedValue();
+    }
+
+    /**
+     * Filter the layout's fields for detail view
+     *
+     * @param NovaRequest $request
+     * @param $resource
+     */
+    public function filterForDetail(NovaRequest $request, $resource)
+    {
+        $this->fields = $this->fields->filterForDetail($request, $resource);
+    }
+
+    /**
      * Get the layout's resolved representation. Best used
      * after a resolve() call
      *
-     * @param  boolean $empty
-     * @return void
+     * @return array
      */
     public function getResolvedValue()
     {
@@ -229,7 +319,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Fill attributes using underlaying fields and incoming request
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param ScopedRequest $request
      * @return array
      */
     public function fill(ScopedRequest $request)
@@ -247,7 +337,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Get validation rules for fields concerned by given request
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  ScopedRequest $request
      * @param  string $specificty
      * @param  string $key
      * @return array
@@ -265,7 +355,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Get validation rules for fields concerned by given request
      *
      * @param  \Laravel\Nova\Fields\Field $field
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param  ScopedRequest $request
      * @param  null|string $specificty
      * @param  string $key
      * @return array
@@ -275,13 +365,40 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $method = 'get' . ucfirst($specificty) . 'Rules';
 
         $rules = call_user_func([$field, $method], $request);
-        
+
         return  collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field) {
                     $key = $key . '.attributes.' . $attribute;
                     return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
                 })
                 ->filter()
                 ->all();
+    }
+
+    /**
+     * The method to call when this layout is removed
+     *
+     * @param Flexible $flexible
+     * @return mixed
+     */
+    public function fireRemoveCallback(Flexible $flexible)
+    {
+        if (is_callable($this->removeCallbackMethod)) {
+            return $this->removeCallbackMethod($flexible, $this);
+        }
+
+        return $this->removeCallback($flexible, $this);
+    }
+
+    /**
+     * The default behaviour when removed
+     *
+     * @param  Flexible $flexible
+     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     *
+     * @return mixed
+     */
+    protected function removeCallback(Flexible $flexible, $layout) {
+        return;
     }
 
     /**
@@ -473,8 +590,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Returns an unique key for this group if it's not already the case
      *
-     * @param  string  $key
+     * @param string $key
      * @return string
+     * @throws \Exception
      */
     protected function getProcessedKey($key)
     {
