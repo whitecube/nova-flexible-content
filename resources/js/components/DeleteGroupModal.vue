@@ -32,6 +32,7 @@
                     <button
                         id="confirm-delete-button"
                         ref="confirmButton"
+                        dusk="confirm-delete-button"
                         data-testid="confirm-button"
                         type="submit"
                         class="btn btn-default btn-danger"

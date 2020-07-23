@@ -1,21 +1,47 @@
 <template>
     <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
         <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
-            <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" :title="__('Expand')" @click.prevent="expand" v-if="collapsed">
+            <button
+                dusk="expand-group"
+                type="button"
+                class="group-control btn border-r border-40 w-8 h-8 block"
+                :title="__('Expand')"
+                @click.prevent="expand"
+                v-if="collapsed">
                 <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
             </button>
             <div v-if="!collapsed">
-                <button type="button" class="group-control btn border-r border-40 w-8 h-8 block" :title="__('Collapse')" @click.prevent="collapse">
+                <button
+                    dusk="collapse-group"
+                    type="button"
+                    class="group-control btn border-r border-40 w-8 h-8 block"
+                    :title="__('Collapse')"
+                    @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
                 <div v-if="!readonly">
-                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Move up')" @click.prevent="moveUp">
+                    <button
+                        dusk="move-up-group"
+                        type="button"
+                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        :title="__('Move up')"
+                        @click.prevent="moveUp">
                         <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
                     </button>
-                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Move down')" @click.prevent="moveDown">
+                    <button
+                        dusk="move-down-group"
+                        type="button"
+                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        :title="__('Move down')"
+                        @click.prevent="moveDown">
                         <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
                     </button>
-                    <button type="button" class="group-control btn border-t border-r border-40 w-8 h-8 block" :title="__('Delete')" @click.prevent="confirmRemove">
+                    <button
+                        dusk="delete-group"
+                        type="button"
+                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        :title="__('Delete')"
+                        @click.prevent="confirmRemove">
                         <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
                     </button>
                     <portal to="modals">

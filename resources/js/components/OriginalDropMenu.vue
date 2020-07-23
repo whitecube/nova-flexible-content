@@ -7,8 +7,10 @@
                 <div>
                     <ul class="list-reset">
                         <li v-for="layout in layouts" class="border-b border-40">
-                            <a @click="addGroup(layout)"
-                               class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
+                            <a
+                                :dusk="'add-' + layout.name"
+                                @click="addGroup(layout)"
+                                class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
                                 <div><p class="text-90">{{ layout.title }}</p></div>
                             </a>
                         </li>
@@ -17,6 +19,7 @@
             </div>
         </div>
         <button
+            dusk="toggle-layouts-dropdown-or-add-default"
             type="button"
             tabindex="0"
             class="btn btn-default btn-primary inline-flex items-center relative"
