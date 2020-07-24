@@ -15,12 +15,15 @@ use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary;
 
-class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
+class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable, HasMedia
 {
     use HasAttributes;
     use HidesAttributes;
-    use HasFlexible;
+	use HasFlexible;
+	use HasMediaLibrary;
 
     /**
      * The layout's name
@@ -222,7 +225,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $fields = $this->fields->map(function($field) {
             return $this->cloneField($field);
         });
-        
+
         return new static(
             $this->title,
             $this->name,
@@ -250,7 +253,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $field;
     }
-    
+
     /**
      * Resolve fields using given attributes.
      *
