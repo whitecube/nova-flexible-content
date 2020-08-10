@@ -12,7 +12,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :addAtPosition="true"
-                    :index="index - 1"
+                    :index="index"
                 />
         </div>
 
@@ -100,20 +100,19 @@
             </div>
         </div>
 
-        <div
-            v-if="totalCount > 0">
-                <component
-                    :layouts="layouts"
-                    :is="field.menu.component"
-                    :field="field"
-                    :limit-counter="limitCounter"
-                    :errors="errors"
-                    :resource-name="resourceName"
-                    :resource-id="resourceId"
-                    :resource="resource"
-                    :addAtPosition="true"
-                    :index="index"
-                />
+        <div>
+            <component
+                :layouts="layouts"
+                :is="field.menu.component"
+                :field="field"
+                :limit-counter="limitCounter"
+                :errors="errors"
+                :resource-name="resourceName"
+                :resource-id="resourceId"
+                :resource="resource"
+                :addAtPosition="true"
+                :index="index + 1"
+            />
         </div>
     </div>
 </template>

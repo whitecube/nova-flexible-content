@@ -72,7 +72,7 @@
             addGroup(layout) {
                 if (!layout) return;
                 
-                eventBus.$emit('add-group-'+this.field.attribute, layout, this.index + 1);
+                eventBus.$emit('add-group-'+this.field.attribute, layout, this.index);
 
                 this.isLayoutsDropdownOpen = false;
             },

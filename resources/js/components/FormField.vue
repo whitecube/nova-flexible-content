@@ -39,6 +39,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :addAtPosition="false"
+                    :index="0"
                 />
             </div>
 
