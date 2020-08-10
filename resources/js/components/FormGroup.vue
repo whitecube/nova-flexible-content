@@ -12,7 +12,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :addAtPosition="true"
-                    :index="index - 1"
+                    :index="index"
                 />
         </div>
 
@@ -100,6 +100,7 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <div
             v-if="totalCount > 0">
                 <component
@@ -116,6 +117,21 @@
                     :addAtPosition="true"
                     :index="index"
                 />
+=======
+        <div>
+            <component
+                :layouts="layouts"
+                :is="field.menu.component"
+                :field="field"
+                :limit-counter="limitCounter"
+                :errors="errors"
+                :resource-name="resourceName"
+                :resource-id="resourceId"
+                :resource="resource"
+                :addAtPosition="true"
+                :index="index + 1"
+            />
+>>>>>>> added SearchMenu functionality (plus small fixes)
         </div>
     </div>
 </template>

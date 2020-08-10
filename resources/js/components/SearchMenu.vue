@@ -1,6 +1,5 @@
 <template>
     <div class="w-3/5" v-if="layouts">
-
         <div v-if="this.limitCounter != 0">
             <div v-if="layouts.length === 1">
                 <button
@@ -15,7 +14,12 @@
             </div>
             <div v-if="layouts.length > 1">
                 <div style="min-width: 300px;">
-                    <div class="flexible-search-menu-multiselect">
+                    <div 
+                        class="flexible-search-menu-multiselect"
+                        :class="{
+                            'mb-4': addAtPosition
+                        }"
+                    >
                         <multiselect
                             v-model="selectedLayout" :options="layouts"
                              :custom-label="renderLayoutName"
@@ -39,7 +43,7 @@
     export default {
         components: {Multiselect},
 
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'addAtPosition', 'index'],
 
         data() {
             return {
@@ -51,7 +55,7 @@
         computed: {
             attributes() {
                 return {
-                    selectLabel: this.field.menu.data.selectLabel || __('Press enter to select'),
+                    selectLabel: this.field.menu.data.selectLabel || this.__('Press enter to select'),
                     label: this.field.menu.data.label || 'title',
                     openDirection: this.field.menu.data.openDirection || 'bottom',
                 }
@@ -83,7 +87,7 @@
             addGroup(layout) {
                 if (!layout) return;
 
-                eventBus.$emit('add-group-'+this.field.attribute, layout, -1);
+                eventBus.$emit('add-group-'+this.field.attribute, layout, this.index);
 
                 this.isLayoutsDropdownOpen = false;
                 this.selectedLayout = null;
