@@ -33,7 +33,8 @@
 
 <script>
 
-    import Multiselect from 'vue-multiselect'
+    import Multiselect from 'vue-multiselect';
+    import { eventBus } from '../eventbus';
 
     export default {
         components: {Multiselect},
@@ -82,7 +83,7 @@
             addGroup(layout) {
                 if (!layout) return;
 
-                this.$emit('addGroup', layout);
+                eventBus.$emit('add-group-'+this.field.attribute, layout, -1);
 
                 this.isLayoutsDropdownOpen = false;
                 this.selectedLayout = null;

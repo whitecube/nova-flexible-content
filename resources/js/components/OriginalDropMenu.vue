@@ -1,12 +1,19 @@
 <template>
-    <div class="z-20 relative" v-if="layouts">
+    <div 
+        class="z-20 relative" 
+        :class="{
+            'mb-4': addAtPosition,
+            '-mt-1': addAtPosition
+        }"
+        v-if="layouts"
+    >
         <div class="relative" v-if="layouts.length > 1">
             <div v-if="isLayoutsDropdownOpen"
                  class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
             >
                 <div>
                     <ul class="list-reset">
-                        <li v-for="layout in layouts" class="border-b border-40">
+                        <li v-for="layout in layouts" :key="layout.name" class="border-b border-40">
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
@@ -23,6 +30,9 @@
             type="button"
             tabindex="0"
             class="btn btn-default btn-primary inline-flex items-center relative"
+            :class="{
+                'btn-xs': addAtPosition
+            }"
             @click="toggleLayoutsDropdownOrAddDefault"
             v-if="this.limitCounter != 0"
         >
@@ -32,9 +42,10 @@
 </template>
 
 <script>
+    import { eventBus } from '../eventbus';
 
     export default {
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'addAtPosition', 'index'],
 
         data() {
             return {
@@ -60,8 +71,8 @@
              */
             addGroup(layout) {
                 if (!layout) return;
-
-                this.$emit('addGroup', layout);
+                
+                eventBus.$emit('add-group-'+this.field.attribute, layout, this.index + 1);
 
                 this.isLayoutsDropdownOpen = false;
             },

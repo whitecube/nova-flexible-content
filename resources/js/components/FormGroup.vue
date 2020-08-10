@@ -1,85 +1,119 @@
 <template>
-    <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
-        <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
-            <button
-                dusk="expand-group"
-                type="button"
-                class="group-control btn border-r border-40 w-8 h-8 block"
-                :title="__('Expand')"
-                @click.prevent="expand"
-                v-if="collapsed">
-                <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
-            </button>
-            <div v-if="!collapsed">
-                <button
-                    dusk="collapse-group"
-                    type="button"
-                    class="group-control btn border-r border-40 w-8 h-8 block"
-                    :title="__('Collapse')"
-                    @click.prevent="collapse">
-                    <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
-                </button>
-                <div v-if="!readonly">
-                    <button
-                        dusk="move-up-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
-                        :title="__('Move up')"
-                        @click.prevent="moveUp">
-                        <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
-                    </button>
-                    <button
-                        dusk="move-down-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
-                        :title="__('Move down')"
-                        @click.prevent="moveDown">
-                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
-                    </button>
-                    <button
-                        dusk="delete-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
-                        :title="__('Delete')"
-                        @click.prevent="confirmRemove">
-                        <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
-                    </button>
-                    <portal to="modals">
-                        <delete-flexible-content-group-modal
-                            v-if="removeMessage"
-                            @confirm="remove"
-                            @close="removeMessage=false"
-                            :message="field.confirmRemoveMessage"
-                            :yes="field.confirmRemoveYes"
-                            :no="field.confirmRemoveNo"
-                        />
-                    </portal>
-                </div>
-            </div>
-        </div>
-        <div class="-mb-1 flex flex-col min-h-full w-full">
-            <div :class="titleStyle" v-if="group.title">
-                <div class="leading-normal py-1 px-8"
-                    :class="{'border-b border-40': !collapsed}">
-                    <p class="text-80">
-                      <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
-                      {{ group.title }}
-                    </p>
-                </div>
-            </div>
-            <div :class="containerStyle">
+    <div>
+        <div
+            v-if="index == 0">
                 <component
-                    v-for="(item, index) in group.fields"
-                    :key="index"
-                    :is="'form-' + item.component"
+                    :layouts="layouts"
+                    :is="field.menu.component"
+                    :field="field"
+                    :limit-counter="limitCounter"
+                    :errors="errors"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
-                    :field="item"
-                    :errors="errors"
-                    :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
+                    :addAtPosition="true"
+                    :index="index - 1"
                 />
+        </div>
+
+        <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
+            <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
+                <button
+                    dusk="expand-group"
+                    type="button"
+                    class="group-control btn border-r border-40 w-8 h-8 block"
+                    :title="__('Expand')"
+                    @click.prevent="expand"
+                    v-if="collapsed">
+                    <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
+                </button>
+                <div v-if="!collapsed">
+                    <button
+                        dusk="collapse-group"
+                        type="button"
+                        class="group-control btn border-r border-40 w-8 h-8 block"
+                        :title="__('Collapse')"
+                        @click.prevent="collapse">
+                        <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
+                    </button>
+                    <div v-if="!readonly">
+                        <button
+                            dusk="move-up-group"
+                            type="button"
+                            class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                            :title="__('Move up')"
+                            @click.prevent="moveUp">
+                            <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                        </button>
+                        <button
+                            dusk="move-down-group"
+                            type="button"
+                            class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                            :title="__('Move down')"
+                            @click.prevent="moveDown">
+                            <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                        </button>
+                        <button
+                            dusk="delete-group"
+                            type="button"
+                            class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                            :title="__('Delete')"
+                            @click.prevent="confirmRemove">
+                            <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                        </button>
+                        <portal to="modals">
+                            <delete-flexible-content-group-modal
+                                v-if="removeMessage"
+                                @confirm="remove"
+                                @close="removeMessage=false"
+                                :message="field.confirmRemoveMessage"
+                                :yes="field.confirmRemoveYes"
+                                :no="field.confirmRemoveNo"
+                            />
+                        </portal>
+                    </div>
+                </div>
             </div>
+            <div class="-mb-1 flex flex-col min-h-full w-full">
+                <div :class="titleStyle" v-if="group.title">
+                    <div class="leading-normal py-1 px-8"
+                        :class="{'border-b border-40': !collapsed}">
+                        <p class="text-80">
+                        <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
+                        {{ group.title }}
+                        </p>
+                    </div>
+                </div>
+                <div :class="containerStyle">
+                    <component
+                        v-for="(item, index) in group.fields"
+                        :key="index"
+                        :is="'form-' + item.component"
+                        :resource-name="resourceName"
+                        :resource-id="resourceId"
+                        :resource="resource"
+                        :field="item"
+                        :errors="errors"
+                        :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div
+            v-if="totalCount > 0">
+                <component
+                    :layouts="layouts"
+                    :is="field.menu.component"
+                    :field="field"
+                    :limit-counter="limitCounter"
+                    :errors="errors"
+                    :resource-name="resourceName"
+                    :resource-id="resourceId"
+                    :resource="resource"
+                    :addAtPosition="true"
+                    :index="index"
+                />
         </div>
     </div>
 </template>
@@ -90,7 +124,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'index', 'field'],
+    props: ['errors', 'group', 'index', 'field', 'layouts', 'limitsCounter', 'totalCount'],
 
     data() {
         return {

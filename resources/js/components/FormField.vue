@@ -6,7 +6,6 @@
         :errors="errors"
         full-width-content>
         <template slot="field">
-
             <div
                 v-if="order.length > 0">
                 <form-nova-flexible-content-group
@@ -20,23 +19,28 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
+                    :total-count="order.length"
+                    :layouts="layouts"
+                    :limit-counter="limitCounter"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
                 />
             </div>
 
-            <component
-                :layouts="layouts"
-                :is="field.menu.component"
-                :field="field"
-                :limit-counter="limitCounter"
-                :errors="errors"
-                :resource-name="resourceName"
-                :resource-id="resourceId"
-                :resource="resource"
-                @addGroup="addGroup($event)"
-            />
+            <div v-if="order.length == 0">
+                <component
+                    :layouts="layouts"
+                    :is="field.menu.component"
+                    :field="field"
+                    :limit-counter="limitCounter"
+                    :errors="errors"
+                    :resource-name="resourceName"
+                    :resource-id="resourceId"
+                    :resource="resource"
+                    :addAtPosition="false"
+                />
+            </div>
 
         </template>
     </component>
@@ -47,6 +51,7 @@
 import FullWidthField from './FullWidthField';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
+import { eventBus } from '../eventbus';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -62,6 +67,7 @@ export default {
         orderedGroups() {
             return this.order.reduce((groups, key) => {
                 groups.push(this.groups[key]);
+                
                 return groups;
             }, []);
         }
@@ -155,6 +161,7 @@ export default {
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
+                    i,
                     this.value[i].attributes,
                     this.value[i].key,
                     this.field.collapsed
@@ -173,7 +180,7 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes, key, collapsed) {
+        addGroup(layout, position, attributes, key, collapsed) {
             if(!layout) return;
 
             collapsed = collapsed || false;
@@ -182,7 +189,9 @@ export default {
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
             this.groups[group.key] = group;
-            this.order.push(group.key);
+            
+            this.order.splice(position, 0, group.key);
+            //this.order.push(group.key);
 
             if (this.limitCounter > 0) {
                 this.limitCounter--;
@@ -226,6 +235,11 @@ export default {
                 this.limitCounter++;
             }
         }
-    }
+    },
+    mounted:function(){
+        eventBus.$on('add-group-'+this.field.attribute, (layout, position) => {
+            this.addGroup(layout, position);
+        });
+     }
 }
 </script>
