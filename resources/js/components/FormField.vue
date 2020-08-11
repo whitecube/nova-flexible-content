@@ -19,7 +19,6 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
-                    :total-count="order.length"
                     :layouts="layouts"
                     :limit-counter="limitCounter"
                     @move-up="moveUp(group.key)"
