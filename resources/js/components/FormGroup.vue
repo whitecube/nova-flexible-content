@@ -142,7 +142,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'index', 'field', 'layouts', 'limitsCounter', 'totalCount'],
+    props: ['errors', 'group', 'index', 'field', 'layouts', 'limitsCounter'],
 
     data() {
         return {
