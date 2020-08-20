@@ -27,6 +27,10 @@ trait HasMediaLibrary {
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
+        while ($model instanceof Layout) {
+          $model = $model->getMediaModel();
+        }
+
         if(is_null($model) || !($model instanceof HasMedia)) {
             throw new \Exception('Origin HasMedia model not found.');
         }
@@ -89,6 +93,32 @@ trait HasMediaLibrary {
         });
 
         return $this->getResolvedValue();
+    }
+
+    /**
+     * The default behaviour when removed
+     * Should remove all related medias except if shouldDeletePreservingMedia returns true
+     *
+     * @param  Flexible $flexible
+     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     *
+     * @return mixed
+     */
+    protected function removeCallback(Flexible $flexible, $layout)
+    {
+      if ($this->shouldDeletePreservingMedia()) return;
+  
+      $collectionsToClear = config('media-library.media_model')::select('collection_name')
+        ->where('collection_name', 'like', '%' . $this->getSuffix())
+        ->distinct()
+        ->pluck('collection_name')
+        ->map(function ($value) {
+          return str_replace($this->getSuffix(), '', $value);
+        });
+  
+      foreach ($collectionsToClear as $collection) {
+        $layout->clearMediaCollection($collection);
+      }
     }
 
 }
