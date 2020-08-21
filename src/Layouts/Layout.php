@@ -382,11 +382,23 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     public function fireRemoveCallback(Flexible $flexible)
     {
+        $nestedCallbackReturns = $this->fields
+            ->filter(function ($field) {
+                return $field instanceof Flexible;
+            })->mapWithKeys(function (Field $field) {
+                $layouts = $this->toFlexible(data_get($this->attributes, $field->attribute) ?: null, $this->getMergedLayoutMapping([]));
+                return [
+                    $field->attribute => $layouts->map(function ($layout) use ($field) {
+                        return $layout->fireRemoveCallback($field);
+                    })
+                ];
+            })->toArray();
+
         if (is_callable($this->removeCallbackMethod)) {
-            return $this->removeCallbackMethod($flexible, $this);
+            return $this->removeCallbackMethod($flexible, $this, $nestedCallbackReturns);
         }
 
-        return $this->removeCallback($flexible, $this);
+        return $this->removeCallback($flexible, $this, $nestedCallbackReturns);
     }
 
     /**
@@ -394,10 +406,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @param  Flexible $flexible
      * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     * @param  array $nestedCallbackReturns
      *
      * @return mixed
      */
-    protected function removeCallback(Flexible $flexible, $layout) {
+    protected function removeCallback(Flexible $flexible, $layout, array $nestedCallbackReturns) {
         return;
     }
 
