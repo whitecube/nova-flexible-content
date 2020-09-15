@@ -326,6 +326,7 @@ class Flexible extends Field
     protected function syncAndFillGroups(NovaRequest $request, $requestAttribute)
     {
         if(!($raw = $this->extractValue($request, $requestAttribute))) {
+            $this->fireRemoveCallbacks(collect());
             $this->groups = collect();
             return;
         }
