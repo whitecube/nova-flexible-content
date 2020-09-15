@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+namespace Kraenkvisuell\NovaFlexibleContent\Http;
 
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -13,7 +13,7 @@ class ScopedRequest extends NovaRequest
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $from
      * @param  array  $attributes
      * @param  string  $group
-     * @return \Whitecube\NovaFlexibleContent\Http\ScopedRequest
+     * @return \Kraenkvisuell\NovaFlexibleContent\Http\ScopedRequest
      */
     public static function scopeFrom(NovaRequest $from, $attributes, $group)
     {
@@ -30,7 +30,7 @@ class ScopedRequest extends NovaRequest
     public function scopeInto($group, $attributes)
     {
         [$input, $files] = $this->getScopeState($group, $attributes);
-        
+
         $input['_method'] = $this->input('_method');
         $input['_retrieved_at'] = $this->input('_retrieved_at');
 
@@ -173,8 +173,8 @@ class ScopedRequest extends NovaRequest
         if (count($keys) !== 3) {
             return false;
         }
-        
-        return  in_array('layout', $keys, true) 
+
+        return  in_array('layout', $keys, true)
                 && in_array('key', $keys, true)
                 && in_array('attributes', $keys, true);
     }

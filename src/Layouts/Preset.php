@@ -1,8 +1,8 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Layouts;
+namespace Kraenkvisuell\NovaFlexibleContent\Layouts;
 
-use Whitecube\NovaFlexibleContent\Flexible;
+use Kraenkvisuell\NovaFlexibleContent\Flexible;
 
 abstract class Preset
 {

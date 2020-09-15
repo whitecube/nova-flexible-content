@@ -2,7 +2,7 @@
 
 namespace App\Casts;
 
-use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+use Kraenkvisuell\NovaFlexibleContent\Value\FlexibleCast;
 
 class :classname extends FlexibleCast
 {

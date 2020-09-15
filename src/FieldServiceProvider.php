@@ -1,15 +1,15 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent;
+namespace Kraenkvisuell\NovaFlexibleContent;
 
 use Laravel\Nova\Nova;
 use Laravel\Nova\Events\ServingNova;
 use Illuminate\Support\ServiceProvider;
-use Whitecube\NovaFlexibleContent\Commands\CreateCast;
-use Whitecube\NovaFlexibleContent\Commands\CreateLayout;
-use Whitecube\NovaFlexibleContent\Commands\CreatePreset;
-use Whitecube\NovaFlexibleContent\Commands\CreateResolver;
-use Whitecube\NovaFlexibleContent\Http\Middleware\InterceptFlexibleAttributes;
+use Kraenkvisuell\NovaFlexibleContent\Commands\CreateCast;
+use Kraenkvisuell\NovaFlexibleContent\Commands\CreateLayout;
+use Kraenkvisuell\NovaFlexibleContent\Commands\CreatePreset;
+use Kraenkvisuell\NovaFlexibleContent\Commands\CreateResolver;
+use Kraenkvisuell\NovaFlexibleContent\Http\Middleware\InterceptFlexibleAttributes;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -21,7 +21,7 @@ class FieldServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->addMiddleware();
-      
+
         Nova::serving(function (ServingNova $event) {
             Nova::script('nova-flexible-content', __DIR__.'/../dist/js/field.js');
             Nova::style('nova-flexible-content', __DIR__.'/../dist/css/field.css');
@@ -44,7 +44,7 @@ class FieldServiceProvider extends ServiceProvider
             CreateResolver::class,
         ]);
     }
-    
+
     /**
      * Adds required middleware for Nova requests.
      *
@@ -53,13 +53,13 @@ class FieldServiceProvider extends ServiceProvider
     public function addMiddleware()
     {
         $router = $this->app['router'];
-        
+
         if ($router->hasMiddlewareGroup('nova')) {
             $router->pushMiddlewareToGroup('nova', InterceptFlexibleAttributes::class);
-            
+
             return;
         }
-        
+
         if (! $this->app->configurationIsCached()) {
             config()->set('nova.middleware', array_merge(
                 config('nova.middleware', []),

@@ -1,13 +1,13 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http\Middleware;
+namespace Kraenkvisuell\NovaFlexibleContent\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Whitecube\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
-use Whitecube\NovaFlexibleContent\Http\TransformsFlexibleErrors;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
+use Kraenkvisuell\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
+use Kraenkvisuell\NovaFlexibleContent\Http\TransformsFlexibleErrors;
+use Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute;
 
 class InterceptFlexibleAttributes
 {
