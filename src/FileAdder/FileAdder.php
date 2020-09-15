@@ -1,6 +1,6 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\FileAdder;
+namespace Whitecube\NovaFlexibleContent\FileAdder;
 
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
 use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;

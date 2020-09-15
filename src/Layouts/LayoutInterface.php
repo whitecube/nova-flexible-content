@@ -1,8 +1,8 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\Layouts;
+namespace Whitecube\NovaFlexibleContent\Layouts;
 
-use Kraenkvisuell\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
 interface LayoutInterface
 {

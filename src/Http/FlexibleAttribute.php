@@ -1,6 +1,6 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\Http;
+namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Support\Arr;
 
@@ -14,7 +14,7 @@ class FlexibleAttribute
     const REGISTER = '___nova_flexible_content_fields';
 
     /**
-     * The string between the group identifier
+     * The string between the group identifier 
      * and the actual attribute.
      *
      * @var string
@@ -86,7 +86,7 @@ class FlexibleAttribute
      * @param  string $group
      * @param  mixed $key
      * @param  bool $upload
-     * @return \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public static function make($name, $group = null, $key = null, $upload = false)
     {
@@ -129,7 +129,7 @@ class FlexibleAttribute
      * Return a FlexibleAttribute instance matching the target upload field
      *
      * @param mixed $value
-     * @return \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public function getFlexibleFileAttribute($value)
     {
@@ -244,7 +244,7 @@ class FlexibleAttribute
      * Return a new instance with appended key
      *
      * @param string $key
-     * @return \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public function nest($key)
     {

@@ -2,7 +2,7 @@
 
 namespace App\Nova\Flexible\Layouts;
 
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Layout;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 
 class :classname extends Layout
 {

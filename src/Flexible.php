@@ -1,17 +1,17 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent;
+namespace Whitecube\NovaFlexibleContent;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Kraenkvisuell\NovaFlexibleContent\Http\ScopedRequest;
-use Kraenkvisuell\NovaFlexibleContent\Value\Resolver;
-use Kraenkvisuell\NovaFlexibleContent\Value\ResolverInterface;
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Preset;
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Layout;
-use Kraenkvisuell\NovaFlexibleContent\Layouts\LayoutInterface;
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Value\Resolver;
+use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Preset;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
+use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
@@ -25,7 +25,7 @@ class Flexible extends Field
     /**
      * The available layouts collection
      *
-     * @var Kraenkvisuell\NovaFlexibleContent\Layouts\Collection
+     * @var Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     protected $layouts;
 
@@ -39,7 +39,7 @@ class Flexible extends Field
     /**
      * The field's value setter & getter
      *
-     * @var Kraenkvisuell\NovaFlexibleContent\Value\ResolverInterface
+     * @var Whitecube\NovaFlexibleContent\Value\ResolverInterface
      */
     protected $resolver;
 
@@ -219,7 +219,7 @@ class Flexible extends Field
     /**
      * Push a layout instance into the layouts collection
      *
-     * @param Kraenkvisuell\NovaFlexibleContent\Layouts\LayoutInterface $layout
+     * @param Whitecube\NovaFlexibleContent\Layouts\LayoutInterface $layout
      * @return void
      */
     protected function registerLayout(LayoutInterface $layout)
@@ -441,7 +441,7 @@ class Flexible extends Field
      * Find an existing group based on its key
      *
      * @param  string $key
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function findGroup($key)
     {
@@ -455,7 +455,7 @@ class Flexible extends Field
      *
      * @param  string $layout
      * @param  string $key
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\Layout
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
      */
     protected function newGroup($layout, $key)
     {
@@ -593,7 +593,7 @@ class Flexible extends Field
      * Return a previously registered validation key
      *
      * @param  string $key
-     * @return null|\Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return null|\Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public static function getValidationKey($key)
     {
@@ -610,7 +610,7 @@ class Flexible extends Field
     {
         if (is_a($model, \Laravel\Nova\Resource::class)) {
             $model = $model->model();
-        } else if (is_a($model, \Kraenkvisuell\NovaPage\Pages\Template::class)) {
+        } else if (is_a($model, \Whitecube\NovaPage\Pages\Template::class)) {
             $model = $model->getOriginal();
         }
 

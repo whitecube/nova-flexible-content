@@ -1,12 +1,12 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\Concerns;
+namespace Whitecube\NovaFlexibleContent\Concerns;
 
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Layout;
-use Kraenkvisuell\NovaFlexibleContent\Layouts\Collection;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
-use Kraenkvisuell\NovaFlexibleContent\Value\FlexibleCast;
+use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 trait HasFlexible {
 
@@ -15,7 +15,7 @@ trait HasFlexible {
      *
      * @param string $attribute
      * @param array  $layoutMapping
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function flexible($attribute, $layoutMapping = [])
     {
@@ -29,7 +29,7 @@ trait HasFlexible {
      *
      * @param array $value
      * @param array $layoutMapping
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function cast($value, $layoutMapping = [])
     {
@@ -45,7 +45,7 @@ trait HasFlexible {
      *
      * @param mixed $value
      * @param array $layoutMapping
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\Collection
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function toFlexible($value, $layoutMapping = [])
     {
@@ -103,7 +103,7 @@ trait HasFlexible {
      *
      * @param mixed $item
      * @param array $layoutMapping
-     * @return null|Kraenkvisuell\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return null|Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function getMappedLayout($item, array $layoutMapping)
     {
@@ -145,7 +145,7 @@ trait HasFlexible {
      * @param string $key
      * @param array  $attributes
      * @param array  $layoutMapping
-     * @return \Kraenkvisuell\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
