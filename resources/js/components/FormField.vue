@@ -15,6 +15,7 @@
                     :field="field"
                     :group="group"
                     :index="index"
+                    :total-count="order.length"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
@@ -27,7 +28,7 @@
                 />
             </div>
 
-            <div v-if="order.length == 0">
+            <div>
                 <component
                     :layouts="layouts"
                     :is="field.menu.component"
