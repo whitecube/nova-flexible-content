@@ -1,18 +1,18 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\Concerns;
+namespace Whitecube\NovaFlexibleContent\Concerns;
 
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\MediaRepository;
-use Kraenkvisuell\NovaFlexibleContent\FileAdder\FileAdder;
-use Kraenkvisuell\NovaFlexibleContent\FileAdder\FileAdderFactory;
-use Kraenkvisuell\NovaFlexibleContent\Flexible;
+use Whitecube\NovaFlexibleContent\FileAdder\FileAdder;
+use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
+use Whitecube\NovaFlexibleContent\Flexible;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
-use Kraenkvisuell\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
 trait HasMediaLibrary {
 
@@ -61,7 +61,7 @@ trait HasMediaLibrary {
         return app(MediaRepository::class)
             ->getCollection($this->getMediaModel(), $collectionName . $this->getSuffix(), $filters);
     }
-
+  
     /**
      * Get the media collection name suffix.
      *
@@ -71,7 +71,7 @@ trait HasMediaLibrary {
     {
         return '_' . $this->inUseKey();
     }
-
+    
     /**
      * Resolve fields for display using given attributes.
      *

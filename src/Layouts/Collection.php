@@ -1,6 +1,6 @@
 <?php
 
-namespace Kraenkvisuell\NovaFlexibleContent\Layouts;
+namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use Illuminate\Support\Collection as BaseCollection;
 
