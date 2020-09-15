@@ -2,7 +2,7 @@
 
 namespace App\Nova\Flexible\Resolvers;
 
-use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Kraenkvisuell\NovaFlexibleContent\Value\ResolverInterface;
 
 class :classname implements ResolverInterface
 {
@@ -11,7 +11,7 @@ class :classname implements ResolverInterface
      *
      * @param  mixed  $resource
      * @param  string $attribute
-     * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+     * @param  Kraenkvisuell\NovaFlexibleContent\Layouts\Collection $layouts
      * @return Illuminate\Support\Collection
      */
     public function get($resource, $attribute, $layouts)
@@ -29,6 +29,6 @@ class :classname implements ResolverInterface
      */
     public function set($model, $attribute, $groups)
     {
-        
+
     }
 }

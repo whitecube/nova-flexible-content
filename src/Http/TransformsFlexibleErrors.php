@@ -1,10 +1,10 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+namespace Kraenkvisuell\NovaFlexibleContent\Http;
 
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
-use Whitecube\NovaFlexibleContent\Flexible;
+use Kraenkvisuell\NovaFlexibleContent\Flexible;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -84,7 +84,7 @@ trait TransformsFlexibleErrors
      *
      * @param  array  $messages
      * @param  string $key
-     * @param  \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute  $attribute
+     * @param  \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute  $attribute
      * @return array
      */
     protected function transformMessages($messages, $key, $attribute)
@@ -99,7 +99,7 @@ trait TransformsFlexibleErrors
 
         return array_map(function($message) use ($search, $attribute) {
             return str_replace(
-                [$search, Str::upper($search), Str::ucfirst($search)], 
+                [$search, Str::upper($search), Str::ucfirst($search)],
                 [$attribute, Str::upper($attribute), Str::ucfirst($attribute)],
                 $message
             );

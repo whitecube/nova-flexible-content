@@ -1,16 +1,16 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Layouts;
+namespace Kraenkvisuell\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use JsonSerializable;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Kraenkvisuell\NovaFlexibleContent\Flexible;
+use Kraenkvisuell\NovaFlexibleContent\Http\ScopedRequest;
+use Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute;
+use Kraenkvisuell\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Contracts\Support\Arrayable;
@@ -222,7 +222,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $fields = $this->fields->map(function($field) {
             return $this->cloneField($field);
         });
-        
+
         return new static(
             $this->title,
             $this->name,
@@ -250,7 +250,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $field;
     }
-    
+
     /**
      * Resolve fields using given attributes.
      *
@@ -393,7 +393,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * The default behaviour when removed
      *
      * @param  Flexible $flexible
-     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     * @param  Kraenkvisuell\NovaFlexibleContent\Layout $layout
      *
      * @return mixed
      */

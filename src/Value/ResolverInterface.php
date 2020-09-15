@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Value;
+namespace Kraenkvisuell\NovaFlexibleContent\Value;
 
 interface ResolverInterface
 {

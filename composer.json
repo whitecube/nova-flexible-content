@@ -1,5 +1,5 @@
 {
-    "name": "whitecube/nova-flexible-content",
+    "name": "kraenkvisuell/nova-flexible-content",
     "description": "Flexible Content & Repeater Fields for Laravel Nova.",
     "license": "MIT",
     "keywords": [
@@ -15,20 +15,24 @@
         {
             "name": "Toon Van den Bos",
             "email": "toon@whitecube.be"
+        },
+        {
+            "name": "Sebastian Hilger",
+            "email": "hilger@kraenk.de"
         }
     ],
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.3.0"
     },
     "autoload": {
         "psr-4": {
-            "Whitecube\\NovaFlexibleContent\\": "src/"
+            "Kraenkvisuell\\NovaFlexibleContent\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Whitecube\\NovaFlexibleContent\\FieldServiceProvider"
+                "Kraenkvisuell\\NovaFlexibleContent\\FieldServiceProvider"
             ]
         }
     },

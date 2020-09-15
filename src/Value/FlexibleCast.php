@@ -1,8 +1,8 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Value;
+namespace Kraenkvisuell\NovaFlexibleContent\Value;
 
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Kraenkvisuell\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class FlexibleCast implements CastsAttributes

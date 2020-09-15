@@ -1,9 +1,9 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+namespace Kraenkvisuell\NovaFlexibleContent\Http;
 
 use Illuminate\Http\Request;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
+use Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute;
 
 trait ParsesFlexibleAttributes
 {
@@ -120,7 +120,7 @@ trait ParsesFlexibleAttributes
      *
      * @param  string  $attribute
      * @param  string  $group
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
      */
     protected function parseAttribute($attribute, $group)
     {
@@ -164,7 +164,7 @@ trait ParsesFlexibleAttributes
     }
 
     /**
-     * Check if given attribute is a registered and usable 
+     * Check if given attribute is a registered and usable
      * flexible attribute
      *
      * @param  string $attribute
@@ -176,7 +176,7 @@ trait ParsesFlexibleAttributes
         if(!$this->getFlexibleAttribute($attribute)) {
             return false;
         }
-        
+
         if(!$value || !is_string($value)) {
             return false;
         }
@@ -188,7 +188,7 @@ trait ParsesFlexibleAttributes
      * Retrieve a registered flexible attribute
      *
      * @param  string $attribute
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return \Kraenkvisuell\NovaFlexibleContent\Http\FlexibleAttribute
      */
     protected function getFlexibleAttribute($attribute)
     {
