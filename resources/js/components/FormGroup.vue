@@ -1,6 +1,7 @@
 <template>
     <div>
-        <div v-if="index == 0">
+        <div
+            v-if="index == 0">
                 <component
                     :layouts="layouts"
                     :is="field.menu.component"
@@ -99,7 +100,7 @@
             </div>
         </div>
 
-        <div v-if="index < totalCount - 1">
+        <div>
             <component
                 :layouts="layouts"
                 :is="field.menu.component"
@@ -122,7 +123,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'index', 'field', 'layouts', 'limitsCounter', 'totalCount'],
+    props: ['errors', 'group', 'index', 'field', 'layouts', 'limitsCounter'],
 
     data() {
         return {

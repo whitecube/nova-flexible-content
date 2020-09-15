@@ -2,7 +2,8 @@
     <div 
         class="z-20 relative" 
         :class="{
-            'add-at-position-button-container': addAtPosition
+            'mb-4': addAtPosition,
+            '-mt-1': addAtPosition
         }"
         v-if="layouts"
     >
@@ -78,20 +79,3 @@
         }
     }
 </script>
-
-<style scoped>
-.add-at-position-button-container {
-    padding-bottom: 5px;
-    padding-top: 5px;
-    margin-top: -16px;
-    opacity: 0;
-    overflow: visible;
-    transition: opacity 0.6s;
-}
-.add-at-position-button-container:hover {
-    opacity: 1;
-}
-.add-at-position-button-container button {
-    margin: 0 auto;
-}
-</style>
