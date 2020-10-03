@@ -12,7 +12,7 @@
                     }}</span>
                 </form-label>
 
-                <help-text :show-help-text="showHelpText">
+                <help-text v-if="showHelpText">
                     {{ field.helpText }}
                 </help-text>
             </div>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { mapProps } from 'laravel-nova'
 import { HandlesValidationErrors, Errors } from 'laravel-nova'
 
 export default {
@@ -39,7 +40,7 @@ export default {
         field: { type: Object, required: true },
         fieldName: { type: String },
         showErrors: { type: Boolean, default: true },
-        showHelpText: { type: Boolean, default: true },
+        ...mapProps(['showHelpText']),
     },
 
     computed: {
