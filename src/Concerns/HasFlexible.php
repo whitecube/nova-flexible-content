@@ -131,7 +131,7 @@ trait HasFlexible {
             $attributes = $item->getAttributes();
         }
 
-        if(is_null($name) || !$attributes) {
+        if(is_null($name)) {
             return;
         }
 
