@@ -15,7 +15,12 @@
             </div>
             <div v-if="layouts.length > 1">
                 <div style="min-width: 300px;">
-                    <div class="flexible-search-menu-multiselect">
+                    <div
+                        class="flexible-search-menu-multiselect"
+                        :class="{
+                            'mb-4': addAtPosition
+                        }"
+                    >
                         <multiselect
                             v-model="selectedLayout" :options="layouts"
                              :custom-label="renderLayoutName"
@@ -34,11 +39,12 @@
 <script>
 
     import Multiselect from 'vue-multiselect'
+    import { eventBus } from '../eventbus';
 
     export default {
         components: {Multiselect},
 
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'addAtPosition', 'index'],
 
         data() {
             return {
@@ -82,7 +88,7 @@
             addGroup(layout) {
                 if (!layout) return;
 
-                this.$emit('addGroup', layout);
+                eventBus.$emit('add-group-'+this.field.attribute, layout, this.index);
 
                 this.isLayoutsDropdownOpen = false;
                 this.selectedLayout = null;
