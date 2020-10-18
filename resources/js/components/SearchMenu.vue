@@ -83,7 +83,7 @@
             },
 
             /**
-             * Append the given layout to flexible content's list
+             * Add the given layout to flexible content's list at buttons position
              */
             addGroup(layout) {
                 if (!layout) return;

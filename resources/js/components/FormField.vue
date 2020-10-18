@@ -179,7 +179,7 @@ export default {
         },
 
         /**
-         * Append the given layout to flexible content's list
+         * Add the given layout to flexible content's list at given position
          */
         addGroup(layout, position, attributes, key, collapsed) {
             if(!layout) return;
