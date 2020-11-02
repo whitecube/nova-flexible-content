@@ -248,9 +248,7 @@ class Flexible extends Field
 
             $this->value = $this->resolveGroups($this->groups);
         } elseif (is_callable($this->resolveCallback)) {
-            tap($this->resolveAttribute($resource, $attribute), function ($value) use ($resource, $attribute) {
-                $this->value = call_user_func($this->resolveCallback, $this, $value, $resource, $attribute);
-            });
+            $this->value = call_user_func($this->resolveCallback, $this, $resource, $attribute);
         }
     }
 
@@ -268,9 +266,7 @@ class Flexible extends Field
         if (! $this->displayCallback) {
             $this->resolve($resource, $attribute);
         } elseif (is_callable($this->displayCallback)) {
-            tap($this->value ?? $this->resolveAttribute($resource, $attribute), function ($value) use ($resource, $attribute) {
-                $this->value = call_user_func($this->displayCallback, $this, $value, $resource, $attribute);
-            });
+            $this->value = call_user_func($this->displayCallback, $this, $resource, $attribute);
         }
     }
 
