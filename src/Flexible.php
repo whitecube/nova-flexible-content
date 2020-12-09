@@ -241,15 +241,17 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        if (! $this->resolveCallback) {
-            $this->registerOriginModel($resource);
-
-            $this->buildGroups($resource, $attribute);
-
-            $this->value = $this->resolveGroups($this->groups);
-        } elseif (is_callable($this->resolveCallback)) {
+        if ($this->resolveCallback && is_callable($this->resolveCallback)) {
             $this->value = call_user_func($this->resolveCallback, $this, $resource, $attribute);
+
+            return;
         }
+
+        $this->registerOriginModel($resource);
+
+        $this->buildGroups($resource, $attribute);
+
+        $this->value = $this->resolveGroups($this->groups);
     }
 
     /**
@@ -263,11 +265,13 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        if (! $this->displayCallback) {
-            $this->resolve($resource, $attribute);
-        } elseif (is_callable($this->displayCallback)) {
+        if ($this->displayCallback && is_callable($this->displayCallback)) {
             $this->value = call_user_func($this->displayCallback, $this, $resource, $attribute);
+
+            return;
         }
+
+        $this->resolve($resource, $attribute);
     }
 
     /**

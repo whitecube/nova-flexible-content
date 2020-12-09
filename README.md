@@ -170,8 +170,8 @@ The fillUsing method allows you to alter the data or store the data on a differe
 
 ```php
 Flexible::make('Content', 'content')
-    ->fillUsing(function ($request, $model, $attribute, $requestAttribte) {
-        $value = $request->{$requestAttribte};
+    ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
+        $value = $request->{$requestAttribute};
         
         $model->{$attribute} = $value;
     })
