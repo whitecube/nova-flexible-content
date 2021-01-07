@@ -85,7 +85,7 @@ trait HasMediaLibrary {
     public function resolveForDisplay(array $attributes = [])
     {
         $this->fields->each(function ($field) use ($attributes) {
-            if(is_subclass_of($field, Media::class)) {
+            if(is_a($field, Media::class)) {
                 $field->resolveForDisplay($this->getMediaModel(), $field->attribute . $this->getSuffix());
             } else {
                 $field->resolveForDisplay($attributes);
