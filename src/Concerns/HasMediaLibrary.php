@@ -25,7 +25,7 @@ trait HasMediaLibrary {
      */
     protected function getMediaModel() : HasMedia
     {
-        $model = Flexible::getOriginModel() ?? $this->model;
+        $model = Flexible::getOriginModel() ?? $this->model->model ?: $this->model;
 
         while ($model instanceof Layout) {
           $model = $model->getMediaModel();
