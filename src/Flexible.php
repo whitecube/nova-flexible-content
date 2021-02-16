@@ -346,7 +346,7 @@ class Flexible extends Field
             $callbacks = array_merge($callbacks, $group->fill($scope));
 
             return $group;
-        });
+        })->filter();
 
         $this->fireRemoveCallbacks($new_groups);
 
