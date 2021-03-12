@@ -223,13 +223,17 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             return $this->cloneField($field);
         });
         
-        return new static(
+        $clone = new static(
             $this->title,
             $this->name,
             $fields,
             $key,
             $attributes
         );
+        if (!is_null($this->model)) {
+            $clone->setModel($this->model);
+        }
+        return $clone;
     }
 
     /**
