@@ -144,11 +144,11 @@ class Flexible extends Field
      */
     public function resolver($resolver)
     {
-        if (is_string($resolver) && is_a($resolver, ResolverInterface::class, true)) {
+        if(is_string($resolver) && is_a($resolver, ResolverInterface::class, true)) {
             $resolver = new $resolver();
         }
 
-        if(!($resolver instanceof ResolverInterface)) {
+        if(! ($resolver instanceof ResolverInterface)) {
             throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
         }
 
@@ -182,12 +182,12 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-
-        if(!($layout instanceof LayoutInterface)) {
+        
+        if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }
 
-        if(!($layout instanceof LayoutInterface)) {
+        if(! ($layout instanceof LayoutInterface)) {
             throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
         }
 
