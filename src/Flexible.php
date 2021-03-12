@@ -139,12 +139,14 @@ class Flexible extends Field
     /**
      * Set the field's resolver
      *
-     * @param string $classname
+     * @param mixed $resolver
      * @return $this
      */
-    public function resolver($classname)
+    public function resolver($resolver)
     {
-        $resolver = new $classname();
+        if (is_string($resolver) && is_a($resolver, ResolverInterface::class, true)) {
+            $resolver = new $resolver();
+        }
 
         if(!($resolver instanceof ResolverInterface)) {
             throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
