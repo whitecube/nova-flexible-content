@@ -144,7 +144,7 @@ class Flexible extends Field
      */
     public function resolver($resolver)
     {
-        if(!($resolver instanceof ResolverInterface)) {
+        if (is_string($resolver) && is_a($resolver, ResolverInterface::class, true)) {
             $resolver = new $resolver();
         }
 
