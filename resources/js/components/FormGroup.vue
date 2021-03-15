@@ -19,23 +19,27 @@
                     @click.prevent="collapse">
                     <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
                 </button>
+
                 <div v-if="!readonly">
-                    <button
-                        dusk="move-up-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
-                        :title="__('Move up')"
-                        @click.prevent="moveUp">
-                        <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
-                    </button>
-                    <button
-                        dusk="move-down-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
-                        :title="__('Move down')"
-                        @click.prevent="moveDown">
-                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
-                    </button>
+                    <template v-if="isOrderable">
+                        <button
+                            dusk="move-up-group"
+                            type="button"
+                            class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                            :title="__('Move up')"
+                            @click.prevent="moveUp">
+                            <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                        </button>
+                        <button
+                            dusk="move-down-group"
+                            type="button"
+                            class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                            :title="__('Move down')"
+                            @click.prevent="moveDown">
+                            <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                        </button>
+                    </template>
+
                     <button
                         v-if="isAboveMinimum"
                         dusk="delete-group"
@@ -92,7 +96,7 @@ import { BehavesAsPanel } from 'laravel-nova';
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'index', 'field', 'isAboveMinimum'],
+    props: ['errors', 'group', 'index', 'field', 'isAboveMinimum', 'isOrderable'],
 
     data() {
         return {

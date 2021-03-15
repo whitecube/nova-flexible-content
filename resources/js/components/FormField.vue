@@ -20,6 +20,7 @@
                     :resource="resource"
                     :errors="errors"
                     :is-above-minimum="isAboveMinimum"
+                    :is-orderable="isOrderable"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -73,6 +74,9 @@ export default {
         },
         groupCounter() {
             return Object.keys(this.groups).length;
+        },
+        isOrderable() {
+            return this.groupCounter > 1;
         },
     },
 
@@ -227,10 +231,11 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            this.groups = {
-                ...this.groups,
-                [key]: undefined,
-            };
+
+            const groups = { ...this.groups };
+            delete groups[key];
+
+            this.groups = groups;
         }
     }
 }
