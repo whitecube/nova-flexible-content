@@ -89,6 +89,17 @@ Flexible::make('Content')->limit(2);
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
 
+#### Minimum number of layouts
+
+You can set the minimum of how many layouts can appear using the following:
+
+```php
+Flexible::make('Content')->minimum(2);
+```
+
+You can specify any integer. If the number of layouts is at or below this integer,
+the delete icon will not be visible.
+
 #### Layout removal confirmation
 
 You can choose to display a confirmation prompt before a layout is deleted by doing:
@@ -183,9 +194,9 @@ class MyFlexibleCast extends FlexibleCast
     protected function getLayoutMappings()
     {
         $mappings = [];
-        
+
         // Conditionally add mappings however you want
-        
+
         return $mappings;
     }
 }
