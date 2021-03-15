@@ -112,13 +112,24 @@ class Flexible extends Field
     }
 
     /**
-     *  Prevent the 'Add Layout' button from appearing more than once
+     * Prevent the 'Add Layout' button from appearing more than once
      *
      * @return $this
      */
     public function limit($limit = 1)
     {
         return $this->withMeta(['limit' => $limit]);
+    }
+
+    /**
+     * Prevent the 'Delete' button from appearing when reaching a minimum
+     * number of resources.
+     *
+     * @return $this
+     */
+    public function minimum($minimum = 0)
+    {
+        return $this->withMeta(['minimum' => $minimum]);
     }
 
     /**
@@ -182,7 +193,7 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        
+
         if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }

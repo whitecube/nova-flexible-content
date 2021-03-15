@@ -6,7 +6,6 @@
         :errors="errors"
         full-width-content>
         <template slot="field">
-
             <div
                 v-if="order.length > 0">
                 <form-nova-flexible-content-group
@@ -20,6 +19,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
+                    :is-above-minimum="isAboveMinimum"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -30,7 +30,7 @@
                 :layouts="layouts"
                 :is="field.menu.component"
                 :field="field"
-                :limit-counter="limitCounter"
+                :is-below-limit="isBelowLimit"
                 :errors="errors"
                 :resource-name="resourceName"
                 :resource-id="resourceId"
@@ -64,7 +64,13 @@ export default {
                 groups.push(this.groups[key]);
                 return groups;
             }, []);
-        }
+        },
+        isBelowLimit() {
+            return this.groupCounter < (this.field.limit || Infinity);
+        },
+        isAboveMinimum() {
+            return this.groupCounter > (this.field.minimum || 0);
+        },
     },
 
     data() {
@@ -72,7 +78,7 @@ export default {
             order: [],
             groups: {},
             files: {},
-            limitCounter: this.field.limit
+            groupCounter: 0,
         };
     },
 
@@ -184,9 +190,7 @@ export default {
             this.groups[group.key] = group;
             this.order.push(group.key);
 
-            if (this.limitCounter > 0) {
-                this.limitCounter--;
-            }
+            this.groupCounter++;
         },
 
         /**
@@ -222,8 +226,8 @@ export default {
             this.order.splice(index, 1);
             delete this.groups[key];
 
-            if (this.limitCounter >= 0) {
-                this.limitCounter++;
+            if (this.groupCounter > 0) {
+                this.groupCounter--;
             }
         }
     }
