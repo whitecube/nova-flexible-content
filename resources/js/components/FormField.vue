@@ -71,6 +71,9 @@ export default {
         isAboveMinimum() {
             return this.groupCounter > (this.field.minimum || 0);
         },
+        groupCounter() {
+            return Object.keys(this.groups).length;
+        },
     },
 
     data() {
@@ -78,7 +81,6 @@ export default {
             order: [],
             groups: {},
             files: {},
-            groupCounter: 0,
         };
     },
 
@@ -187,10 +189,11 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.groups[group.key] = group;
+            this.groups = {
+                ...this.groups,
+                [group.key]: group,
+            };
             this.order.push(group.key);
-
-            this.groupCounter++;
         },
 
         /**
@@ -224,11 +227,10 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            delete this.groups[key];
-
-            if (this.groupCounter > 0) {
-                this.groupCounter--;
-            }
+            this.groups = {
+                ...this.groups,
+                [key]: undefined,
+            };
         }
     }
 }
