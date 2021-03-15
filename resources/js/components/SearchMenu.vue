@@ -1,7 +1,7 @@
 <template>
     <div class="w-3/5" v-if="layouts">
 
-        <div v-if="this.limitCounter != 0">
+        <div v-if="isBelowLimit">
             <div v-if="layouts.length === 1">
                 <button
                     dusk="toggle-layouts-dropdown-or-add-default"
@@ -38,7 +38,7 @@
     export default {
         components: {Multiselect},
 
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'isBelowLimit'],
 
         data() {
             return {

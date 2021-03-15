@@ -6,7 +6,6 @@
         :errors="errors"
         full-width-content>
         <template slot="field">
-
             <div
                 v-if="order.length > 0">
                 <form-nova-flexible-content-group
@@ -20,6 +19,8 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
+                    :is-above-minimum="isAboveMinimum"
+                    :is-orderable="isOrderable"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -30,7 +31,7 @@
                 :layouts="layouts"
                 :is="field.menu.component"
                 :field="field"
-                :limit-counter="limitCounter"
+                :is-below-limit="isBelowLimit"
                 :errors="errors"
                 :resource-name="resourceName"
                 :resource-id="resourceId"
@@ -64,7 +65,19 @@ export default {
                 groups.push(this.groups[key]);
                 return groups;
             }, []);
-        }
+        },
+        isBelowLimit() {
+            return this.groupCounter < (this.field.limit || Infinity);
+        },
+        isAboveMinimum() {
+            return this.groupCounter > (this.field.minimum || 0);
+        },
+        groupCounter() {
+            return Object.keys(this.groups).length;
+        },
+        isOrderable() {
+            return this.groupCounter > 1;
+        },
     },
 
     data() {
@@ -72,7 +85,6 @@ export default {
             order: [],
             groups: {},
             files: {},
-            limitCounter: this.field.limit
         };
     },
 
@@ -181,12 +193,11 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.groups[group.key] = group;
+            this.groups = {
+                ...this.groups,
+                [group.key]: group,
+            };
             this.order.push(group.key);
-
-            if (this.limitCounter > 0) {
-                this.limitCounter--;
-            }
         },
 
         /**
@@ -220,11 +231,11 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            delete this.groups[key];
 
-            if (this.limitCounter >= 0) {
-                this.limitCounter++;
-            }
+            const groups = { ...this.groups };
+            delete groups[key];
+
+            this.groups = groups;
         }
     }
 }

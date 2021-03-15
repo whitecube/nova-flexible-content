@@ -24,7 +24,7 @@
             tabindex="0"
             class="btn btn-default btn-primary inline-flex items-center relative"
             @click="toggleLayoutsDropdownOrAddDefault"
-            v-if="this.limitCounter != 0"
+            v-if="isBelowLimit"
         >
             <span>{{ field.button }}</span>
         </button>
@@ -34,7 +34,7 @@
 <script>
 
     export default {
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'isBelowLimit'],
 
         data() {
             return {
