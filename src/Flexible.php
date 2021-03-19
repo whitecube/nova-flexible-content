@@ -139,14 +139,16 @@ class Flexible extends Field
     /**
      * Set the field's resolver
      *
-     * @param string $classname
+     * @param mixed $resolver
      * @return $this
      */
-    public function resolver($classname)
+    public function resolver($resolver)
     {
-        $resolver = new $classname();
+        if(is_string($resolver) && is_a($resolver, ResolverInterface::class, true)) {
+            $resolver = new $resolver();
+        }
 
-        if (!($resolver instanceof ResolverInterface)) {
+        if(! ($resolver instanceof ResolverInterface)) {
             throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
         }
 
@@ -180,12 +182,12 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-
-        if (!($layout instanceof LayoutInterface)) {
+        
+        if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }
 
-        if (!($layout instanceof LayoutInterface)) {
+        if(! ($layout instanceof LayoutInterface)) {
             throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
         }
 
@@ -362,7 +364,7 @@ class Flexible extends Field
             $callbacks = array_merge($callbacks, $group->fill($scope));
 
             return $group;
-        });
+        })->filter();
 
         $this->fireRemoveCallbacks($new_groups);
 

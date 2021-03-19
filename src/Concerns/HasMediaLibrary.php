@@ -7,10 +7,13 @@ use Spatie\MediaLibrary\MediaCollections\MediaRepository;
 use Whitecube\NovaFlexibleContent\FileAdder\FileAdder;
 use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
 use Whitecube\NovaFlexibleContent\Flexible;
+use Spatie\MediaLibrary\Downloaders\DefaultDownloader;
 use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\InvalidUrl;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
@@ -53,6 +56,46 @@ trait HasMediaLibrary {
     }
 
     /**
+     * This is a slightly altered version of Spatie's addMediaFromUrl, tweaked
+     * based on the overridden addMedia method in this class.
+     *
+     * @param string $url
+     * 
+     * @param string|array<string> ...$allowedMimeTypes
+     */
+    public function addMediaFromUrl($url, ...$allowedMimeTypes): \Spatie\MediaLibrary\MediaCollections\FileAdder
+    {
+        if (!Str::startsWith($url, ['http://', 'https://'])) {
+            throw InvalidUrl::doesNotStartWithProtocol($url);
+        }
+
+        $downloader = config(
+            'media-library.media_downloader',
+            DefaultDownloader::class
+        );
+        $temporaryFile = (new $downloader())->getTempFile($url);
+        $this->guardAgainstInvalidMimeType($temporaryFile, $allowedMimeTypes);
+
+        $filename = basename(parse_url($url, PHP_URL_PATH));
+        $filename = urldecode($filename);
+
+        if ($filename === '') {
+            $filename = 'file';
+        }
+
+        $mediaExtension = explode('/', mime_content_type($temporaryFile));
+
+        if (!Str::contains($filename, '.')) {
+            $filename = "{$filename}.{$mediaExtension[1]}";
+        }
+
+        return app(FileAdderFactory::class)
+            ->create($this->getMediaModel(), $temporaryFile, $this->getSuffix())
+            ->usingName(pathinfo($filename, PATHINFO_FILENAME))
+            ->usingFileName($filename);
+    }
+    
+    /**
      * Get media collection by its collectionName.
      *
      * @param string $collectionName
@@ -85,7 +128,7 @@ trait HasMediaLibrary {
     public function resolveForDisplay(array $attributes = [])
     {
         $this->fields->each(function ($field) use ($attributes) {
-            if(is_subclass_of($field, Media::class)) {
+            if(is_a($field, Media::class)) {
                 $field->resolveForDisplay($this->getMediaModel(), $field->attribute . $this->getSuffix());
             } else {
                 $field->resolveForDisplay($attributes);
