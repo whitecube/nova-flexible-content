@@ -4,7 +4,8 @@
         :is="field.fullWidth ? 'full-width-field' : 'default-field'"
         :field="field"
         :errors="errors"
-        full-width-content>
+        full-width-content
+        :show-help-text="showHelpText">
         <template slot="field">
 
             <div
