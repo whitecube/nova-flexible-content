@@ -65,6 +65,14 @@ export default {
                 groups.push(this.groups[key]);
                 return groups;
             }, []);
+        },
+
+        limitCounter() {
+            if (this.field.limit === null) {
+                return null;
+            }
+
+            return this.field.limit - Object.keys(this.groups).length;
         }
     },
 
@@ -72,8 +80,7 @@ export default {
         return {
             order: [],
             groups: {},
-            files: {},
-            limitCounter: this.field.limit
+            files: {}
         };
     },
 
@@ -182,12 +189,8 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.groups[group.key] = group;
+            this.$set(this.groups, group.key, group);
             this.order.push(group.key);
-
-            if (this.limitCounter > 0) {
-                this.limitCounter--;
-            }
         },
 
         /**
@@ -221,11 +224,7 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            delete this.groups[key];
-
-            if (this.limitCounter >= 0) {
-                this.limitCounter++;
-            }
+            this.$delete(this.groups, key);
         }
     }
 }
