@@ -504,6 +504,11 @@ Feel free to suggest changes, ask for new features or fix bugs yourself. We're s
 
 Thanks!
 
+### Unit tests
+
+When adding a new feature or fixing a bug, please add corresponding unit tests. The current set of tests is limited, but every unit test added will improve the quality of the package.
+
+Run PHPUnit by calling `composer test`.
 
 ## Made with ❤️ for open source
 At [Whitecube](https://www.whitecube.be) we use a lot of open source software as part of our daily work.

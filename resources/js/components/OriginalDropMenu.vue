@@ -33,7 +33,7 @@
                 'btn-xs': addAtPosition
             }"
             @click="toggleLayoutsDropdownOrAddDefault"
-            v-if="this.limitCounter != 0"
+            v-if="this.limitCounter > 0"
         >
             <span>{{ field.button }}</span>
         </button>

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  tests:
+    name: PHPUnit
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        php: [7.2, 7.4, 8]
+        prefer: ['--prefer-lowest', '--prefer-stable']
+
+    steps:
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - uses: actions/checkout@v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: |
+          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+          composer update ${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest --ansi
+
+      - name: PHPUnit
+        run: composer test

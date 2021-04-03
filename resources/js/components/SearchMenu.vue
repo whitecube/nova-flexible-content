@@ -1,7 +1,7 @@
 <template>
     <div class="w-3/5" v-if="layouts">
 
-        <div v-if="this.limitCounter != 0">
+        <div v-if="this.limitCounter > 0">
             <div v-if="layouts.length === 1">
                 <button
                     dusk="toggle-layouts-dropdown-or-add-default"
