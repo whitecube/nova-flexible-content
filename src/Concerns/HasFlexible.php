@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
+use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
@@ -9,6 +10,32 @@ use Laravel\Nova\NovaServiceProvider;
 use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
 trait HasFlexible {
+
+    /**
+     * Get the layout mapping that should be used to cast Flexible field (also used to call removeCallback on nested layouts)
+     * Used by all nested layouts, identical keys are overrided
+     *
+     * @return array
+     */
+    public function layoutMapping(): array
+    {
+        return [];
+    }
+
+    /**
+     * Get final layout mapping using parent layouts properties, layout property and argument
+     *
+     * @param array $layoutMapping
+     * @return array
+     */
+    public function getMergedLayoutMapping(array $layoutMapping): array
+    {
+        $model = Flexible::getOriginModel() ?? $this instanceof Layout ? $this->model : null;
+
+        $parentLayoutMapping = $model && method_exists($model, 'getMergedLayoutMapping') ? $model->getMergedLayoutMapping([]) : [];
+
+        return array_merge($parentLayoutMapping, $this->layoutMapping(), $layoutMapping);
+    }
 
     /**
      * Parse a Flexible Content attribute
@@ -149,6 +176,8 @@ trait HasFlexible {
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {
+        $layoutMapping = $this->getMergedLayoutMapping($layoutMapping);
+
         $classname = array_key_exists($name, $layoutMapping)
             ? $layoutMapping[$name]
             : Layout::class;
