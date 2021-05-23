@@ -49,6 +49,10 @@ trait HasFlexible {
      */
     public function toFlexible($value, $layoutMapping = [])
     {
+        if (is_a($value, 'Whitecube\NovaFlexibleContent\Layouts\Collection')) {
+            return $value;
+        }
+        
         $flexible = $this->getFlexibleArrayFromValue($value);
 
         if(is_null($flexible)) {
