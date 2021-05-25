@@ -215,11 +215,11 @@ trait ParsesFlexibleAttributes
         }
     }
 
-    protected function isTranslatableAttribute(array $attribute): bool
+    protected function isTranslatableAttribute($attribute): bool
     {
         if (config()->has('nova-translatable.locales')) {
             foreach (array_keys(config('nova-translatable.locales')) as $locale) {
-                if (isset($attribute[$locale])) {
+                if (is_array($attribute) && isset($attribute[$locale])) {
                     return true;
                 }
             }
