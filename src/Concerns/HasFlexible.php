@@ -49,7 +49,7 @@ trait HasFlexible {
      */
     public function toFlexible($value, $layoutMapping = [])
     {
-        if (is_a($value, 'Whitecube\NovaFlexibleContent\Layouts\Collection')) {
+        if ($value instanceof Collection) {
             return $value;
         }
         
