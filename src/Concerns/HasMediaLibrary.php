@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 
 trait HasMediaLibrary {
 
@@ -26,12 +27,16 @@ trait HasMediaLibrary {
      *
      * @return \Spatie\MediaLibrary\HasMedia
      */
-    protected function getMediaModel() : HasMedia
+    public function getMediaModel() : HasMedia
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
         while ($model instanceof Layout) {
-          $model = $model->getMediaModel();
+            if(method_exists($model,'getMediaModel')) {
+                $model = $model->getMediaModel();
+            } else {
+                $model = $model->model;
+            }
         }
 
         if(is_null($model) || !($model instanceof HasMedia)) {
