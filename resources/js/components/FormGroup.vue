@@ -1,5 +1,5 @@
 <template>
-    <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
+    <div class="relative flex bg-white mb-4 pb-1 draggable" :id="group.key">
         <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
             <button
                 dusk="expand-group"
@@ -37,6 +37,7 @@
                         <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
                     </button>
                     <button
+                        v-if="group.canDelete"
                         dusk="delete-group"
                         type="button"
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"

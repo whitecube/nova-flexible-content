@@ -74,6 +74,9 @@ class Flexible extends Field
         // The original menu as default
         $this->menu('flexible-drop-menu');
 
+        $this->canAdd();
+        $this->canDelete();
+
         $this->hideFromIndex();
     }
 
@@ -137,6 +140,26 @@ class Flexible extends Field
     }
 
     /**
+     *  Prevent or permit the 'Add Layout' button from appearing
+     *
+     * @return $this
+     */
+    public function canAdd($value = true)
+    {
+        return $this->withMeta(['canAdd' => $value]);
+    }
+
+    /**
+     *  Prevent or permit the delete button from appearing
+     *
+     * @return $this
+     */
+    public function canDelete($value = true)
+    {
+        return $this->withMeta(['canDelete' => $value]);
+    }
+
+    /**
      * Set the field's resolver
      *
      * @param mixed $resolver
@@ -182,7 +205,7 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        
+
         if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }

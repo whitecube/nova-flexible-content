@@ -15,7 +15,6 @@
             :resource-id="resourceId"
             :resource="resource"
             :field="item"
-            :errors="validationErrors"
             :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
         />
     </div>

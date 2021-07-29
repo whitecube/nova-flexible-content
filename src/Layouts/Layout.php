@@ -222,7 +222,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $fields = $this->fields->map(function($field) {
             return $this->cloneField($field);
         });
-        
+
         $clone = new static(
             $this->title,
             $this->name,
@@ -254,7 +254,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $field;
     }
-    
+
     /**
      * Resolve fields using given attributes.
      *
