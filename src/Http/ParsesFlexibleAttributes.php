@@ -99,14 +99,12 @@ trait ParsesFlexibleAttributes
         foreach ($clean['attributes'] as $attribute => $value) {
             if ($this->isFlexibleAttribute($attribute, $value)) {
                 $clean['attributes'][$attribute] = $this->getParsedFlexibleValue($value);
-            } else {
-                if(is_string($value)) {
-                    $jsonDecoded = json_decode($value, true);
-                    if (json_last_error() == JSON_ERROR_NONE) {
-                        if ($this->isTranslatableAttribute($jsonDecoded)) {
-                            $clean['attributes'][$attribute] = $jsonDecoded;
-                        }
-                    }
+            } elseif(is_string($value)) {
+                $jsonDecoded = json_decode($value, true);
+                if (json_last_error() === JSON_ERROR_NONE &&
+                    $this->isTranslatableAttribute($jsonDecoded)
+                ) {
+                    $clean['attributes'][$attribute] = $jsonDecoded;
                 }
             }
         }
@@ -217,11 +215,17 @@ trait ParsesFlexibleAttributes
         }
     }
 
-    protected function isTranslatableAttribute($attribute): bool
+    /**
+     * Check if an attribute is a translatable
+     *
+     * @param array $attribute
+     * @return bool
+     */
+    protected function isTranslatableAttribute(array $attribute): bool
     {
         if (config()->has('nova-translatable.locales')) {
             foreach (array_keys(config('nova-translatable.locales')) as $locale) {
-                if (is_array($attribute) && isset($attribute[$locale])) {
+                if (isset($attribute[$locale])) {
                     return true;
                 }
             }
