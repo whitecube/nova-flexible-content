@@ -102,6 +102,7 @@ trait ParsesFlexibleAttributes
             } elseif(is_string($value)) {
                 $jsonDecoded = json_decode($value, true);
                 if (json_last_error() === JSON_ERROR_NONE &&
+                    is_array($jsonDecoded) &&
                     $this->isTranslatableAttribute($jsonDecoded)
                 ) {
                     $clean['attributes'][$attribute] = $jsonDecoded;
