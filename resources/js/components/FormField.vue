@@ -21,23 +21,29 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
+                    :total-count="order.length"
+                    :layouts="layouts"
+                    :limit-counter="limitCounter"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
                 />
             </div>
 
-            <component
-                :layouts="layouts"
-                :is="field.menu.component"
-                :field="field"
-                :limit-counter="limitCounter"
-                :errors="errors"
-                :resource-name="resourceName"
-                :resource-id="resourceId"
-                :resource="resource"
-                @addGroup="addGroup($event)"
-            />
+            <div>
+                <component
+                    :layouts="layouts"
+                    :is="field.menu.component"
+                    :field="field"
+                    :limit-counter="limitCounter"
+                    :errors="errors"
+                    :resource-name="resourceName"
+                    :resource-id="resourceId"
+                    :resource="resource"
+                    :addAtPosition="false"
+                    :index="order.length"
+                />
+            </div>
 
         </template>
     </component>
@@ -48,6 +54,7 @@
 import FullWidthField from './FullWidthField';
 import { FormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
+import { eventBus } from '../eventbus';
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -163,6 +170,7 @@ export default {
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
+                    i,
                     this.value[i].attributes,
                     this.value[i].key,
                     this.field.collapsed
@@ -179,9 +187,9 @@ export default {
         },
 
         /**
-         * Append the given layout to flexible content's list
+         * Add the given layout to flexible content's list at given position
          */
-        addGroup(layout, attributes, key, collapsed) {
+        addGroup(layout, position, attributes, key, collapsed) {
             if(!layout) return;
 
             collapsed = collapsed || false;
@@ -226,6 +234,11 @@ export default {
             this.order.splice(index, 1);
             this.$delete(this.groups, key);
         }
+    },
+    mounted() {
+        eventBus.$on('add-group-'+this.field.attribute, (layout, position) => {
+            this.addGroup(layout, position);
+        });
     }
 }
 </script>
