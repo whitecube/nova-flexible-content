@@ -79,6 +79,7 @@
                     :errors="errors"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
+                    @file-deleted="$emit('file-deleted')"
                 />
             </div>
         </div>
