@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\SupportsDependentFields;
@@ -78,6 +79,26 @@ class Flexible extends Field
         $this->menu('flexible-drop-menu');
 
         $this->hideFromIndex();
+    }
+
+    /**
+     * Get the field layouts
+     *
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     */
+    public function layouts()
+    {
+        return $this->layouts;
+    }
+
+    /**
+     * Get the field groups
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function groups()
+    {
+        return $this->groups;
     }
 
     /**
@@ -293,6 +314,34 @@ class Flexible extends Field
         });
 
         return parent::isShownOnDetail($request, $resource);
+    }
+
+    /**
+     * Correctly removes a file inside of a flexible layout.
+     *
+     * @param Laravel\Nova\Http\Requests\NovaRequest $request
+     * @param                                        $model
+     * @param mixed                                  $field
+     *
+     * @return bool
+     */
+    public static function deleteFile(NovaRequest $request, $model, $field)
+    {
+        $path = explode('.', $field->group->originalField);
+        $path[] = 'attributes';
+        $path[] = $field->attribute;
+
+        $mainField = array_shift($path);
+        $data = $model->{$mainField};
+        if (is_string($data)) {
+            $data = json_decode($data, true);
+        }
+
+        Arr::set($data, implode('.', $path), '');
+
+        return [
+            $mainField => json_encode($data),
+        ];
     }
 
     /**
