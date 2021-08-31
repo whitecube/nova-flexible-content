@@ -6,13 +6,12 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ScopedRequest extends NovaRequest
 {
-
     /**
-     * Create a copy of the given request, only containing the group's input
+     * Create a copy of the given request, only containing the group's input.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $from
-     * @param  array  $attributes
-     * @param  string  $group
+     * @param array  $attributes
+     * @param string $group
+     *
      * @return \Whitecube\NovaFlexibleContent\Http\ScopedRequest
      */
     public static function scopeFrom(NovaRequest $from, $attributes, $group)
@@ -21,16 +20,17 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Alter the request's input for given group key & attributes
+     * Alter the request's input for given group key & attributes.
      *
-     * @param  string  $group
-     * @param  array  $attributes
+     * @param string $group
+     * @param array  $attributes
+     *
      * @return $this
      */
     public function scopeInto($group, $attributes)
     {
         [$input, $files] = $this->getScopeState($group, $attributes);
-        
+
         $input['_method'] = $this->input('_method');
         $input['_retrieved_at'] = $this->input('_retrieved_at');
 
@@ -43,10 +43,11 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Get the target scope configuration array
+     * Get the target scope configuration array.
      *
-     * @param  string  $group
-     * @param  array  $attributes
+     * @param string $group
+     * @param array  $attributes
+     *
      * @return array
      */
     protected function getScopeState($group, $attributes)
@@ -58,15 +59,17 @@ class ScopedRequest extends NovaRequest
             $attribute = FlexibleAttribute::make($attribute, $group, is_array($value));
 
             // Sub-objects could contain files that need to be kept
-            if($attribute->isAggregate()) {
+            if ($attribute->isAggregate()) {
                 $files = array_merge($files, $this->getNestedFiles($value, $attribute->group));
                 $input[$attribute->name] = $value;
+
                 continue;
             }
 
             // Register Files
-            if($attribute->isFlexibleFile($value)) {
+            if ($attribute->isFlexibleFile($value)) {
                 $files[] = $attribute->getFlexibleFileAttribute($value);
+
                 continue;
             }
 
@@ -78,10 +81,11 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Get nested file attributes from given array
+     * Get nested file attributes from given array.
      *
-     * @param  array  $iterable
-     * @param  null|string  $group
+     * @param array       $iterable
+     * @param null|string $group
+     *
      * @return array
      */
     protected function getNestedFiles($iterable, $group = null)
@@ -90,14 +94,15 @@ class ScopedRequest extends NovaRequest
         $key = $this->isFlexibleStructure($iterable) ? $iterable['key'] : $group;
 
         foreach ($iterable as $original => $value) {
-            if(is_array($value)) {
+            if (is_array($value)) {
                 $files = array_merge($files, $this->getNestedFiles($value, $key));
+
                 continue;
             }
 
             $attribute = FlexibleAttribute::make($original, $group);
 
-            if(!$attribute->isFlexibleFile($value)) {
+            if (!$attribute->isFlexibleFile($value)) {
                 continue;
             }
 
@@ -108,12 +113,11 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Get all useful files from current files list
+     * Get all useful files from current files list.
      *
-     * @param  array  $files
-     * @param  array  $input
-     * @param  string  $group
-     * @return void
+     * @param array  $files
+     * @param array  $input
+     * @param string $group
      */
     protected function handleScopeFiles(&$files, &$input, $group)
     {
@@ -121,12 +125,13 @@ class ScopedRequest extends NovaRequest
         $scope = [];
 
         foreach ($this->getFlattenedFiles() as $attribute => $file) {
-            if(!($target = $attributes->get($attribute))) {
+            if (!($target = $attributes->get($attribute))) {
                 continue;
             }
 
-            if(!$target->group || $target->group !== $group) {
+            if (!$target->group || $target->group !== $group) {
                 $scope[$target->original] = $file;
+
                 continue;
             }
 
@@ -138,7 +143,9 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Get the request's files as a "flat" (1 dimension) array
+     * Get the request's files as a "flat" (1 dimension) array.
+     *
+     * @param null|mixed $iterable
      *
      * @return array
      */
@@ -149,8 +156,9 @@ class ScopedRequest extends NovaRequest
         foreach ($iterable ?? $this->files->all() as $key => $value) {
             $attribute = $original ? $original->nest($key) : FlexibleAttribute::make($key);
 
-            if(!is_array($value)) {
+            if (!is_array($value)) {
                 $files[$attribute->original] = $value;
+
                 continue;
             }
 
@@ -161,20 +169,21 @@ class ScopedRequest extends NovaRequest
     }
 
     /**
-     * Check if the given array represents a flexible group
+     * Check if the given array represents a flexible group.
      *
-     * @param  array  $iterable
+     * @param array $iterable
+     *
      * @return bool
      */
     protected function isFlexibleStructure($iterable)
     {
         $keys = array_keys($iterable);
 
-        if (count($keys) !== 3) {
+        if (3 !== count($keys)) {
             return false;
         }
-        
-        return  in_array('layout', $keys, true) 
+
+        return in_array('layout', $keys, true)
                 && in_array('key', $keys, true)
                 && in_array('attributes', $keys, true);
     }

@@ -29,7 +29,7 @@ class CreatePreset extends Command
     protected $description = 'Generate a new Flexible Content Field configuration Preset';
 
     /**
-     * The layout's classname
+     * The layout's classname.
      *
      * @var string
      */
@@ -37,8 +37,6 @@ class CreatePreset extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct(Filesystem $files)
     {
@@ -48,8 +46,6 @@ class CreatePreset extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -59,17 +55,17 @@ class CreatePreset extends Command
 
         $this->files->put($path, $this->buildClass());
 
-        $this->info('Created ' . $path);
+        $this->info('Created '.$path);
     }
 
     /**
-     * Get the classname
+     * Get the classname.
      *
      * @return string
      */
     public function getClassnameArgument()
     {
-        if(!$this->argument('classname')) {
+        if (!$this->argument('classname')) {
             return $this->ask('Please provide a class name for your preset');
         }
 
@@ -77,28 +73,29 @@ class CreatePreset extends Command
     }
 
     /**
-     * Build the preset's file path
+     * Build the preset's file path.
      *
      * @return string
      */
     protected function getPath()
     {
         return $this->makeDirectory(
-            app_path('Nova/Flexible/Presets/' . $this->classname . '.php')
+            app_path('Nova/Flexible/Presets/'.$this->classname.'.php')
         );
     }
 
     /**
-     * Create the directories if they do not exist yet
+     * Create the directories if they do not exist yet.
      *
      * @param string $path
+     *
      * @return string
      */
     protected function makeDirectory($path)
     {
         $directory = dirname($path);
 
-        if(!$this->files->isDirectory($directory)) {
+        if (!$this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true, true);
         }
 
@@ -106,7 +103,7 @@ class CreatePreset extends Command
     }
 
     /**
-     * Generate the file's content
+     * Generate the file's content.
      *
      * @return string
      */
@@ -115,8 +112,7 @@ class CreatePreset extends Command
         return str_replace(
             ':classname',
             $this->classname,
-            $this->files->get(__DIR__ . '/../Stubs/Preset.php')
+            $this->files->get(__DIR__.'/../Stubs/Preset.php')
         );
     }
-
 }

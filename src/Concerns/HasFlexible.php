@@ -2,19 +2,20 @@
 
 namespace Whitecube\NovaFlexibleContent\Concerns;
 
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
-use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
+use Whitecube\NovaFlexibleContent\Layouts\Collection;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
-trait HasFlexible {
-
+trait HasFlexible
+{
     /**
-     * Parse a Flexible Content attribute
+     * Parse a Flexible Content attribute.
      *
      * @param string $attribute
      * @param array  $layoutMapping
+     *
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function flexible($attribute, $layoutMapping = [])
@@ -25,15 +26,16 @@ trait HasFlexible {
     }
 
     /**
-     * Cast a Flexible Content value
+     * Cast a Flexible Content value.
      *
      * @param array $value
      * @param array $layoutMapping
+     *
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function cast($value, $layoutMapping = [])
     {
-        if(app()->getProvider(NovaServiceProvider::class) && !app()->environment('testing')) {
+        if (app()->getProvider(NovaServiceProvider::class) && !app()->environment('testing')) {
             return $value;
         }
 
@@ -41,17 +43,18 @@ trait HasFlexible {
     }
 
     /**
-     * Parse a Flexible Content from value
+     * Parse a Flexible Content from value.
      *
      * @param mixed $value
      * @param array $layoutMapping
+     *
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
     public function toFlexible($value, $layoutMapping = [])
     {
         $flexible = $this->getFlexibleArrayFromValue($value);
 
-        if(is_null($flexible)) {
+        if (is_null($flexible)) {
             return new Collection();
         }
 
@@ -61,23 +64,25 @@ trait HasFlexible {
     }
 
     /**
-     * Transform incoming value into an array of usable layouts
+     * Transform incoming value into an array of usable layouts.
      *
      * @param mixed $value
-     * @return array|null
+     *
+     * @return null|array
      */
     protected function getFlexibleArrayFromValue($value)
     {
-        if(is_string($value)) {
+        if (is_string($value)) {
             $value = json_decode($value);
+
             return is_array($value) ? $value : null;
         }
 
-        if(is_a($value, BaseCollection::class)) {
+        if (is_a($value, BaseCollection::class)) {
             return $value->toArray();
         }
 
-        if(is_array($value)) {
+        if (is_array($value)) {
             return $value;
         }
 
@@ -85,24 +90,22 @@ trait HasFlexible {
     }
 
     /**
-     * Map array with Flexible Content Layouts
+     * Map array with Flexible Content Layouts.
      *
-     * @param array $flexible
-     * @param array $layoutMapping
      * @return array
      */
     protected function getMappedFlexibleLayouts(array $flexible, array $layoutMapping)
     {
-        return array_map(function($item) use ($layoutMapping) {
+        return array_map(function ($item) use ($layoutMapping) {
             return $this->getMappedLayout($item, $layoutMapping);
         }, $flexible);
     }
 
     /**
-     * Transform given layout value into a usable Layout instance
+     * Transform given layout value into a usable Layout instance.
      *
      * @param mixed $item
-     * @param array $layoutMapping
+     *
      * @return null|Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function getMappedLayout($item, array $layoutMapping)
@@ -111,27 +114,25 @@ trait HasFlexible {
         $key = null;
         $attributes = [];
 
-        if(is_string($item)) {
+        if (is_string($item)) {
             $item = json_decode($item);
         }
 
-        if(is_array($item)) {
+        if (is_array($item)) {
             $name = $item['layout'] ?? null;
             $key = $item['key'] ?? null;
             $attributes = (array) $item['attributes'] ?? [];
-        }
-        elseif(is_a($item, \stdClass::class)) {
+        } elseif (is_a($item, \stdClass::class)) {
             $name = $item->layout ?? null;
             $key = $item->key ?? null;
             $attributes = (array) ($item->attributes ?? []);
-        }
-        elseif(is_a($item, Layout::class)) {
+        } elseif (is_a($item, Layout::class)) {
             $name = $item->name();
             $key = $item->key();
             $attributes = $item->getAttributes();
         }
 
-        if(is_null($name)) {
+        if (is_null($name)) {
             return;
         }
 
@@ -139,12 +140,12 @@ trait HasFlexible {
     }
 
     /**
-     * Transform given layout value into a usable Layout instance
+     * Transform given layout value into a usable Layout instance.
      *
      * @param string $name
      * @param string $key
      * @param array  $attributes
-     * @param array  $layoutMapping
+     *
      * @return \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
@@ -163,5 +164,4 @@ trait HasFlexible {
 
         return $layout;
     }
-
 }
