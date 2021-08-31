@@ -122,6 +122,16 @@ class Flexible extends Field
     }
 
     /**
+     *  Prevent the 'Add Layout' button from appearing more than once
+     *
+     * @return $this
+     */
+    public function limitPerLayout($limit = 1)
+    {
+        return $this->withMeta(['limitPerLayout' => $limit]);
+    }
+
+    /**
      * Confirm remove
      *
      * @return $this

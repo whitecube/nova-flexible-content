@@ -6,7 +6,7 @@
             >
                 <div>
                     <ul class="list-reset">
-                        <li v-for="layout in layouts" class="border-b border-40">
+                        <li v-for="layout in layouts" v-if="limitPerLayoutCounter[layout.name] > 0" class="border-b border-40">
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
@@ -24,7 +24,7 @@
             tabindex="0"
             class="btn btn-default btn-primary inline-flex items-center relative"
             @click="toggleLayoutsDropdownOrAddDefault"
-            v-if="this.limitCounter > 0"
+            v-if="this.limitCounter > 0 || this.limitCounter === null"
         >
             <span>{{ field.button }}</span>
         </button>
@@ -34,7 +34,7 @@
 <script>
 
     export default {
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
         data() {
             return {

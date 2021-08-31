@@ -81,10 +81,20 @@ Flexible::make('Content')
 
 #### Limiting layouts
 
+##### Limiting total layouts
 You can limit how many times the "Add Layout" button will appear by doing the following:
 
 ```php
 Flexible::make('Content')->limit(2);
+```
+
+You can specify any integer, or no integer at all; in that case it will default to 1.
+
+##### Limiting layouts per type
+You can limit how many times the "Add Layout" button will appear for a specific type by doing the following:
+
+```php
+Flexible::make('Content')->limitPerLayout(2);
 ```
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
