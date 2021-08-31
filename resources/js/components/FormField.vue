@@ -69,7 +69,7 @@ export default {
         },
 
         limitCounter() {
-            if (this.field.limit === null) {
+            if (this.field.limit === undefined || this.field.limit === null) {
                 return null;
             }
 
