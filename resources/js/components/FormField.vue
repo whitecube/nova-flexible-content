@@ -82,14 +82,12 @@ export default {
         },
 
         limitPerLayoutCounter() {
-            if (this.field.limitPerLayout === null || typeof(this.field.limitPerLayout) == "undefined") {
-                return null;
-            }
-
             let count = {};
-            this.layouts.forEach(layout => count[layout.name] = this.field.limitPerLayout)
+            this.layouts.forEach(layout => count[layout.name] = layout.limit)
             if (Object.keys(this.groups).length > 0) {
-                Object.entries(this.groups).forEach(group => count[group[1].name]--);
+                Object.entries(this.groups).forEach(
+                    group => count[group[1].name] === null ? null : count[group[1].name]--
+                );
             }
 
             return count;

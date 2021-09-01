@@ -6,7 +6,7 @@
             >
                 <div>
                     <ul class="list-reset">
-                        <li v-for="layout in layouts" v-if="limitPerLayoutCounter[layout.name] > 0" class="border-b border-40">
+                        <li v-for="layout in layouts" v-if="limitPerLayoutCounter[layout.name] === null || limitPerLayoutCounter[layout.name] > 0" class="border-b border-40">
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
