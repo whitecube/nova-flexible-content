@@ -81,20 +81,10 @@ Flexible::make('Content')
 
 #### Limiting layouts
 
-##### Limiting total layouts
 You can limit how many times the "Add Layout" button will appear by doing the following:
 
 ```php
 Flexible::make('Content')->limit(2);
-```
-
-You can specify any integer, or no integer at all; in that case it will default to 1.
-
-##### Limiting layouts per type
-You can limit how many times the "Add Layout" button will appear for a specific type by doing the following:
-
-```php
-Flexible::make('Content')->limitPerLayout(2);
 ```
 
 You can specify any integer, or no integer at all; in that case it will default to 1.
@@ -314,6 +304,17 @@ Flexible::make('Content')
     ->addLayout(\App\Nova\Flexible\Layouts\SimpleWysiwygLayout::class);
 ```
 
+#### Limiting layouts per type
+You can limit how many times the "Add Layout" button will appear for a specific type in a custom Layout class by setting the `$limit` attribute.
+
+```php
+/**
+ * The maximum amount of this layout type that can be added
+ */
+protected $limit = 1;
+```
+
+You can specify any integer, or no integer at all; in that case it will default to 1.
 
 You can create these Layout classes easily with the following artisan command
 ```
