@@ -198,6 +198,8 @@ class FlexibleAttribute
      */
     public function setDataIn(&$attributes, $value)
     {
+        $value = is_string($value) && $value === '' ? null : $value;
+        
         if(!$this->isAggregate()) {
             $attributes[$this->name] = $value;
             return $attributes;
