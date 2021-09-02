@@ -33,7 +33,7 @@ trait HasFlexible {
      */
     public function cast($value, $layoutMapping = [])
     {
-        if(app()->getProvider(NovaServiceProvider::class) && !app()->environment('testing')) {
+        if(app()->getProvider(NovaServiceProvider::class) && !app()->runningInConsole() && !app()->environment('testing')) {
             return $value;
         }
 
