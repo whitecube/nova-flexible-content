@@ -76,6 +76,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected $removeCallbackMethod;
 
+    /**
+     * The maximum amount of this layout type that can be added
+     * Can be set in custom layouts
+     */
+    protected $limit;
 
     /**
      * The parent model instance
@@ -91,6 +96,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param string $name
      * @param array $fields
      * @param string $key
+     * @param array $attributes
+     * @param callable|null $removeCallbackMethod
+     * @param int|null $limit
      * @return void
      */
     public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
@@ -228,7 +236,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             $this->name,
             $fields,
             $key,
-            $attributes
+            $attributes,
+            $this->removeCallbackMethod,
+            $this->limit
         );
         if (!is_null($this->model)) {
             $clone->setModel($this->model);
@@ -587,7 +597,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return [
             'name' => $this->name,
             'title' => $this->title,
-            'fields' => $this->fields->jsonSerialize()
+            'fields' => $this->fields->jsonSerialize(),
+            'limit' => $this->limit,
         ];
     }
 

@@ -1,7 +1,7 @@
 <template>
     <div class="w-3/5" v-if="layouts">
 
-        <div v-if="this.limitCounter > 0">
+        <div v-if="this.limitCounter > 0 || this.limitCounter === null">
             <div v-if="layouts.length === 1">
                 <button
                     dusk="toggle-layouts-dropdown-or-add-default"
@@ -17,7 +17,7 @@
                 <div style="min-width: 300px;">
                     <div class="flexible-search-menu-multiselect">
                         <multiselect
-                            v-model="selectedLayout" :options="layouts"
+                            v-model="selectedLayout" :options="availableLayouts"
                              :custom-label="renderLayoutName"
                              :placeholder="field.button"
                              @input="selectLayout"
@@ -38,7 +38,7 @@
     export default {
         components: {Multiselect},
 
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter'],
+        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
         data() {
             return {
@@ -54,7 +54,10 @@
                     label: this.field.menu.data.label || 'title',
                     openDirection: this.field.menu.data.openDirection || 'bottom',
                 }
-            }
+            },
+            availableLayouts() {
+                return this.layouts.filter(layout => this.limitPerLayoutCounter[layout.name] > 0);
+            },
         },
 
         methods: {

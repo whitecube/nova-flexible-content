@@ -167,18 +167,9 @@ class Flexible extends Field
     {
         $count = count($arguments);
 
-        if($count === 3) {
-            $this->registerLayout(new Layout($arguments[0], $arguments[1], $arguments[2]));
+        if($count > 1) {
+            $this->registerLayout(new Layout(...$arguments));
             return $this;
-        }
-
-        if($count === 6) {
-            $this->registerLayout(new Layout($arguments[0], $arguments[1], $arguments[2], $arguments[3], $arguments[4], $arguments[5]));
-            return $this;
-        }
-
-        if($count !== 1) {
-            throw new \Exception('Invalid "addLayout" method call. Expected 1 or 3 arguments, ' . $count . ' given.');
         }
 
         $layout = $arguments[0];
