@@ -77,6 +77,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $removeCallbackMethod;
 
     /**
+     * The maximum amount of this layout type that can be added
+     * Can be set in custom layouts.
+     */
+    protected $limit;
+
+    /**
      * The parent model instance.
      *
      * @var Illuminate\Database\Eloquent\Model
@@ -86,11 +92,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Create a new base Layout instance.
      *
-     * @param string $title
-     * @param string $name
-     * @param array  $fields
-     * @param string $key
-     * @param mixed  $attributes
+     * @param string   $title
+     * @param string   $name
+     * @param array    $fields
+     * @param string   $key
+     * @param array    $attributes
+     * @param null|int $limit
      */
     public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
     {
@@ -285,7 +292,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             $this->name,
             $fields,
             $key,
-            $attributes
+            $attributes,
+            $this->removeCallbackMethod,
+            $this->limit
         );
         if (!is_null($this->model)) {
             $clone->setModel($this->model);
@@ -614,7 +623,15 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected function relationLoaded()
     {
-        return false;
+        // Calling an empty "resolve" first in order to empty all fields
+        $this->resolve(true);
+
+        return [
+            'name' => $this->name,
+            'title' => $this->title,
+            'fields' => $this->fields->jsonSerialize(),
+            'limit' => $this->limit,
+        ];
     }
 
     /**
