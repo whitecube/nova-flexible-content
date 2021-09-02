@@ -33,6 +33,7 @@
                 :is="field.menu.component"
                 :field="field"
                 :limit-counter="limitCounter"
+                :limit-per-layout-counter="limitPerLayoutCounter"
                 :errors="errors"
                 :resource-name="resourceName"
                 :resource-id="resourceId"
@@ -69,12 +70,29 @@ export default {
         },
 
         limitCounter() {
-            if (this.field.limit === undefined || this.field.limit === null) {
-                return null;
+            if (this.field.limit === null || typeof(this.field.limit) == "undefined") {
+              return null;
+            }
+
+            // if all layouts reached their limitPerLayout, remove the "Add" button
+            if (Object.values(this.limitPerLayoutCounter).reduce((a, b) => a + b, 0) <= 0) {
+                return 0;
             }
 
             return this.field.limit - Object.keys(this.groups).length;
-        }
+        },
+
+        limitPerLayoutCounter() {
+            let count = {};
+            this.layouts.forEach(layout => count[layout.name] = layout.limit)
+            if (Object.keys(this.groups).length > 0) {
+                Object.entries(this.groups).forEach(
+                    group => count[group[1].name] === null ? null : count[group[1].name]--
+                );
+            }
+
+            return count;
+        },
     },
 
     data() {
