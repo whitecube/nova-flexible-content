@@ -62,6 +62,7 @@
                 if (!layout) return;
 
                 this.$emit('addGroup', layout);
+                Nova.$emit('nova-flexible-content-add-group', layout);
 
                 this.isLayoutsDropdownOpen = false;
             },
