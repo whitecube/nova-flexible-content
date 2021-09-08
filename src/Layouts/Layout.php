@@ -494,6 +494,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'name' => $this->name,
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize(),
+            'limit' => $this->limit,
         ];
     }
 
@@ -623,15 +624,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected function relationLoaded()
     {
-        // Calling an empty "resolve" first in order to empty all fields
-        $this->resolve(true);
-
-        return [
-            'name' => $this->name,
-            'title' => $this->title,
-            'fields' => $this->fields->jsonSerialize(),
-            'limit' => $this->limit,
-        ];
+        return false;
     }
 
     /**
