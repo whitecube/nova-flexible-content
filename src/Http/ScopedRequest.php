@@ -6,6 +6,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ScopedRequest extends NovaRequest
 {
+    protected $fileAttributes;
 
     /**
      * Create a copy of the given request, only containing the group's input
@@ -30,7 +31,7 @@ class ScopedRequest extends NovaRequest
     public function scopeInto($group, $attributes)
     {
         [$input, $files] = $this->getScopeState($group, $attributes);
-        
+
         $input['_method'] = $this->input('_method');
         $input['_retrieved_at'] = $this->input('_retrieved_at');
 
@@ -118,6 +119,9 @@ class ScopedRequest extends NovaRequest
     protected function handleScopeFiles(&$files, &$input, $group)
     {
         $attributes = collect($files)->keyBy('original');
+        $this->fileAttributes = $attributes->mapWithKeys(function ($attribute, $key) {
+            return [$attribute->name => $key];
+        });
         $scope = [];
 
         foreach ($this->getFlattenedFiles() as $attribute => $file) {
@@ -177,5 +181,15 @@ class ScopedRequest extends NovaRequest
         return  in_array('layout', $keys, true) 
                 && in_array('key', $keys, true)
                 && in_array('attributes', $keys, true);
+    }
+
+    public function isFileAttribute($name)
+    {
+        return $this->fileAttributes->has($name);
+    }
+
+    public function getFileAttribute($name)
+    {
+        return $this->fileAttributes->get($name);
     }
 }
