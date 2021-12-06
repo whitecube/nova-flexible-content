@@ -1,7 +1,8 @@
 <template>
     <div class="z-20 relative" v-if="layouts">
         <div class="relative" v-if="layouts.length > 1">
-            <div v-if="isLayoutsDropdownOpen"
+            <div v-if="isLayoutsDropdownOpen" 
+                 ref="dropdown"
                  class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
             >
                 <div>
@@ -53,6 +54,18 @@
                 }
 
                 this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+                
+                this.$nextTick(() => {
+                    if (this.isLayoutsDropdownOpen) {
+                        const { top, height } = this.$refs.dropdown.getBoundingClientRect();
+                        // If element's y position is outside the screen, 
+                        // update the element's height so it fits the window.
+                        if (top < 0) {
+                            // Note that `top` is negative, so this addition is actually subtraction!
+                            this.$refs.dropdown.style.height = `${height + top}px`;
+                        }
+                    }
+                });
             },
 
             /**
