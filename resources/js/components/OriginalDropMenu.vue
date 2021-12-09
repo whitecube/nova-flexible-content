@@ -3,7 +3,8 @@
         <div class="relative" v-if="layouts.length > 1">
             <div v-if="isLayoutsDropdownOpen" 
                  ref="dropdown"
-                 class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                 class="absolute rounded-lg shadow-lg max-w-full max-h-search overflow-y-auto border border-40"
+                 v-bind:class="dropdownClasses"
             >
                 <div>
                     <ul class="list-reset">
@@ -23,6 +24,7 @@
             dusk="toggle-layouts-dropdown-or-add-default"
             type="button"
             tabindex="0"
+            ref="dropdownButton"
             class="btn btn-default btn-primary inline-flex items-center relative"
             @click="toggleLayoutsDropdownOrAddDefault"
             v-if="this.limitCounter > 0 || this.limitCounter === null"
@@ -39,8 +41,19 @@
 
         data() {
             return {
-                isLayoutsDropdownOpen: false
+                isLayoutsDropdownOpen: false,
+                dropdownOrientation: "top",
             };
+        },
+
+        computed: {
+            dropdownClasses() {
+                return {
+                    "pin-b": this.dropdownOrientation === "top",
+                    "mb-3": this.dropdownOrientation === "top",
+                    "mt-3": this.dropdownOrientation === "bottom",
+                };
+            }
         },
 
         methods: {
@@ -57,13 +70,17 @@
                 
                 this.$nextTick(() => {
                     if (this.isLayoutsDropdownOpen) {
-                        const { top, height } = this.$refs.dropdown.getBoundingClientRect();
-                        // If element's y position is outside the screen, 
-                        // update the element's height so it fits the window.
-                        if (top < 0) {
-                            // Note that `top` is negative, so this addition is actually subtraction!
-                            this.$refs.dropdown.style.height = `${height + top}px`;
+                        const { top: dropdownTop } = this.$refs.dropdown.getBoundingClientRect();
+                        const { height: buttonHeight } = this.$refs.dropdownButton.getBoundingClientRect();
+                        // If the dropdown is popping out of the screen at the top,
+                        // move it to the bottom.
+                        if (dropdownTop < 0) {
+                            this.dropdownOrientation = "bottom";
+                            this.$refs.dropdown.style.top = `${buttonHeight}px`;
                         }
+                    } else {
+                        // Reset the orientation.
+                        this.dropdownOrientation = "top";
                     }
                 });
             },
@@ -78,6 +95,8 @@
                 Nova.$emit('nova-flexible-content-add-group', layout);
 
                 this.isLayoutsDropdownOpen = false;
+                // Reset the orientation.
+                this.dropdownOrientation = "top";
             },
         }
     }
