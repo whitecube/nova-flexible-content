@@ -207,19 +207,6 @@ class Flexible extends Field
         return $this;
     }
 
-    /**
-     * Apply a field configuration preset
-     *
-     * @param mixed $preset
-     * @return $this
-     */
-    public function presetClass($preset)
-    {
-        $preset->handle($this);
-
-        return $this;
-    }
-
     public function collapsed(bool $value = true)
     {
         $this->withMeta(['collapsed' => $value]);
