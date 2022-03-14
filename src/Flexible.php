@@ -173,7 +173,7 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        
+
         if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }
@@ -198,6 +198,19 @@ class Flexible extends Field
     {
         $preset = resolve($classname, $params);
 
+        $preset->handle($this);
+
+        return $this;
+    }
+
+    /**
+     * Apply a field configuration preset
+     *
+     * @param mixed $preset
+     * @return $this
+     */
+    public function presetClass($preset)
+    {
         $preset->handle($this);
 
         return $this;
