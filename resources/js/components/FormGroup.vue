@@ -128,6 +128,7 @@ export default {
          */
         moveUp() {
             this.$emit('move-up');
+            Nova.$emit('nova-flexible-content-move-up');
         },
 
         /**
@@ -135,6 +136,7 @@ export default {
          */
         moveDown() {
             this.$emit('move-down');
+            Nova.$emit('nova-flexible-content-move-down');
         },
 
         /**
@@ -142,6 +144,7 @@ export default {
          */
         remove() {
             this.$emit('remove');
+            Nova.$emit('nova-flexible-content-remove');
         },
 
         /**
