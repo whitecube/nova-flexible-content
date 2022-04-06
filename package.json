@@ -9,20 +9,15 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "axios": "^0.21.1",
-        "cross-env": "^5.0.0",
+        "@vue/compiler-sfc": "^3.2.22",
         "laravel-mix": "^6.0",
-        "laravel-nova": "^1.0",
         "postcss": "^8.2",
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.32.8",
         "sass-loader": "10.*",
-        "vue-loader": "^15.9.5",
-        "vue-template-compiler": "^2.5.0",
-        "webpack-dev-server": "^3.1.11"
+        "webpack-dev-server": "^4.8.1"
     },
     "dependencies": {
-        "vue": "^2.5.0",
-        "vue-multiselect": "^2.1.6"
+        "@vueform/multiselect": "^2.3.3"
     }
 }
