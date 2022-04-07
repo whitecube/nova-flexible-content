@@ -1154,11 +1154,11 @@ __webpack_require__.r(__webpack_exports__);
 
 var _hoisted_1 = {
   key: 0,
-  "class": "z-20 relative"
+  "class": "relative"
 };
 var _hoisted_2 = {
   key: 0,
-  "class": "relative"
+  "class": "z-20 relative"
 };
 var _hoisted_3 = {
   key: 0,
@@ -1183,7 +1183,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: function onClick($event) {
         return $options.addGroup(layout);
       },
-      "class": "cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20"
+      "class": "cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-900 block py-2 px-3 no-underline font-normal bg-white dark:bg-gray-800"
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(layout.title), 1
     /* TEXT */
     )])], 8

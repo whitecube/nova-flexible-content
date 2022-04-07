@@ -1,6 +1,6 @@
 <template>
-    <div class="z-20 relative" v-if="layouts">
-        <div class="relative" v-if="layouts.length > 1">
+    <div class="relative" v-if="layouts">
+        <div class="z-20 relative" v-if="layouts.length > 1">
             <div v-if="isLayoutsDropdownOpen"
                  class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-gray-100 dark:border-gray-700 "
             >
@@ -10,7 +10,7 @@
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
-                                class="cursor-pointer flex items-center hover:bg-30 block py-2 px-3 no-underline font-normal bg-20">
+                                class="cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-900 block py-2 px-3 no-underline font-normal bg-white dark:bg-gray-800">
                                 <div><p class="text-90">{{ layout.title }}</p></div>
                             </a>
                         </li>
