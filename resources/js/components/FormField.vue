@@ -1,16 +1,16 @@
 <template>
     <component
         :dusk="field.attribute"
-        :is="field.fullWidth ? 'full-width-field' : 'default-field'"
+        :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
         :field="field"
         :errors="errors"
         full-width-content
         :show-help-text="showHelpText">
-        <template slot="field">
+        <template #field>
 
             <div
                 v-if="order.length > 0">
-                <form-nova-flexible-content-group
+                <FormNovaFlexibleContentGroup
                     v-for="(group, index) in orderedGroups"
                     :dusk="field.attribute + '-' + index"
                     :key="group.key"
@@ -207,7 +207,7 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.$set(this.groups, group.key, group);
+            this.groups[group.key] = group;
             this.order.push(group.key);
         },
 

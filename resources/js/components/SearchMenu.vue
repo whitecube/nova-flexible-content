@@ -16,14 +16,14 @@
             <div v-if="layouts.length > 1">
                 <div style="min-width: 300px;">
                     <div class="flexible-search-menu-multiselect">
-                        <multiselect
+                        <Multiselect
                             v-model="selectedLayout" :options="availableLayouts"
                              :custom-label="renderLayoutName"
                              :placeholder="field.button"
                              @input="selectLayout"
                              v-bind="attributes"
                              track-by="name"
-                        ></multiselect>
+                        ></Multiselect>
                     </div>
                 </div>
             </div>
@@ -32,12 +32,7 @@
 </template>
 
 <script>
-
-    import Multiselect from 'vue-multiselect'
-
     export default {
-        components: {Multiselect},
-
         props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
         data() {

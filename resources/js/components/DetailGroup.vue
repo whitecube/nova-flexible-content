@@ -10,7 +10,7 @@
         <component
             v-for="(item, index) in group.fields"
             :key="index"
-            :is="'detail-' + item.component"
+            :is="'Detail' + item.component"
             :resource-name="resourceName"
             :resource-id="resourceId"
             :resource="resource"

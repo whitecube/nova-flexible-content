@@ -6,7 +6,7 @@
             >
                 <div>
                     <ul class="list-reset">
-                        <li v-for="layout in layouts" v-if="limitPerLayoutCounter[layout.name] === null || limitPerLayoutCounter[layout.name] > 0" class="border-b border-40">
+                        <li v-for="layout in filteredLayouts" class="border-b border-40">
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
@@ -40,6 +40,16 @@
             return {
                 isLayoutsDropdownOpen: false
             };
+        },
+
+        computed: {
+
+            filteredLayouts() {
+                return this.layouts.filter((layout) => {
+                    return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
+                })
+            },
+
         },
 
         methods: {

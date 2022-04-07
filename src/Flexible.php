@@ -20,7 +20,7 @@ class Flexible extends Field
      *
      * @var string
      */
-    public $component = 'nova-flexible-content';
+    public $component = 'NovaFlexibleContent';
 
     /**
      * The available layouts collection

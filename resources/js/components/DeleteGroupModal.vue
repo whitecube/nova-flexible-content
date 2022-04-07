@@ -1,8 +1,7 @@
 <template>
-    <modal @modal-close="handleClose">
+    <Modal @modal-close="handleClose">
         <form
             @submit.prevent="handleConfirm"
-            slot-scope="props"
             class="bg-white rounded-lg shadow-lg overflow-hidden"
             style="width: 460px"
         >
@@ -42,7 +41,7 @@
                 </div>
             </div>
         </form>
-    </modal>
+    </Modal>
 </template>
 
 <script>
