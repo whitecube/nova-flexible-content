@@ -9,6 +9,6 @@ Nova.booting((Vue) => {
     Vue.component('delete-flexible-content-group-modal', require('./components/DeleteGroupModal.vue').default)
     Vue.component('icon-arrow-down', require('./components/icons/ArrowDown.vue').default)
     Vue.component('icon-arrow-up', require('./components/icons/ArrowUp.vue').default)
-    Vue.component('icon-arrow-square', require('./components/icons/PlusSquare.vue').default)
-    Vue.component('icon-minus-squre', require('./components/icons/MinusSquare.vue').default)
+    Vue.component('icon-plus-square', require('./components/icons/PlusSquare.vue').default)
+    Vue.component('icon-minus-square', require('./components/icons/MinusSquare.vue').default)
 })

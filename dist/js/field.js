@@ -1383,8 +1383,8 @@ Nova.booting(function (Vue) {
   Vue.component('delete-flexible-content-group-modal', (__webpack_require__(/*! ./components/DeleteGroupModal.vue */ "./resources/js/components/DeleteGroupModal.vue")["default"]));
   Vue.component('icon-arrow-down', (__webpack_require__(/*! ./components/icons/ArrowDown.vue */ "./resources/js/components/icons/ArrowDown.vue")["default"]));
   Vue.component('icon-arrow-up', (__webpack_require__(/*! ./components/icons/ArrowUp.vue */ "./resources/js/components/icons/ArrowUp.vue")["default"]));
-  Vue.component('icon-arrow-square', (__webpack_require__(/*! ./components/icons/PlusSquare.vue */ "./resources/js/components/icons/PlusSquare.vue")["default"]));
-  Vue.component('icon-minus-squre', (__webpack_require__(/*! ./components/icons/MinusSquare.vue */ "./resources/js/components/icons/MinusSquare.vue")["default"]));
+  Vue.component('icon-plus-square', (__webpack_require__(/*! ./components/icons/PlusSquare.vue */ "./resources/js/components/icons/PlusSquare.vue")["default"]));
+  Vue.component('icon-minus-square', (__webpack_require__(/*! ./components/icons/MinusSquare.vue */ "./resources/js/components/icons/MinusSquare.vue")["default"]));
 });
 
 /***/ }),
