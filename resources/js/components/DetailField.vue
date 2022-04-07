@@ -1,8 +1,8 @@
 <template>
     <PanelItem :field="field">
-        <template slot="value">
+        <template #value>
             <div v-for="(group, index) in groups">
-                <DetailNovaFlexibleContentGroup
+                <detail-nova-flexible-content-group
                     :index="index"
                     :last="(index === groups.length - 1)"
                     :group="group"

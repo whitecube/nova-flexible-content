@@ -10,12 +10,12 @@
         <component
             v-for="(item, index) in group.fields"
             :key="index"
-            :is="'Detail' + item.component"
+            :is="'detail-' + item.component"
             :resource-name="resourceName"
             :resource-id="resourceId"
             :resource="resource"
             :field="item"
-            :errors="validationErrors"
+            :validation-errors="null"
             :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
         />
     </div>

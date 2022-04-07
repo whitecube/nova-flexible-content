@@ -10,7 +10,7 @@
 
             <div
                 v-if="order.length > 0">
-                <FormNovaFlexibleContentGroup
+                <form-nova-flexible-content-group
                     v-for="(group, index) in orderedGroups"
                     :dusk="field.attribute + '-' + index"
                     :key="group.key"

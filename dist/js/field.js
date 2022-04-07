@@ -698,20 +698,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 
-var _hoisted_1 = {
-  slot: "value"
-};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_DetailNovaFlexibleContentGroup = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DetailNovaFlexibleContentGroup");
+  var _component_detail_nova_flexible_content_group = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("detail-nova-flexible-content-group");
 
   var _component_PanelItem = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("PanelItem");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_PanelItem, {
     field: $props.field
   }, {
-    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("template", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.groups, function (group, index) {
-        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_DetailNovaFlexibleContentGroup, {
+    value: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.groups, function (group, index) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_detail_nova_flexible_content_group, {
           index: index,
           last: index === $options.groups.length - 1,
           group: group,
@@ -723,7 +720,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         , ["index", "last", "group", "resource", "resourceName", "resourceId"])]);
       }), 256
       /* UNKEYED_FRAGMENT */
-      ))])];
+      ))];
     }),
     _: 1
     /* STABLE */
@@ -778,19 +775,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )], 2
   /* CLASS */
   )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.group.fields, function (item, index) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)('Detail' + item.component), {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)('detail-' + item.component), {
       key: index,
       "resource-name": $props.resourceName,
       "resource-id": $props.resourceId,
       resource: $props.resource,
       field: item,
-      errors: _ctx.validationErrors,
+      "validation-errors": null,
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
         'remove-bottom-border': index == $props.group.fields.length - 1
       })
     }, null, 8
     /* PROPS */
-    , ["resource-name", "resource-id", "resource", "field", "errors", "class"]);
+    , ["resource-name", "resource-id", "resource", "field", "class"]);
   }), 128
   /* KEYED_FRAGMENT */
   ))], 2
@@ -818,7 +815,7 @@ var _hoisted_1 = {
   key: 0
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_FormNovaFlexibleContentGroup = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("FormNovaFlexibleContentGroup");
+  var _component_form_nova_flexible_content_group = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("form-nova-flexible-content-group");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)($props.field.fullWidth ? 'FullWidthField' : 'default-field'), {
     dusk: $props.field.attribute,
@@ -829,7 +826,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, {
     field: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [$data.order.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.orderedGroups, function (group, index) {
-        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_FormNovaFlexibleContentGroup, {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_form_nova_flexible_content_group, {
           dusk: $props.field.attribute + '-' + index,
           key: group.key,
           field: $props.field,
@@ -918,9 +915,9 @@ var _hoisted_12 = {
   "class": "mr-4 font-semibold"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_Icon = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Icon");
+  var _component_icon = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("icon");
 
-  var _component_DeleteFlexibleContentGroupModal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("DeleteFlexibleContentGroupModal");
+  var _component_delete_flexible_content_group_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("delete-flexible-content-group-modal");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     "class": "relative flex bg-white mb-4 pb-1",
@@ -934,8 +931,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.expand && $options.expand.apply($options, arguments);
     }, ["prevent"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Icon, {
-    "class": "AlignTop",
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_icon, {
+    "class": "align-top",
     type: "plus-square",
     width: "16",
     height: "16",
@@ -950,8 +947,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.collapse && $options.collapse.apply($options, arguments);
     }, ["prevent"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Icon, {
-    "class": "AlignTop",
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_icon, {
+    "class": "align-top",
     type: "minus-square",
     width: "16",
     height: "16",
@@ -966,8 +963,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.moveUp && $options.moveUp.apply($options, arguments);
     }, ["prevent"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Icon, {
-    type: "ArrowUp",
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_icon, {
+    type: "arrow-up",
     "view-box": "0 0 8 4.8",
     width: "10",
     height: "10"
@@ -981,8 +978,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.moveDown && $options.moveDown.apply($options, arguments);
     }, ["prevent"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Icon, {
-    type: "ArrowDown",
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_icon, {
+    type: "arrow-down",
     "view-box": "0 0 8 4.8",
     width: "10",
     height: "10"
@@ -996,7 +993,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.confirmRemove && $options.confirmRemove.apply($options, arguments);
     }, ["prevent"]))
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Icon, {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_icon, {
     type: "Delete",
     "view-box": "0 0 20 20",
     width: "16",
@@ -1005,7 +1002,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* PROPS */
   , _hoisted_9), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Teleport, {
     to: "#modals"
-  }, [$data.removeMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_DeleteFlexibleContentGroupModal, {
+  }, [$data.removeMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_delete_flexible_content_group_modal, {
     key: 0,
     onConfirm: $options.remove,
     onClose: _cache[5] || (_cache[5] = function ($event) {
@@ -1376,18 +1373,18 @@ function render(_ctx, _cache) {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 Nova.booting(function (Vue) {
-  // Vue.component('IndexNovaFlexibleContent', require('./components/IndexField').default)
-  Vue.component('DetailNovaFlexibleContent', (__webpack_require__(/*! ./components/DetailField.vue */ "./resources/js/components/DetailField.vue")["default"]));
-  Vue.component('DetailNovaFlexibleContentGroup', (__webpack_require__(/*! ./components/DetailGroup.vue */ "./resources/js/components/DetailGroup.vue")["default"]));
-  Vue.component('FormNovaFlexibleContent', (__webpack_require__(/*! ./components/FormField.vue */ "./resources/js/components/FormField.vue")["default"]));
-  Vue.component('FormNovaFlexibleContentGroup', (__webpack_require__(/*! ./components/FormGroup.vue */ "./resources/js/components/FormGroup.vue")["default"]));
-  Vue.component('FlexibleDropMenu', (__webpack_require__(/*! ./components/OriginalDropMenu.vue */ "./resources/js/components/OriginalDropMenu.vue")["default"]));
-  Vue.component('FlexibleSearchMenu', (__webpack_require__(/*! ./components/SearchMenu.vue */ "./resources/js/components/SearchMenu.vue")["default"]));
-  Vue.component('DeleteFlexibleContentGroupModal', (__webpack_require__(/*! ./components/DeleteGroupModal.vue */ "./resources/js/components/DeleteGroupModal.vue")["default"]));
-  Vue.component('IconArrowDown', (__webpack_require__(/*! ./components/icons/ArrowDown.vue */ "./resources/js/components/icons/ArrowDown.vue")["default"]));
-  Vue.component('IconArrowUp', (__webpack_require__(/*! ./components/icons/ArrowUp.vue */ "./resources/js/components/icons/ArrowUp.vue")["default"]));
-  Vue.component('IconArrowSquare', (__webpack_require__(/*! ./components/icons/PlusSquare.vue */ "./resources/js/components/icons/PlusSquare.vue")["default"]));
-  Vue.component('IconMinusSqare', (__webpack_require__(/*! ./components/icons/MinusSquare.vue */ "./resources/js/components/icons/MinusSquare.vue")["default"]));
+  // Vue.component('index-nova-flexible-content', require('./components/IndexField').default)
+  Vue.component('detail-nova-flexible-content', (__webpack_require__(/*! ./components/DetailField.vue */ "./resources/js/components/DetailField.vue")["default"]));
+  Vue.component('detail-nova-flexible-content-group', (__webpack_require__(/*! ./components/DetailGroup.vue */ "./resources/js/components/DetailGroup.vue")["default"]));
+  Vue.component('form-nova-flexible-content', (__webpack_require__(/*! ./components/FormField.vue */ "./resources/js/components/FormField.vue")["default"]));
+  Vue.component('form-nova-flexible-content-group', (__webpack_require__(/*! ./components/FormGroup.vue */ "./resources/js/components/FormGroup.vue")["default"]));
+  Vue.component('flexible-drop-menu', (__webpack_require__(/*! ./components/OriginalDropMenu.vue */ "./resources/js/components/OriginalDropMenu.vue")["default"]));
+  Vue.component('flexible-search-menu', (__webpack_require__(/*! ./components/SearchMenu.vue */ "./resources/js/components/SearchMenu.vue")["default"]));
+  Vue.component('delete-flexible-content-group-modal', (__webpack_require__(/*! ./components/DeleteGroupModal.vue */ "./resources/js/components/DeleteGroupModal.vue")["default"]));
+  Vue.component('icon-arrow-down', (__webpack_require__(/*! ./components/icons/ArrowDown.vue */ "./resources/js/components/icons/ArrowDown.vue")["default"]));
+  Vue.component('icon-arrow-up', (__webpack_require__(/*! ./components/icons/ArrowUp.vue */ "./resources/js/components/icons/ArrowUp.vue")["default"]));
+  Vue.component('icon-arrow-square', (__webpack_require__(/*! ./components/icons/PlusSquare.vue */ "./resources/js/components/icons/PlusSquare.vue")["default"]));
+  Vue.component('icon-minus-squre', (__webpack_require__(/*! ./components/icons/MinusSquare.vue */ "./resources/js/components/icons/MinusSquare.vue")["default"]));
 });
 
 /***/ }),
