@@ -8,7 +8,7 @@
                 :title="__('Expand')"
                 @click.prevent="expand"
                 v-if="collapsed">
-                <icon class="align-top" type="plus-square" width="16" height="16" view-box="0 0 24 24" />
+                <icon type="plus" class="align-top" width="16" height="16" />
             </button>
             <div v-if="!collapsed">
                 <button
@@ -17,7 +17,7 @@
                     class="group-control btn border-r border-40 w-8 h-8 block"
                     :title="__('Collapse')"
                     @click.prevent="collapse">
-                    <icon class="align-top" type="minus-square" width="16" height="16" view-box="0 0 24 24" />
+                    <icon type="minus" class="align-top" width="16" height="16" />
                 </button>
                 <div v-if="!readonly">
                     <button
@@ -26,7 +26,7 @@
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"
                         :title="__('Move up')"
                         @click.prevent="moveUp">
-                        <icon type="arrow-up" view-box="0 0 8 4.8" width="10" height="10" />
+                        <icon type="arrow-up" class="align-top" width="16" height="16" />
                     </button>
                     <button
                         dusk="move-down-group"
@@ -34,7 +34,7 @@
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"
                         :title="__('Move down')"
                         @click.prevent="moveDown">
-                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                        <icon type="arrow-down" class="align-top" width="16" height="16" />
                     </button>
                     <button
                         dusk="delete-group"
@@ -42,7 +42,7 @@
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"
                         :title="__('Delete')"
                         @click.prevent="confirmRemove">
-                        <icon type="Delete" view-box="0 0 20 20" width="16" height="16" />
+                        <icon type="trash" width="16" height="16" />
                     </button>
                     <Teleport to="#modals">
                         <delete-flexible-content-group-modal
