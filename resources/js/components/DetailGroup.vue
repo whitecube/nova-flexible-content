@@ -1,7 +1,7 @@
 <template>
     <div :class="componentStyle">
         <div :class="titleStyle" v-if="group.title">
-            <span class="block float-left border-r border-40 pr-4 mr-4"><!--
+            <span class="block float-left border-r border-gray-100 dark:border-gray-700  pr-4 mr-4"><!--
              --><span class="text-60 text-xs">#</span><!--
              --><span class="text-80">{{index+1}}</span>
             </span>
@@ -30,7 +30,7 @@ export default {
             return this.last ? [] : ['border-b border-50 pb-4 mb-4'];
         },
         titleStyle() {
-            return ['pb-4', 'border-b', 'border-40'];
+            return ['pb-4', 'border-b', 'border-gray-100', 'dark:border-gray-700'];
         }
     }
 }

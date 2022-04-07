@@ -2,11 +2,11 @@
     <div class="z-20 relative" v-if="layouts">
         <div class="relative" v-if="layouts.length > 1">
             <div v-if="isLayoutsDropdownOpen"
-                 class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+                 class="absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-gray-100 dark:border-gray-700 "
             >
                 <div>
                     <ul class="list-reset">
-                        <li v-for="layout in filteredLayouts" class="border-b border-40">
+                        <li v-for="layout in filteredLayouts" class="border-b border-gray-100 dark:border-gray-700 ">
                             <a
                                 :dusk="'add-' + layout.name"
                                 @click="addGroup(layout)"
@@ -18,16 +18,15 @@
                 </div>
             </div>
         </div>
-        <button
+        <default-button
             dusk="toggle-layouts-dropdown-or-add-default"
             type="button"
             tabindex="0"
-            class="btn btn-default btn-primary inline-flex items-center relative"
             @click="toggleLayoutsDropdownOrAddDefault"
             v-if="this.limitCounter > 0 || this.limitCounter === null"
         >
             <span>{{ field.button }}</span>
-        </button>
+        </default-button>
     </div>
 </template>
 

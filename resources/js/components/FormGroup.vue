@@ -1,10 +1,10 @@
 <template>
-    <div class="relative flex bg-white mb-4 pb-1" :id="group.key">
-        <div class="z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8">
+    <div class="relative flex mb-4 pb-1" :id="group.key">
+        <div class="z-10 border-t border-l border-b border-gray-200 dark:border-gray-700 h-auto pin-l pin-t rounded-l self-start w-8">
             <button
                 dusk="expand-group"
                 type="button"
-                class="group-control btn border-r border-40 w-8 h-8 block"
+                class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
                 :title="__('Expand')"
                 @click.prevent="expand"
                 v-if="collapsed">
@@ -14,7 +14,7 @@
                 <button
                     dusk="collapse-group"
                     type="button"
-                    class="group-control btn border-r border-40 w-8 h-8 block"
+                    class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
                     :title="__('Collapse')"
                     @click.prevent="collapse">
                     <icon type="minus" class="align-top" width="16" height="16" />
@@ -23,7 +23,7 @@
                     <button
                         dusk="move-up-group"
                         type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Move up')"
                         @click.prevent="moveUp">
                         <icon type="arrow-up" class="align-top" width="16" height="16" />
@@ -31,7 +31,7 @@
                     <button
                         dusk="move-down-group"
                         type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Move down')"
                         @click.prevent="moveDown">
                         <icon type="arrow-down" class="align-top" width="16" height="16" />
@@ -39,7 +39,7 @@
                     <button
                         dusk="delete-group"
                         type="button"
-                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
                         :title="__('Delete')"
                         @click.prevent="confirmRemove">
                         <icon type="trash" width="16" height="16" />
@@ -60,7 +60,7 @@
         <div class="-mb-1 flex flex-col min-h-full w-full">
             <div :class="titleStyle" v-if="group.title">
                 <div class="leading-normal py-1 px-8"
-                    :class="{'border-b border-40': !collapsed}">
+                    :class="{'border-b border-gray-200 dark:border-gray-700 ': !collapsed}">
                     <p class="text-80">
                       <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
                       {{ group.title }}
@@ -103,14 +103,14 @@ export default {
 
     computed: {
         titleStyle() {
-            let classes = ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
+            let classes = ['border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
             if (this.collapsed) {
                 classes.push('border-b rounded-br-lg');
             }
             return classes;
         },
         containerStyle() {
-            let classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
+            let classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-br-lg'];
             if(!this.group.title) {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');

@@ -102,7 +102,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.last ? [] : ['border-b border-50 pb-4 mb-4'];
     },
     titleStyle: function titleStyle() {
-      return ['pb-4', 'border-b', 'border-40'];
+      return ['pb-4', 'border-b', 'border-gray-100', 'dark:border-gray-700'];
     }
   }
 });
@@ -339,7 +339,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     titleStyle: function titleStyle() {
-      var classes = ['border-t', 'border-r', 'border-60', 'rounded-tr-lg'];
+      var classes = ['border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
 
       if (this.collapsed) {
         classes.push('border-b rounded-br-lg');
@@ -348,7 +348,7 @@ __webpack_require__.r(__webpack_exports__);
       return classes;
     },
     containerStyle: function containerStyle() {
-      var classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-60', 'rounded-b-lg'];
+      var classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-br-lg'];
 
       if (!this.group.title) {
         classes.push('border-t');
@@ -747,7 +747,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 
 var _hoisted_1 = {
-  "class": "block float-left border-r border-40 pr-4 mr-4"
+  "class": "block float-left border-r border-gray-100 dark:border-gray-700 pr-4 mr-4"
 };
 
 var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
@@ -892,7 +892,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var _hoisted_1 = ["id"];
 var _hoisted_2 = {
-  "class": "z-10 bg-white border-t border-l border-b border-60 h-auto pin-l pin-t rounded-l self-start w-8"
+  "class": "z-10 border-t border-l border-b border-gray-200 dark:border-gray-700 h-auto pin-l pin-t rounded-l self-start w-8"
 };
 var _hoisted_3 = ["title"];
 var _hoisted_4 = {
@@ -920,13 +920,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_delete_flexible_content_group_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("delete-flexible-content-group-modal");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-    "class": "relative flex bg-white mb-4 pb-1",
+    "class": "relative flex mb-4 pb-1",
     id: $props.group.key
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.collapsed ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     dusk: "expand-group",
     type: "button",
-    "class": "group-control btn border-r border-40 w-8 h-8 block",
+    "class": "group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block",
     title: _ctx.__('Expand'),
     onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.expand && $options.expand.apply($options, arguments);
@@ -941,7 +941,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   , _hoisted_3)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), !$data.collapsed ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     dusk: "collapse-group",
     type: "button",
-    "class": "group-control btn border-r border-40 w-8 h-8 block",
+    "class": "group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block",
     title: _ctx.__('Collapse'),
     onClick: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.collapse && $options.collapse.apply($options, arguments);
@@ -956,7 +956,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   , _hoisted_5), !$data.readonly ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     dusk: "move-up-group",
     type: "button",
-    "class": "group-control btn border-t border-r border-40 w-8 h-8 block",
+    "class": "group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block",
     title: _ctx.__('Move up'),
     onClick: _cache[2] || (_cache[2] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.moveUp && $options.moveUp.apply($options, arguments);
@@ -971,7 +971,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   , _hoisted_7), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     dusk: "move-down-group",
     type: "button",
-    "class": "group-control btn border-t border-r border-40 w-8 h-8 block",
+    "class": "group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block",
     title: _ctx.__('Move down'),
     onClick: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.moveDown && $options.moveDown.apply($options, arguments);
@@ -986,7 +986,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   , _hoisted_8), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     dusk: "delete-group",
     type: "button",
-    "class": "group-control btn border-t border-r border-40 w-8 h-8 block",
+    "class": "group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block",
     title: _ctx.__('Delete'),
     onClick: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.confirmRemove && $options.confirmRemove.apply($options, arguments);
@@ -1015,7 +1015,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.titleStyle)
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["leading-normal py-1 px-8", {
-      'border-b border-40': !$data.collapsed
+      'border-b border-gray-200 dark:border-gray-700 ': !$data.collapsed
     }])
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_12, "#" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.index + 1), 1
   /* TEXT */
@@ -1162,19 +1162,21 @@ var _hoisted_2 = {
 };
 var _hoisted_3 = {
   key: 0,
-  "class": "absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-40"
+  "class": "absolute rounded-lg shadow-lg max-w-full mb-3 pin-b max-h-search overflow-y-auto border border-gray-100 dark:border-gray-700"
 };
 var _hoisted_4 = {
   "class": "list-reset"
 };
 var _hoisted_5 = {
-  "class": "border-b border-40"
+  "class": "border-b border-gray-100 dark:border-gray-700"
 };
 var _hoisted_6 = ["dusk", "onClick"];
 var _hoisted_7 = {
   "class": "text-90"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_default_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("default-button");
+
   return $props.layouts ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$props.layouts.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$data.isLayoutsDropdownOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.filteredLayouts, function (layout) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
       dusk: 'add-' + layout.name,
@@ -1189,18 +1191,24 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , _hoisted_6)]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), this.limitCounter > 0 || this.limitCounter === null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  ))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), this.limitCounter > 0 || this.limitCounter === null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_default_button, {
     key: 1,
     dusk: "toggle-layouts-dropdown-or-add-default",
     type: "button",
     tabindex: "0",
-    "class": "btn btn-default btn-primary inline-flex items-center relative",
-    onClick: _cache[0] || (_cache[0] = function () {
-      return $options.toggleLayoutsDropdownOrAddDefault && $options.toggleLayoutsDropdownOrAddDefault.apply($options, arguments);
-    })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.field.button), 1
-  /* TEXT */
-  )])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true);
+    onClick: $options.toggleLayoutsDropdownOrAddDefault
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.field.button), 1
+      /* TEXT */
+      )];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true);
 }
 
 /***/ }),
