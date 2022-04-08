@@ -1,5 +1,5 @@
 <template>
-    <Modal @modal-close="handleClose" :show="true">
+    <Modal :show="true">
     <form
       @submit.prevent="$emit('confirm')"
       class="mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
