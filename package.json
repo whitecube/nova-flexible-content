@@ -15,9 +15,8 @@
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.32.8",
         "sass-loader": "10.*",
-        "vue-loader": "^16.8.3"
-    },
-    "dependencies": {
+        "vue-loader": "^16.8.3",
+        "@vue/babel-plugin-jsx": "^1.1.1",
         "@vueform/multiselect": "^2.3.3"
     }
 }
