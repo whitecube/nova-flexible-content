@@ -44,16 +44,14 @@
                         @click.prevent="confirmRemove">
                         <icon type="trash" width="16" height="16" />
                     </button>
-                    <Teleport to="#modals">
-                        <delete-flexible-content-group-modal
-                            v-if="removeMessage"
-                            @confirm="remove"
-                            @close="removeMessage=false"
-                            :message="field.confirmRemoveMessage"
-                            :yes="field.confirmRemoveYes"
-                            :no="field.confirmRemoveNo"
-                        />
-                    </Teleport>
+                    <delete-flexible-content-group-modal
+                        v-if="removeMessage"
+                        @confirm="remove"
+                        @close="removeMessage=false"
+                        :message="field.confirmRemoveMessage"
+                        :yes="field.confirmRemoveYes"
+                        :no="field.confirmRemoveNo"
+                    />
                 </div>
             </div>
         </div>

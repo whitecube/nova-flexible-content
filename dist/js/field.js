@@ -15,20 +15,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['message', 'yes', 'no'],
   emits: ['close', 'confirm'],
-  methods: {
-    handleClose: function handleClose() {
-      this.$emit('close');
-    },
-    handleConfirm: function handleConfirm() {
-      this.$emit('confirm');
-    }
-  },
 
   /**
    * Mount the component.
    */
   mounted: function mounted() {
-    this.$refs.confirmButton.focus();
+    this.$nextTick(function () {// this.$refs.confirmButton.button.focus()
+    });
   }
 });
 
@@ -604,77 +597,100 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 
 var _hoisted_1 = {
-  "class": "p-8"
+  key: 0,
+  "class": "leading-normal"
 };
 var _hoisted_2 = {
-  key: 0,
-  "class": "text-80 leading-normal"
+  key: 1,
+  "class": "leading-normal"
 };
 var _hoisted_3 = {
-  key: 1,
-  "class": "text-80 leading-normal"
-};
-var _hoisted_4 = {
-  "class": "bg-30 px-6 py-3 flex"
-};
-var _hoisted_5 = {
   "class": "ml-auto"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_heading = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("heading");
+  var _this = this;
+
+  var _component_ModalHeader = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ModalHeader");
+
+  var _component_ModalContent = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ModalContent");
+
+  var _component_link_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("link-button");
+
+  var _component_danger_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("danger-button");
+
+  var _component_ModalFooter = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ModalFooter");
 
   var _component_Modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Modal");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Modal, {
-    onModalClose: $options.handleClose
+    onModalClose: _ctx.handleClose,
+    show: true
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-        onSubmit: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
-          return $options.handleConfirm && $options.handleConfirm.apply($options, arguments);
+        onSubmit: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+          return _ctx.$emit('confirm');
         }, ["prevent"])),
-        "class": "bg-white rounded-lg shadow-lg overflow-hidden",
-        style: {
-          "width": "460px"
-        }
+        "class": "mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
       }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default", {}, function () {
-        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_heading, {
-          level: 2,
-          "class": "mb-6"
-        }, {
+        return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ModalHeader, {
+          textContent: (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.__('Delete Group'))
+        }, null, 8
+        /* PROPS */
+        , ["textContent"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ModalContent, null, {
           "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-            return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.__('Delete Group')), 1
+            return [$props.message ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.message), 1
             /* TEXT */
-            )];
+            )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.__('Are you sure you want to delete this group?')), 1
+            /* TEXT */
+            ))];
           }),
           _: 1
           /* STABLE */
 
-        }), $props.message ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.message), 1
-        /* TEXT */
-        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.__('Are you sure you want to delete this group?')), 1
-        /* TEXT */
-        ))])];
-      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-        type: "button",
-        "data-testid": "cancel-button",
-        dusk: "cancel-delete-button",
-        onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
-          return $options.handleClose && $options.handleClose.apply($options, arguments);
-        }, ["prevent"])),
-        "class": "btn text-80 font-normal h-9 px-3 mr-3 btn-link"
-      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.no), 1
-      /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-        id: "confirm-delete-button",
-        ref: "confirmButton",
-        dusk: "confirm-delete-button",
-        "data-testid": "confirm-button",
-        type: "submit",
-        "class": "btn btn-default btn-danger"
-      }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.yes), 513
-      /* TEXT, NEED_PATCH */
-      )])])], 32
+        })];
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ModalFooter, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_link_button, {
+            type: "button",
+            "data-testid": "cancel-button",
+            dusk: "cancel-delete-button",
+            onClick: _cache[0] || (_cache[0] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+              return _this.$emit('close');
+            }, ["prevent"])),
+            "class": "mr-3"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.no), 1
+              /* TEXT */
+              )];
+            }),
+            _: 1
+            /* STABLE */
+
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_danger_button, {
+            ref: "confirmButton",
+            dusk: "confirm-delete-button",
+            processing: _ctx.working,
+            disabled: _ctx.working,
+            type: "submit"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.yes), 1
+              /* TEXT */
+              )];
+            }),
+            _: 1
+            /* STABLE */
+
+          }, 8
+          /* PROPS */
+          , ["processing", "disabled"])])];
+        }),
+        _: 1
+        /* STABLE */
+
+      })], 32
       /* HYDRATE_EVENTS */
       )];
     }),
@@ -1001,9 +1017,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     height: "16"
   })], 8
   /* PROPS */
-  , _hoisted_9), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Teleport, {
-    to: "#modals"
-  }, [$data.removeMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_delete_flexible_content_group_modal, {
+  , _hoisted_9), $data.removeMessage ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_delete_flexible_content_group_modal, {
     key: 0,
     onConfirm: $options.remove,
     onClose: _cache[5] || (_cache[5] = function ($event) {
@@ -1014,7 +1028,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     no: $props.field.confirmRemoveNo
   }, null, 8
   /* PROPS */
-  , ["onConfirm", "message", "yes", "no"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [$props.group.title ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+  , ["onConfirm", "message", "yes", "no"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [$props.group.title ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     key: 0,
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.titleStyle)
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
