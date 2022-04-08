@@ -242,7 +242,7 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            this.$delete(this.groups, key);
+            delete this.groups[key];
         }
     }
 }

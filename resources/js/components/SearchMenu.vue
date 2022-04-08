@@ -35,6 +35,8 @@
     export default {
         props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
+        emits: ['addGroup'],
+
         data() {
             return {
                 selectedLayout: null,

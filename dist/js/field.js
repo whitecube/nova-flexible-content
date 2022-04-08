@@ -14,6 +14,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['message', 'yes', 'no'],
+  emits: ['close', 'confirm'],
   methods: {
     handleClose: function handleClose() {
       this.$emit('close');
@@ -307,7 +308,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var index = this.order.indexOf(key);
       if (index < 0) return;
       this.order.splice(index, 1);
-      this.$delete(this.groups, key);
+      delete this.groups[key];
     }
   }
 });
@@ -330,6 +331,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   mixins: [_vendor_laravel_nova_resources_js_mixins_BehavesAsPanel_js__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: ['errors', 'group', 'index', 'field'],
+  emits: ['move-up', 'move-down', 'remove'],
   data: function data() {
     return {
       removeMessage: false,
@@ -475,6 +477,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
+  emits: ['addGroup'],
   data: function data() {
     return {
       isLayoutsDropdownOpen: false
@@ -529,6 +532,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
+  emits: ['addGroup'],
   data: function data() {
     return {
       selectedLayout: null,

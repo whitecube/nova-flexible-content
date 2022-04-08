@@ -93,6 +93,8 @@ export default {
 
     props: ['errors', 'group', 'index', 'field'],
 
+    emits: ['move-up', 'move-down', 'remove'],
+
     data() {
         return {
             removeMessage: false,

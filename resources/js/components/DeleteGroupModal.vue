@@ -48,6 +48,8 @@
 export default {
     props: ['message', 'yes', 'no'],
 
+    emits: ['close', 'confirm'],
+
     methods: {
         handleClose() {
             this.$emit('close')
