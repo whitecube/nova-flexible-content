@@ -1,68 +1,68 @@
 <template>
-    <div class="relative flex mb-4 pb-1" :id="group.key">
-        <div class="z-10 border-t border-l border-b border-gray-200 dark:border-gray-700 h-auto pin-l pin-t rounded-l self-start w-8">
-            <button
-                dusk="expand-group"
-                type="button"
-                class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
-                :title="__('Expand')"
-                @click.prevent="expand"
-                v-if="collapsed">
-                <icon type="plus" class="align-top" width="16" height="16" />
-            </button>
-            <div v-if="!collapsed">
-                <button
-                    dusk="collapse-group"
-                    type="button"
-                    class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
-                    :title="__('Collapse')"
-                    @click.prevent="collapse">
-                    <icon type="minus" class="align-top" width="16" height="16" />
-                </button>
-                <div v-if="!readonly">
-                    <button
-                        dusk="move-up-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
-                        :title="__('Move up')"
-                        @click.prevent="moveUp">
-                        <icon type="arrow-up" class="align-top" width="16" height="16" />
-                    </button>
-                    <button
-                        dusk="move-down-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
-                        :title="__('Move down')"
-                        @click.prevent="moveDown">
-                        <icon type="arrow-down" class="align-top" width="16" height="16" />
-                    </button>
-                    <button
-                        dusk="delete-group"
-                        type="button"
-                        class="group-control btn border-t border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
-                        :title="__('Delete')"
-                        @click.prevent="confirmRemove">
-                        <icon type="trash" width="16" height="16" />
-                    </button>
-                    <delete-flexible-content-group-modal
-                        v-if="removeMessage"
-                        @confirm="remove"
-                        @close="removeMessage=false"
-                        :message="field.confirmRemoveMessage"
-                        :yes="field.confirmRemoveYes"
-                        :no="field.confirmRemoveNo"
-                    />
-                </div>
-            </div>
-        </div>
-        <div class="-mb-1 flex flex-col min-h-full w-full">
+    <div class="relative mb-4 pb-1" :id="group.key">
+        <div class="w-full shrink">
             <div :class="titleStyle" v-if="group.title">
-                <div class="leading-normal py-1 px-8"
+                <div class="h-8 leading-normal h-full flex items-center box-content"
                     :class="{'border-b border-gray-200 dark:border-gray-700 ': !collapsed}">
-                    <p class="text-80">
-                      <span class="mr-4 font-semibold">#{{ index + 1 }}</span>
+                    <button
+                        dusk="expand-group"
+                        type="button"
+                        class="shrink-0 group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                        :title="__('Expand')"
+                        @click.prevent="expand"
+                        v-if="collapsed">
+                        <icon type="plus" class="align-top" width="16" height="16" />
+                    </button>
+                    <button
+                        dusk="collapse-group"
+                        type="button"
+                        class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                        :title="__('Collapse')"
+                        @click.prevent="collapse"
+                        v-else>
+                        <icon type="minus" class="align-top" width="16" height="16" />
+                    </button>
+
+                    <p class="text-80 grow px-4">
+                      <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
                       {{ group.title }}
                     </p>
+
+                    <div class="flex" v-if="!readonly">
+                        <button
+                            dusk="move-up-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Move up')"
+                            @click.prevent="moveUp">
+                            <icon type="arrow-up" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
+                            dusk="move-down-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Move down')"
+                            @click.prevent="moveDown">
+                            <icon type="arrow-down" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
+                            dusk="delete-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Delete')"
+                            @click.prevent="confirmRemove">
+                            <icon type="trash" width="16" height="16" />
+                        </button>
+                        <delete-flexible-content-group-modal
+                            v-if="removeMessage"
+                            @confirm="remove"
+                            @close="removeMessage=false"
+                            :message="field.confirmRemoveMessage"
+                            :yes="field.confirmRemoveYes"
+                            :no="field.confirmRemoveNo"
+                        />
+                    </div>
+
                 </div>
             </div>
             <div :class="containerStyle">
@@ -103,14 +103,14 @@ export default {
 
     computed: {
         titleStyle() {
-            let classes = ['h-8', 'border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
+            let classes = ['border-t', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-t-lg'];
             if (this.collapsed) {
-                classes.push('border-b rounded-br-lg');
+                classes.push('border-b rounded-b-lg');
             }
             return classes;
         },
         containerStyle() {
-            let classes = ['flex-grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-br-lg'];
+            let classes = ['grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-b-lg'];
             if(!this.group.title) {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
@@ -202,5 +202,40 @@ export default {
 
     .closebtn {
         /*color: #B7CAD6;*/
+    }
+
+    .rounded-l {
+        border-top-left-radius: 0.25rem; /* 4px */
+        border-bottom-left-radius: 0.25rem; /* 4px */
+    }
+
+    .rounded-t-lg {
+        border-top-right-radius: 0.5rem; /* 8px */
+        border-top-left-radius: 0.5rem; /* 8px */
+    }
+
+    .rounded-b-lg {
+        border-bottom-left-radius: 0.5rem; /* 8px */
+        border-bottom-right-radius: 0.5rem; /* 8px */
+    }
+
+    .box-content {
+        box-sizing: content-box;
+    }
+
+    .grow {
+        flex-grow: 1;
+    }
+
+    .grow-0 {
+        flex-grow: 0;
+    }
+
+    .shrink {
+        flex-shrink: 1;
+    }
+
+    .shrink-0 {
+        flex-shrink: 0;
     }
 </style>
