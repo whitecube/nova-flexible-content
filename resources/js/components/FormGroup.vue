@@ -103,7 +103,7 @@ export default {
 
     computed: {
         titleStyle() {
-            let classes = ['border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
+            let classes = ['h-8', 'border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
             if (this.collapsed) {
                 classes.push('border-b rounded-br-lg');
             }
@@ -176,12 +176,8 @@ export default {
     .group-control:focus {
         outline: none;
     }
-    .group-control path {
-        fill: #B7CAD6;
-        transition: fill 200ms ease-out;
-    }
-    .group-control:hover path {
-        fill: var(--primary);
+    .group-control:hover {
+        color: rgb(var(--colors-primary-400));
     }
     .confirm-message{
         position: absolute;

@@ -339,7 +339,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     titleStyle: function titleStyle() {
-      var classes = ['border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
+      var classes = ['h-8', 'border-t', 'border-r', 'border-gray-200', 'dark:border-gray-700', 'rounded-tr-lg'];
 
       if (this.collapsed) {
         classes.push('border-b rounded-br-lg');
@@ -1501,21 +1501,24 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var debouncer = lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(function (callback) {
-  return callback();
-}, 50);
-var watchedEvents = {};
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   "extends": _FormField__WEBPACK_IMPORTED_MODULE_7__["default"],
   props: (0,_propTypes__WEBPACK_IMPORTED_MODULE_8__.mapProps)(['shownViaNewRelationModal', 'field', 'viaResource', 'viaResourceId', 'viaRelationship', 'resourceName', 'resourceId', 'relatedResourceName', 'relatedResourceId']),
   data: function data() {
     return {
+      debouncer: null,
       canceller: null,
       watchedFields: {},
+      watchedEvents: {},
       syncedField: null,
       pivot: false,
       editMode: 'create'
     };
+  },
+  created: function created() {
+    this.debouncer = lodash_debounce__WEBPACK_IMPORTED_MODULE_1___default()(function (callback) {
+      return callback();
+    }, 50);
   },
   mounted: function mounted() {
     var _this = this;
@@ -1536,19 +1539,24 @@ var watchedEvents = {};
 
     if (this.dependsOn.length > 0) {
       this.dependsOn.forEach(function (dependsOn) {
-        Nova.$on(_this.getFieldAttributeChangeEventName(dependsOn), watchedEvents[dependsOn] = function (value) {
+        _this.watchedEvents[dependsOn] = function (value) {
           _this.watchedFields[dependsOn] = value;
-          debouncer(function () {
+
+          _this.debouncer(function () {
             return _this.syncField();
           });
-        });
+        };
+
+        Nova.$on(_this.getFieldAttributeChangeEventName(dependsOn), _this.watchedEvents[dependsOn]);
       });
     }
   },
   beforeUnmount: function beforeUnmount() {
+    var _this2 = this;
+
     if (this.dependsOn.length > 0) {
-      lodash_forIn__WEBPACK_IMPORTED_MODULE_2___default()(watchedEvents, function (event, dependsOn) {
-        Nova.$off("".concat(dependsOn, "-change"), event);
+      lodash_forIn__WEBPACK_IMPORTED_MODULE_2___default()(this.watchedEvents, function (event, dependsOn) {
+        Nova.$off(_this2.getFieldAttributeChangeEventName(event.dependsOn), event);
       });
     }
   },
@@ -1560,7 +1568,7 @@ var watchedEvents = {};
       this.value = !(this.currentField.value === undefined || this.currentField.value === null) ? this.currentField.value : this.value;
     },
     syncField: function syncField() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.canceller !== null) this.canceller();
       Nova.request().patch(this.syncFieldEndpoint, this.watchedFields, {
@@ -1573,18 +1581,18 @@ var watchedEvents = {};
           field: this.field.attribute
         }, (lodash_identity__WEBPACK_IMPORTED_MODULE_4___default())),
         cancelToken: new axios__WEBPACK_IMPORTED_MODULE_0__.CancelToken(function (canceller) {
-          _this2.canceller = canceller;
+          _this3.canceller = canceller;
         })
       }).then(function (response) {
-        _this2.syncedField = response.data;
+        _this3.syncedField = response.data;
 
-        if (lodash_isNil__WEBPACK_IMPORTED_MODULE_5___default()(_this2.syncedField.value)) {
-          _this2.syncedField.value = _this2.field.value;
+        if (lodash_isNil__WEBPACK_IMPORTED_MODULE_5___default()(_this3.syncedField.value)) {
+          _this3.syncedField.value = _this3.field.value;
         } else {
-          _this2.setInitialValue();
+          _this3.setInitialValue();
         }
 
-        _this2.onSyncedField();
+        _this3.onSyncedField();
       });
     },
     onSyncedField: function onSyncedField() {//
@@ -2467,7 +2475,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.group-control:focus {\n        outline: none;\n}\n.group-control path {\n        fill: #B7CAD6;\n        transition: fill 200ms ease-out;\n}\n.group-control:hover path {\n        fill: var(--primary);\n}\n.confirm-message{\n        position: absolute;\n        overflow: visible;\n        right: 38px;\n        bottom: 0;\n        width: auto;\n        border-radius: 4px;\n        padding: 6px 7px;\n        border: 1px solid #B7CAD6;\n        background-color: var(--20);\n        white-space: nowrap;\n}\n[dir=rtl] .confirm-message{\n        right: auto;\n        left: 35px;\n}\n.confirm-message .text-danger {\n        color: #ee3f22;\n}\n.closebtn {\n        /*color: #B7CAD6;*/\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.group-control:focus {\n        outline: none;\n}\n.group-control:hover {\n        color: rgb(var(--colors-primary-400));\n}\n.confirm-message{\n        position: absolute;\n        overflow: visible;\n        right: 38px;\n        bottom: 0;\n        width: auto;\n        border-radius: 4px;\n        padding: 6px 7px;\n        border: 1px solid #B7CAD6;\n        background-color: var(--20);\n        white-space: nowrap;\n}\n[dir=rtl] .confirm-message{\n        right: auto;\n        left: 35px;\n}\n.confirm-message .text-danger {\n        color: #ee3f22;\n}\n.closebtn {\n        /*color: #B7CAD6;*/\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
