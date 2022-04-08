@@ -16,5 +16,8 @@
         "sass": "^1.32.8",
         "sass-loader": "10.*",
         "vue-loader": "^16.8.3"
+    },
+    "dependencies": {
+        "@vueform/multiselect": "^2.3.3"
     }
 }

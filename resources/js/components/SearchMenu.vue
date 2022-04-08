@@ -17,12 +17,15 @@
                 <div style="min-width: 300px;">
                     <div class="flexible-search-menu-multiselect">
                         <Multiselect
-                            v-model="selectedLayout" :options="availableLayouts"
+                             v-model="selectedLayout"
+                             :options="availableLayouts"
                              :custom-label="renderLayoutName"
                              :placeholder="field.button"
-                             @input="selectLayout"
+                             @change="selectLayout"
                              v-bind="attributes"
                              track-by="name"
+                             :show-options="true"
+                             :searchable="true"
                         ></Multiselect>
                     </div>
                 </div>
@@ -32,10 +35,16 @@
 </template>
 
 <script>
+    import Multiselect from '@vueform/multiselect'
+
     export default {
         props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
         emits: ['addGroup'],
+
+        components: {
+            Multiselect,
+        },
 
         data() {
             return {
@@ -47,13 +56,15 @@
         computed: {
             attributes() {
                 return {
-                    selectLabel: this.field.menu.data.selectLabel || __('Press enter to select'),
+                    selectLabel: this.field.menu.data.selectLabel || this.__('Press enter to select'),
                     label: this.field.menu.data.label || 'title',
                     openDirection: this.field.menu.data.openDirection || 'bottom',
                 }
             },
             availableLayouts() {
-                return this.layouts.filter(layout => this.limitPerLayoutCounter[layout.name] > 0);
+                return this.layouts.filter((layout) => {
+                    return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
+                })
             },
         },
 
@@ -90,3 +101,4 @@
         }
     }
 </script>
+<style src="@vueform/multiselect/themes/default.css"></style>
