@@ -568,15 +568,18 @@ __webpack_require__.r(__webpack_exports__);
 
       return this.layouts.filter(function (layout) {
         return _this.limitPerLayoutCounter[layout.name] === null || _this.limitPerLayoutCounter[layout.name] > 0;
-      });
+      }).reduce(function (carry, layout) {
+        carry[layout.name] = layout.title;
+        return carry;
+      }, {});
     }
   },
   methods: {
-    selectLayout: function selectLayout(value) {
-      this.addGroup(value);
-    },
-    renderLayoutName: function renderLayoutName(layout) {
-      return layout.title;
+    selectLayout: function selectLayout(layoutName) {
+      var layout = this.layouts.find(function (layout) {
+        return layout.name === layoutName;
+      });
+      this.addGroup(layout);
     },
 
     /**
@@ -595,10 +598,16 @@ __webpack_require__.r(__webpack_exports__);
      * Append the given layout to flexible content's list
      */
     addGroup: function addGroup(layout) {
+      var _this2 = this;
+
       if (!layout) return;
       this.$emit('addGroup', layout);
       this.isLayoutsDropdownOpen = false;
-      this.selectedLayout = null;
+      setTimeout(function () {
+        _this2.$refs.select.clear();
+
+        _this2.selectedLayout = null;
+      }, 100);
     }
   }
 });
@@ -1286,34 +1295,42 @@ var _hoisted_6 = {
   "class": "flexible-search-menu-multiselect"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_default_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("default-button");
+
   var _component_Multiselect = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Multiselect");
 
-  return $props.layouts ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [this.limitCounter > 0 || this.limitCounter === null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$props.layouts.length === 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  return $props.layouts ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [this.limitCounter > 0 || this.limitCounter === null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$props.layouts.length === 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_default_button, {
     dusk: "toggle-layouts-dropdown-or-add-default",
     type: "button",
     tabindex: "0",
-    "class": "btn btn-default btn-primary inline-flex items-center relative float-left",
-    onClick: _cache[0] || (_cache[0] = function () {
-      return $options.toggleLayoutsDropdownOrAddDefault && $options.toggleLayoutsDropdownOrAddDefault.apply($options, arguments);
-    })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.field.button), 1
-  /* TEXT */
-  )])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.layouts.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Multiselect, (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
+    onClick: $options.toggleLayoutsDropdownOrAddDefault
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.field.button), 1
+      /* TEXT */
+      )];
+    }),
+    _: 1
+    /* STABLE */
+
+  }, 8
+  /* PROPS */
+  , ["onClick"])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $props.layouts.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Multiselect, (0,vue__WEBPACK_IMPORTED_MODULE_0__.mergeProps)({
     modelValue: $data.selectedLayout,
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.selectedLayout = $event;
     }),
     options: $options.availableLayouts,
-    "custom-label": $options.renderLayoutName,
     placeholder: $props.field.button,
     onChange: $options.selectLayout
   }, $options.attributes, {
     "track-by": "name",
     "show-options": true,
-    searchable: true
+    searchable: true,
+    ref: "select"
   }), null, 16
   /* FULL_PROPS */
-  , ["modelValue", "options", "custom-label", "placeholder", "onChange"])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true);
+  , ["modelValue", "options", "placeholder", "onChange"])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true);
 }
 
 /***/ }),

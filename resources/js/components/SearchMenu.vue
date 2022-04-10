@@ -1,17 +1,15 @@
 <template>
     <div class="w-3/5" v-if="layouts">
-
         <div v-if="this.limitCounter > 0 || this.limitCounter === null">
             <div v-if="layouts.length === 1">
-                <button
+                <default-button
                     dusk="toggle-layouts-dropdown-or-add-default"
                     type="button"
                     tabindex="0"
-                    class="btn btn-default btn-primary inline-flex items-center relative float-left"
                     @click="toggleLayoutsDropdownOrAddDefault"
                 >
                     <span>{{ field.button }}</span>
-                </button>
+                </default-button>
             </div>
             <div v-if="layouts.length > 1">
                 <div style="min-width: 300px;">
@@ -19,13 +17,13 @@
                         <Multiselect
                              v-model="selectedLayout"
                              :options="availableLayouts"
-                             :custom-label="renderLayoutName"
                              :placeholder="field.button"
                              @change="selectLayout"
                              v-bind="attributes"
                              track-by="name"
                              :show-options="true"
                              :searchable="true"
+                             ref="select"
                         ></Multiselect>
                     </div>
                 </div>
@@ -61,20 +59,24 @@
                     openDirection: this.field.menu.data.openDirection || 'bottom',
                 }
             },
+
             availableLayouts() {
-                return this.layouts.filter((layout) => {
+                return this.layouts.filter(layout => {
                     return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
-                })
+                }).reduce((carry, layout) => {
+                    carry[layout.name] = layout.title;
+
+                    return carry;
+                }, {});
             },
         },
 
         methods: {
-            selectLayout(value){
-                this.addGroup(value);
+            selectLayout(layoutName){
+                let layout = this.layouts.find(layout => layout.name === layoutName);
+                this.addGroup(layout);
             },
-            renderLayoutName(layout){
-                return layout.title;
-            },
+
             /**
              * Display or hide the layouts choice dropdown if there are multiple layouts
              * or directly add the only available layout.
@@ -96,9 +98,14 @@
                 this.$emit('addGroup', layout);
 
                 this.isLayoutsDropdownOpen = false;
-                this.selectedLayout = null;
+
+                setTimeout(() => {
+                    this.$refs.select.clear();
+                    this.selectedLayout = null;
+                }, 100);
             },
         }
     }
 </script>
+
 <style src="@vueform/multiselect/themes/default.css"></style>
