@@ -108,7 +108,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['group', 'index', 'last', 'resource', 'resourceName', 'resourceId'],
+  props: ['attribute', 'group', 'index', 'last', 'resource', 'resourceName', 'resourceId'],
   computed: {
     componentStyle: function componentStyle() {
       return this.last ? [] : ['border-b border-50 pb-4 mb-4'];
@@ -754,10 +754,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           group: group,
           resource: $props.resource,
           resourceName: $props.resourceName,
-          resourceId: $props.resourceId
+          resourceId: $props.resourceId,
+          attribute: $props.field.attribute
         }, null, 8
         /* PROPS */
-        , ["index", "last", "group", "resource", "resourceName", "resourceId"])]);
+        , ["index", "last", "group", "resource", "resourceName", "resourceId", "attribute"])]);
       }), 256
       /* UNKEYED_FRAGMENT */
       ))];
@@ -786,31 +787,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "vue");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 
-var _hoisted_1 = {
+var _hoisted_1 = ["dusk"];
+var _hoisted_2 = {
   "class": "block float-left border-r border-gray-100 dark:border-gray-700 pr-4 mr-4"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
   "class": "text-60 text-xs"
 }, "#", -1
 /* HOISTED */
 );
 
-var _hoisted_3 = {
+var _hoisted_4 = {
   "class": "text-80"
 };
-var _hoisted_4 = {
+var _hoisted_5 = {
   "class": "font-bold"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.componentStyle)
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.componentStyle),
+    dusk: 'detail-' + $props.attribute + '-' + $props.index
   }, [$props.group.title ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     key: 0,
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.titleStyle)
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("\n             "), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("\n             "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.index + 1), 1
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("\n             "), _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("\n             "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.index + 1), 1
   /* TEXT */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.group.title), 1
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.group.title), 1
   /* TEXT */
   )], 2
   /* CLASS */
@@ -830,9 +833,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , ["resource-name", "resource-id", "resource", "field", "class"]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))], 2
-  /* CLASS */
-  );
+  ))], 10
+  /* CLASS, PROPS */
+  , _hoisted_1);
 }
 
 /***/ }),

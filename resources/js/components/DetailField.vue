@@ -9,6 +9,7 @@
                     :resource="resource"
                     :resourceName="resourceName"
                     :resourceId="resourceId"
+                    :attribute="field.attribute"
                 />
             </div>
         </template>

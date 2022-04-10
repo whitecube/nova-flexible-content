@@ -1,5 +1,5 @@
 <template>
-    <div :class="componentStyle">
+    <div :class="componentStyle" :dusk="'detail-'+attribute+'-'+index">
         <div :class="titleStyle" v-if="group.title">
             <span class="block float-left border-r border-gray-100 dark:border-gray-700  pr-4 mr-4"><!--
              --><span class="text-60 text-xs">#</span><!--
@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    props: ['group', 'index', 'last', 'resource', 'resourceName', 'resourceId'],
+    props: ['attribute', 'group', 'index', 'last', 'resource', 'resourceName', 'resourceId'],
 
     computed: {
         componentStyle() {
