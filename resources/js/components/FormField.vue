@@ -70,27 +70,24 @@ export default {
 
         limitCounter() {
             if (this.field.limit === null || typeof(this.field.limit) == "undefined") {
-              return null;
-            }
-
-            // if all layouts reached their limitPerLayout, remove the "Add" button
-            if (Object.values(this.limitPerLayoutCounter).reduce((a, b) => a + b, 0) <= 0) {
-                return 0;
+                return null;
             }
 
             return this.field.limit - Object.keys(this.groups).length;
         },
 
         limitPerLayoutCounter() {
-            let count = {};
-            this.layouts.forEach(layout => count[layout.name] = layout.limit)
-            if (Object.keys(this.groups).length > 0) {
-                Object.entries(this.groups).forEach(
-                    group => count[group[1].name] === null ? null : count[group[1].name]--
-                );
-            }
+            return this.layouts.reduce((layoutCounts, layout) => {
+                if (layout.limit === null) {
+                    return layoutCounts;
+                }
 
-            return count;
+                let count = Object.values(this.groups).filter(group => group.name === layout.name).length;
+
+                layoutCounts[layout.name] = layout.limit - count;
+
+                return layoutCounts;
+            }, {});
         },
     },
 

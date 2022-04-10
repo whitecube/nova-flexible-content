@@ -165,30 +165,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     limitCounter: function limitCounter() {
       if (this.field.limit === null || typeof this.field.limit == "undefined") {
         return null;
-      } // if all layouts reached their limitPerLayout, remove the "Add" button
-
-
-      if (Object.values(this.limitPerLayoutCounter).reduce(function (a, b) {
-        return a + b;
-      }, 0) <= 0) {
-        return 0;
       }
 
       return this.field.limit - Object.keys(this.groups).length;
     },
     limitPerLayoutCounter: function limitPerLayoutCounter() {
-      var count = {};
-      this.layouts.forEach(function (layout) {
-        return count[layout.name] = layout.limit;
-      });
+      var _this2 = this;
 
-      if (Object.keys(this.groups).length > 0) {
-        Object.entries(this.groups).forEach(function (group) {
-          return count[group[1].name] === null ? null : count[group[1].name]--;
-        });
-      }
+      return this.layouts.reduce(function (layoutCounts, layout) {
+        if (layout.limit === null) {
+          return layoutCounts;
+        }
 
-      return count;
+        var count = Object.values(_this2.groups).filter(function (group) {
+          return group.name === layout.name;
+        }).length;
+        layoutCounts[layout.name] = layout.limit - count;
+        return layoutCounts;
+      }, {});
     }
   },
   data: function data() {
@@ -501,6 +495,9 @@ __webpack_require__.r(__webpack_exports__);
       return this.layouts.filter(function (layout) {
         return _this.limitPerLayoutCounter[layout.name] === null || _this.limitPerLayoutCounter[layout.name] > 0;
       });
+    },
+    isBelowLayoutLimits: function isBelowLayoutLimits() {
+      return (this.limitCounter > 0 || this.limitCounter === null) && this.filteredLayouts.length > 0;
     }
   },
   methods: {
@@ -1237,7 +1234,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , _hoisted_5)]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), this.limitCounter > 0 || this.limitCounter === null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_default_button, {
+  ))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.isBelowLayoutLimits ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_default_button, {
     key: 1,
     dusk: "toggle-layouts-dropdown-or-add-default",
     type: "button",

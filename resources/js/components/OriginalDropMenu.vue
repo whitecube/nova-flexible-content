@@ -23,7 +23,7 @@
             type="button"
             tabindex="0"
             @click="toggleLayoutsDropdownOrAddDefault"
-            v-if="this.limitCounter > 0 || this.limitCounter === null"
+            v-if="isBelowLayoutLimits"
         >
             <span>{{ field.button }}</span>
         </default-button>
@@ -44,13 +44,15 @@
         },
 
         computed: {
-
             filteredLayouts() {
                 return this.layouts.filter((layout) => {
                     return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
                 })
             },
 
+            isBelowLayoutLimits() {
+                return (this.limitCounter > 0 || this.limitCounter === null) && this.filteredLayouts.length > 0;
+            }
         },
 
         methods: {
