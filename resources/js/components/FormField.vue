@@ -79,6 +79,8 @@ export default {
         limitPerLayoutCounter() {
             return this.layouts.reduce((layoutCounts, layout) => {
                 if (layout.limit === null) {
+                    layoutCounts[layout.name] = null;
+
                     return layoutCounts;
                 }
 

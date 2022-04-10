@@ -174,6 +174,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       return this.layouts.reduce(function (layoutCounts, layout) {
         if (layout.limit === null) {
+          layoutCounts[layout.name] = null;
           return layoutCounts;
         }
 

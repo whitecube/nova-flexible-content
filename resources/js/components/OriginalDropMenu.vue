@@ -45,9 +45,9 @@
 
         computed: {
             filteredLayouts() {
-                return this.layouts.filter((layout) => {
+                return this.layouts.filter(layout => {
                     return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
-                })
+                });
             },
 
             isBelowLayoutLimits() {
