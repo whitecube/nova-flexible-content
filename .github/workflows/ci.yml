@@ -31,7 +31,7 @@ jobs:
 
       - name: Install PHP dependencies
         run: |
-          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
           composer update ${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest --ansi
 
       - name: PHPUnit
