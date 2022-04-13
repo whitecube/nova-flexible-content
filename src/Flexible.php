@@ -112,6 +112,17 @@ class Flexible extends Field
     }
 
     /**
+     * Make the flexible content take up the full width
+     * of the form. Labels will sit above
+     *
+     * @return mixed
+     */
+    public function stacked()
+    {
+        return $this->fullWidth();
+    }
+
+    /**
      *  Prevent the 'Add Layout' button from appearing more than once
      *
      * @return $this
@@ -173,7 +184,7 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        
+
         if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }
