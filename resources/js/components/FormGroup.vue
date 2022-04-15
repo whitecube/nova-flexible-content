@@ -74,6 +74,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :field="item"
+                    :form-unique-id="group.key"
                     :errors="errors"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"

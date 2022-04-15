@@ -1,0 +1,66 @@
+<?php
+
+use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
+
+/*
+
+Probably a better way to do this, but Novas PATCH on update-fields and creation-fields
+routes needs to return a single array of all the fields defined in a resource.
+
+This trait overrides the default resource updateFields and creationFields methods to
+flatten the response and just return the fields when the PATCH method is used.
+
+This is required every time a dependsOn field is changed.
+
+
+*/
+
+
+trait FlexibleDepends {
+
+    public function updateFields(NovaRequest $request)
+    {
+        $fields = $this->resolveFields($request, function ($fields) use ($request) {
+            return $this->removeNonUpdateFields($request, $fields);
+        });
+
+        if ($request->getMethod() === "PATCH") {
+            $fields = $this->flattenFields($fields);
+        }
+
+        return $fields->each->applyDependsOn($request);
+    }
+
+    public function creationFields(NovaRequest $request)
+    {
+        $fields = $this->removeNonCreationFields(
+            $request,
+            $this->availableFields($request)->authorized($request)
+        )->resolve($this->resource);
+        
+        if ($request->getMethod() === "PATCH") {
+            $fields = $this->flattenFields($fields);
+        }
+
+        return tap(
+            $request->viaRelationship()
+                ? $this->withPivotFields($request, $fields->all())
+                : $fields, function ($fields) use ($request) {
+                    $fields->each->applyDependsOn($request);
+                });
+    }
+
+    protected function flattenFields ($fields) {
+        $fields->each(function($item, $key) use (&$fields) {
+            if ($item instanceof Flexible) {
+                $fields->forget($key);
+                $item->meta['layouts']->each(function($layout) use (&$fields) {
+                    $fields = $fields->merge($layout->fields());
+                });
+            }
+        });
+        return $fields;
+    }
+
+}
