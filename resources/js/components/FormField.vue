@@ -1,12 +1,12 @@
 <template>
     <component
         :dusk="field.attribute"
-        :is="field.fullWidth ? 'full-width-field' : 'default-field'"
+        :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
         :field="field"
         :errors="errors"
         full-width-content
         :show-help-text="showHelpText">
-        <template slot="field">
+        <template #field>
 
             <div
                 v-if="order.length > 0">
@@ -79,6 +79,8 @@ export default {
         limitPerLayoutCounter() {
             return this.layouts.reduce((layoutCounts, layout) => {
                 if (layout.limit === null) {
+                    layoutCounts[layout.name] = null;
+
                     return layoutCounts;
                 }
 
@@ -204,7 +206,7 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.$set(this.groups, group.key, group);
+            this.groups[group.key] = group;
             this.order.push(group.key);
         },
 
@@ -239,7 +241,7 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            this.$delete(this.groups, key);
+            delete this.groups[key];
         }
     }
 }
