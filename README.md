@@ -4,22 +4,6 @@
 [![](https://img.shields.io/packagist/dt/whitecube/nova-flexible-content.svg?colorB=green&style=flat)](https://packagist.org/packages/whitecube/nova-flexible-content)
 [![](https://img.shields.io/github/license/whitecube/nova-flexible-content.svg?style=flat)](https://github.com/whitecube/nova-flexible-content/blob/master/LICENSE)
 
-## Nova 4 update
-
-There is currently no stable release of this package that supports Nova 4, but you can help us get there quicker by testing the `nova-4` branch on your projects and reporting back to let us know if you've encountered problems or not. 
-
-```json
-"require": {
-    "whitecube/nova-flexible-content": "dev-nova-4"
-}
-```
-
-If you find a bug, it would help us greatly if you could open a PR on [the tests repo](https://github.com/whitecube/nova-flexible-content-tests) with a test that showcases the problem. Of course, a PR here with an actual fix for the bug is even more appreciated.
-
-Thanks to [@Jubeki](https://github.com/jubeki) for the Nova 4 PR and to our GitHub Sponsors for allowing us to put some time towards this.
-
---- 
-
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
 ![Laravel Nova Flexible Content in action](https://github.com/whitecube/nova-flexible-content/raw/master/presentation.gif)
