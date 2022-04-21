@@ -2,7 +2,7 @@
 
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
-![Laravel Nova Flexible Content in action](https://github.com/whitecube/nova-flexible-content/raw/master/presentation.gif)
+![Laravel Nova Flexible Content in action](https://user-images.githubusercontent.com/9298484/164532562-6e4e4179-8a53-470c-97c8-237e9a2c2ebb.gif)
 
 ## Quick start
 
@@ -57,7 +57,7 @@ public function fields(Request $request)
     ];
 }
 ```
-![Example of Flexible layouts](https://github.com/whitecube/nova-flexible-content/raw/master/example_layouts.png)
+![Example of Flexible layouts](https://user-images.githubusercontent.com/9298484/164533823-1b1b4934-75b8-49f2-92a0-a54812ccf463.png)
 
 #### Customizing the button label
 
@@ -68,7 +68,7 @@ Flexible::make('Content')
     ->button('Add something amazing!');
 ```
 
-![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/add_something_amazing.png)
+![Add something amazing](https://user-images.githubusercontent.com/9298484/164544726-2a2b1ce5-aa19-489c-abee-b877e7e8d445.png)
 
 #### Making the field full width
 
@@ -100,7 +100,7 @@ Flexible::make('Content')->confirmRemove();
 Flexible::make('Content')->confirmRemove($label = '', $yes = 'Delete', $no = 'Cancel');
 ```
 
-![Add something amazing](https://github.com/whitecube/nova-flexible-content/raw/master/confirm_remove.png)
+![Confirm remove](https://user-images.githubusercontent.com/9298484/164546875-cf84e57d-5eab-41bc-92aa-3ab0d7f46b4d.png)
 
 #### Layout selection menu
 
