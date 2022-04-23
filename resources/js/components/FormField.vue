@@ -1,11 +1,10 @@
 <template>
     <component
-        :dusk="field.attribute"
         :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
-        :field="field"
+        :field="currentField"
         :errors="errors"
-        full-width-content
-        :show-help-text="showHelpText">
+        :show-help-text="showHelpText"
+        full-width-content>
         <template #field>
 
             <div
@@ -19,7 +18,6 @@
                     :index="index"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
-                    :resource="resource"
                     :errors="errors"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
@@ -36,7 +34,6 @@
                 :errors="errors"
                 :resource-name="resourceName"
                 :resource-id="resourceId"
-                :resource="resource"
                 @addGroup="addGroup($event)"
             />
 
@@ -47,13 +44,11 @@
 <script>
 
 import FullWidthField from './FullWidthField';
-import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import { DependentFormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
 
 export default {
-    mixins: [FormField, HandlesValidationErrors],
-
-    props: ['resourceName', 'resourceId', 'resource', 'field'],
+    mixins: [HandlesValidationErrors, DependentFormField],
 
     components: { FullWidthField },
 

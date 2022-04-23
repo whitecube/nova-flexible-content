@@ -13,7 +13,6 @@
             :is="'detail-' + item.component"
             :resource-name="resourceName"
             :resource-id="resourceId"
-            :resource="resource"
             :field="item"
             :validation-errors="null"
             :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
