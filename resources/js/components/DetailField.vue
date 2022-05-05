@@ -1,6 +1,6 @@
 <template>
-    <panel-item :field="field">
-        <template slot="value">
+    <PanelItem :field="field">
+        <template #value>
             <div v-for="(group, index) in groups">
                 <detail-nova-flexible-content-group
                     :index="index"
@@ -9,10 +9,11 @@
                     :resource="resource"
                     :resourceName="resourceName"
                     :resourceId="resourceId"
+                    :attribute="field.attribute"
                 />
             </div>
         </template>
-    </panel-item>
+    </PanelItem>
 </template>
 
 <script>
@@ -46,6 +47,7 @@ export default {
          * create group instance from raw field value
          */
         getGroup(item) {
+
             let layout = this.getLayout(item.layout);
 
             if(!layout) return;
