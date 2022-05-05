@@ -70,10 +70,12 @@
                     v-for="(item, index) in group.fields"
                     :key="index"
                     :is="'form-' + item.component"
+                    :ref="item.attribute"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :resource="resource"
                     :field="item"
+                    :form-unique-id="group.key"
                     :errors="errors"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
@@ -120,6 +122,28 @@ export default {
             }
             return classes;
         }
+    },
+
+    mounted() {
+      for (const ref in this.$refs) {
+        const currRef = this.$refs[ref];
+        if (Array.isArray(currRef) && currRef.length > 0) {
+          currRef.forEach((item, index) => {
+            if (Array.isArray(item.dependsOn) && item.dependsOn.length > 0) {
+              this.$watch(
+                () => {
+                  return this.$refs[ref][index].syncedField;
+                },
+                (val) => {
+                  if (val.validationKey !== this.$refs[ref][index].validationKey) {
+                    this.$refs[ref][index].syncedField.validationKey = this.$refs[ref][index].validationKey;
+                  }
+                }
+              );
+            }
+          });
+        }
+      }
     },
 
     methods: {

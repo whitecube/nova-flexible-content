@@ -78,8 +78,16 @@ export default class Group {
      */
     renameFields() {
         for (var i = this.fields.length - 1; i >= 0; i--) {
-            this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
-            this.fields[i].validationKey = this.fields[i].attribute;
+            //this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
+            //this.fields[i].validationKey = this.fields[i].attribute;
+            
+            // Unsure of the consequences to Flexible content in removing the attribute override above
+            // But it did not seem to have any negative effects in testing. Attribute needs to be unmodified
+            // So that events firing from the fields are routed correctly. This can be achieved for multiple
+            // Layouts by using :form-unique-id set in FormGroup
+            
+            this.fields[i].validationKey = this.key + '__' + this.fields[i].attribute;
+            this.fields[i].uniqueKey = this.key + '-' + this.fields[i].uniqueKey;
         }
     }
 
