@@ -29,14 +29,14 @@ class CreateLayout extends Command
     protected $description = 'Generate a new Flexible Content Field Layout';
 
     /**
-     * The layout's classname
+     * The layout's classname.
      *
      * @var string
      */
     protected $classname;
 
     /**
-     * The layout's name attribute
+     * The layout's name attribute.
      *
      * @var string
      */
@@ -44,8 +44,6 @@ class CreateLayout extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct(Filesystem $files)
     {
@@ -55,8 +53,6 @@ class CreateLayout extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -67,17 +63,17 @@ class CreateLayout extends Command
 
         $this->files->put($path, $this->buildClass());
 
-        $this->info('Created ' . $path);
+        $this->info('Created '.$path);
     }
 
     /**
-     * Get the classname
+     * Get the classname.
      *
      * @return string
      */
     public function getClassnameArgument()
     {
-        if(!$this->argument('classname')) {
+        if (!$this->argument('classname')) {
             return $this->ask('Please provide a class name for your layout');
         }
 
@@ -85,13 +81,13 @@ class CreateLayout extends Command
     }
 
     /**
-     * Get the name
+     * Get the name.
      *
      * @return string
      */
     public function getNameArgument()
     {
-        if(!$this->argument('name')) {
+        if (!$this->argument('name')) {
             return strtolower($this->classname);
         }
 
@@ -99,28 +95,29 @@ class CreateLayout extends Command
     }
 
     /**
-     * Build the layout's file path
+     * Build the layout's file path.
      *
      * @return string
      */
     protected function getPath()
     {
         return $this->makeDirectory(
-            app_path('Nova/Flexible/Layouts/' . $this->classname . '.php')
+            app_path('Nova/Flexible/Layouts/'.$this->classname.'.php')
         );
     }
 
     /**
-     * Create the directories if they do not exist yet
+     * Create the directories if they do not exist yet.
      *
      * @param string $path
+     *
      * @return string
      */
     protected function makeDirectory($path)
     {
         $directory = dirname($path);
 
-        if(!$this->files->isDirectory($directory)) {
+        if (!$this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true, true);
         }
 
@@ -128,21 +125,22 @@ class CreateLayout extends Command
     }
 
     /**
-     * Generate the file's content
+     * Generate the file's content.
      *
      * @return string
      */
     protected function buildClass()
     {
-        return str_replace([
+        return str_replace(
+            [
                 ':classname',
-                ':name'
-            ], [
-                $this->classname,
-                $this->name
+                ':name',
             ],
-            $this->files->get(__DIR__ . '/../Stubs/Layout.php')
+            [
+                $this->classname,
+                $this->name,
+            ],
+            $this->files->get(__DIR__.'/../Stubs/Layout.php')
         );
     }
-
 }

@@ -2,8 +2,8 @@
 
 namespace Whitecube\NovaFlexibleContent\Value;
 
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 
 class FlexibleCast implements CastsAttributes
 {

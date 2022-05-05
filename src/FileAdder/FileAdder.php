@@ -2,26 +2,24 @@
 
 namespace Whitecube\NovaFlexibleContent\FileAdder;
 
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\DiskDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileDoesNotExist;
-use Spatie\MediaLibrary\Exceptions\FileCannotBeAdded\FileIsTooBig;
 use Spatie\MediaLibrary\MediaCollections\FileAdder as OriginalFileAdder;
-use Spatie\MediaLibrary\Helpers\File;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class FileAdder extends OriginalFileAdder
 {
     /**
-     * The suffix in which we append the media collection name
+     * The suffix in which we append the media collection name.
      *
      * @param string $suffix
+     *
      * @return FileAdder
      */
-    protected $media_collection_suffix = null;
+    protected $media_collection_suffix;
 
-    public function setMediaCollectionSuffix (string $suffix): self
+    public function setMediaCollectionSuffix(string $suffix): self
     {
         $this->media_collection_suffix = $suffix;
+
         return $this;
     }
 

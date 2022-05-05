@@ -24,6 +24,7 @@
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
+                    @file-deleted="$emit('file-deleted')"
                 />
             </div>
 

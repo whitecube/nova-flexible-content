@@ -7,10 +7,7 @@ use Whitecube\NovaFlexibleContent\Flexible;
 abstract class Preset
 {
     /**
-     * Execute the preset configuration
-     *
-     * @return void
+     * Execute the preset configuration.
      */
     abstract public function handle(Flexible $field);
-
 }
