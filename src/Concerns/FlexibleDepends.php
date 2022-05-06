@@ -3,21 +3,7 @@
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Flexible;
 
-/*
-
-Probably a better way to do this, but Novas PATCH on update-fields and creation-fields
-routes needs to return a single array of all the fields defined in a resource.
-
-This trait overrides the default resource updateFields and creationFields methods to
-flatten the response and just return the fields when the PATCH method is used.
-
-This is required every time a dependsOn field is changed.
-
-
-*/
-
-
-trait FlexibleDepends {
+trait HasFlexibleDependsOn {
 
     public function updateFields(NovaRequest $request)
     {
