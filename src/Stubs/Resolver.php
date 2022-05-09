@@ -11,8 +11,8 @@ class :classname implements ResolverInterface
      *
      * @param  mixed  $resource
      * @param  string $attribute
-     * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
-     * @return Illuminate\Support\Collection
+     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+     * @return \Illuminate\Support\Collection
      */
     public function get($resource, $attribute, $layouts)
     {
@@ -24,7 +24,7 @@ class :classname implements ResolverInterface
      *
      * @param  mixed  $model
      * @param  string $attribute
-     * @param  Illuminate\Support\Collection $groups
+     * @param  \Illuminate\Support\Collection $groups
      * @return string
      */
     public function set($model, $attribute, $groups)
