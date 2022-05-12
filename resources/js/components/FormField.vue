@@ -1,12 +1,12 @@
 <template>
     <component
         :dusk="field.attribute"
-        :is="field.fullWidth ? 'full-width-field' : 'default-field'"
+        :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
         :field="field"
         :errors="errors"
         full-width-content
         :show-help-text="showHelpText">
-        <template slot="field">
+        <template #field>
 
             <div
                 v-if="order.length > 0">
@@ -70,27 +70,26 @@ export default {
 
         limitCounter() {
             if (this.field.limit === null || typeof(this.field.limit) == "undefined") {
-              return null;
-            }
-
-            // if all layouts reached their limitPerLayout, remove the "Add" button
-            if (Object.values(this.limitPerLayoutCounter).reduce((a, b) => a + b, 0) <= 0) {
-                return 0;
+                return null;
             }
 
             return this.field.limit - Object.keys(this.groups).length;
         },
 
         limitPerLayoutCounter() {
-            let count = {};
-            this.layouts.forEach(layout => count[layout.name] = layout.limit)
-            if (Object.keys(this.groups).length > 0) {
-                Object.entries(this.groups).forEach(
-                    group => count[group[1].name] === null ? null : count[group[1].name]--
-                );
-            }
+            return this.layouts.reduce((layoutCounts, layout) => {
+                if (layout.limit === null) {
+                    layoutCounts[layout.name] = null;
 
-            return count;
+                    return layoutCounts;
+                }
+
+                let count = Object.values(this.groups).filter(group => group.name === layout.name).length;
+
+                layoutCounts[layout.name] = layout.limit - count;
+
+                return layoutCounts;
+            }, {});
         },
     },
 
@@ -207,7 +206,7 @@ export default {
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.field, key, collapsed);
 
-            this.$set(this.groups, group.key, group);
+            this.groups[group.key] = group;
             this.order.push(group.key);
         },
 
@@ -242,7 +241,7 @@ export default {
             if(index < 0) return;
 
             this.order.splice(index, 1);
-            this.$delete(this.groups, key);
+            delete this.groups[key];
         }
     }
 }
