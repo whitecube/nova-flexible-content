@@ -1,25 +1,24 @@
 <template>
     <component
-        :dusk="field.attribute"
-        :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
-        :field="field"
+        :dusk="currentField.attribute"
+        :is="currentField.fullWidth ? 'FullWidthField' : 'default-field'"
+        :field="currentField"
         :errors="errors"
         full-width-content
         :show-help-text="showHelpText">
         <template #field>
-
+          
             <div
                 v-if="order.length > 0">
                 <form-nova-flexible-content-group
                     v-for="(group, index) in orderedGroups"
-                    :dusk="field.attribute + '-' + index"
+                    :dusk="currentField.attribute + '-' + index"
                     :key="group.key"
-                    :field="field"
+                    :field="currentField"
                     :group="group"
                     :index="index"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
-                    :resource="resource"
                     :errors="errors"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
@@ -29,14 +28,13 @@
 
             <component
                 :layouts="layouts"
-                :is="field.menu.component"
-                :field="field"
+                :is="currentField.menu.component"
+                :field="currentField"
                 :limit-counter="limitCounter"
                 :limit-per-layout-counter="limitPerLayoutCounter"
                 :errors="errors"
                 :resource-name="resourceName"
                 :resource-id="resourceId"
-                :resource="resource"
                 @addGroup="addGroup($event)"
             />
 
@@ -47,13 +45,11 @@
 <script>
 
 import FullWidthField from './FullWidthField';
-import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import { DependentFormField, HandlesValidationErrors } from 'laravel-nova';
 import Group from '../group';
 
 export default {
-    mixins: [FormField, HandlesValidationErrors],
-
-    props: ['resourceName', 'resourceId', 'resource', 'field'],
+    mixins: [DependentFormField, HandlesValidationErrors],
 
     components: { FullWidthField },
 
@@ -69,11 +65,11 @@ export default {
         },
 
         limitCounter() {
-            if (this.field.limit === null || typeof(this.field.limit) == "undefined") {
+            if (this.currentField.limit === null || typeof(this.currentField.limit) == "undefined") {
                 return null;
             }
 
-            return this.field.limit - Object.keys(this.groups).length;
+            return this.currentField.limit - Object.keys(this.groups).length;
         },
 
         limitPerLayoutCounter() {
@@ -109,7 +105,7 @@ export default {
             this.value = this.field.value || [];
             this.files = {};
 
-            this.populateGroups();
+          this.populateGroups();
         },
 
         /**
@@ -182,7 +178,7 @@ export default {
                     this.getLayout(this.value[i].layout),
                     this.value[i].attributes,
                     this.value[i].key,
-                    this.field.collapsed
+                    this.currentField.collapsed
                 );
             }
         },
