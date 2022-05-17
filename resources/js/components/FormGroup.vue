@@ -129,7 +129,7 @@ export default {
         const currRef = this.$refs[ref];
         if (Array.isArray(currRef) && currRef.length > 0) {
           currRef.forEach((item, index) => {
-            if (Array.isArray(item.dependsOn) && item.dependsOn.length > 0) {
+            if (!(item.field.dependsOn == null)) {
               this.$watch(
                 () => {
                   return this.$refs[ref][index].syncedField;
