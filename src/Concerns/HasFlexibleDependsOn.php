@@ -9,15 +9,14 @@ use Whitecube\NovaFlexibleContent\Flexible;
 trait HasFlexibleDependsOn {
 
     public function updateFields(NovaRequest $request) {
-        $fields = parent::updateFields($request);
-        if ($request->getMethod() === "PATCH") {
-            $fields = $this->flattenFields($fields);
-        }
-        return $fields;
+        return $this->parseFlexibleFields($request, parent::updateFields($request));
     }
 
     public function creationFields(NovaRequest $request) {
-        $fields = parent::creationFields($request);
+        return $this->parseFlexibleFields($request, parent::creationFields($request));
+    }
+
+    protected function parseFlexibleFields($request, $fields) {
         if ($request->getMethod() === "PATCH") {
             $fields = $this->flattenFields($fields);
         }
