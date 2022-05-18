@@ -49,6 +49,10 @@ trait HasFlexible {
      */
     public function toFlexible($value, $layoutMapping = [])
     {
+        if ($value instanceof Collection) {
+            return $value;
+        }
+        
         $flexible = $this->getFlexibleArrayFromValue($value);
 
         if(is_null($flexible)) {
