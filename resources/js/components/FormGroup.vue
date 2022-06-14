@@ -189,6 +189,25 @@ export default {
             this.collapsed = true;
         }
     },
+
+    watch: {
+        // https://github.com/whitecube/nova-flexible-content/issues/156#issuecomment-932327771
+        index() {
+            if (!window.tinyMCE) {
+                return;
+            }
+
+            this.$nextTick(() => {
+                tinyMCE.editors
+                    .filter((editor) => editor.id.startsWith(this.group.key))
+                    .forEach((editor) => {
+                        let settings = editor.settings;
+                        editor.remove();
+                        tinyMCE.init(settings);
+                    })
+            });
+        }
+    },
 }
 </script>
 
