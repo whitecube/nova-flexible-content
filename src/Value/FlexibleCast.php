@@ -19,6 +19,9 @@ class FlexibleCast implements CastsAttributes
      */
     protected $model;
 
+   /**
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection|array<\Whitecube\NovaFlexibleContent\Layouts\Layout>
+     */
     public function get($model, string $key, $value, array $attributes)
     {
         $this->model = $model;
