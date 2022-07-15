@@ -1,5 +1,6 @@
 <template>
     <component
+        :dusk="field.attribute"
         :is="field.fullWidth ? 'FullWidthField' : 'default-field'"
         :field="currentField"
         :errors="errors"
