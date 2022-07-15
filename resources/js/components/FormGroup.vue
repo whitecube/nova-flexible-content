@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import BehavesAsPanel from 'behaves-as-panel';
+import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
 
 export default {
     mixins: [BehavesAsPanel],
