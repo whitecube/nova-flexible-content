@@ -484,7 +484,8 @@ __webpack_require__.r(__webpack_exports__);
   emits: ['addGroup'],
   data: function data() {
     return {
-      isLayoutsDropdownOpen: false
+      isLayoutsDropdownOpen: false,
+      dropdownOrientation: 'bottom'
     };
   },
   computed: {
@@ -498,6 +499,14 @@ __webpack_require__.r(__webpack_exports__);
     },
     isBelowLayoutLimits: function isBelowLayoutLimits() {
       return (this.limitCounter > 0 || this.limitCounter === null) && this.filteredLayouts.length > 0;
+    },
+    dropdownClasses: function dropdownClasses() {
+      return {
+        'mt-3': this.dropdownOrientation === 'bottom',
+        'pin-b': this.dropdownOrientation === 'bottom',
+        'mb-3': this.dropdownOrientation === 'top',
+        'pin-t': this.dropdownOrientation === 'top'
+      };
     }
   },
   methods: {
@@ -506,11 +515,27 @@ __webpack_require__.r(__webpack_exports__);
      * or directly add the only available layout.
      */
     toggleLayoutsDropdownOrAddDefault: function toggleLayoutsDropdownOrAddDefault(event) {
+      var _this2 = this;
+
       if (this.layouts.length === 1) {
         return this.addGroup(this.layouts[0]);
       }
 
       this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+      this.$nextTick(function () {
+        if (_this2.isLayoutsDropdownOpen) {
+          var _this2$$refs$dropdown = _this2.$refs.dropdown.getBoundingClientRect(),
+              dropdownBottom = _this2$$refs$dropdown.bottom; // If the dropdown is popping out of the bottom of the window, pin it to the top of the button.
+
+
+          if (dropdownBottom > window.innerHeight) {
+            _this2.dropdownOrientation = 'top';
+          }
+        } else {
+          // Reset the orientation.
+          _this2.dropdownOrientation = 'bottom';
+        }
+      });
     },
 
     /**
@@ -520,7 +545,9 @@ __webpack_require__.r(__webpack_exports__);
       if (!layout) return;
       this.$emit('addGroup', layout);
       Nova.$emit('nova-flexible-content-add-group', layout);
-      this.isLayoutsDropdownOpen = false;
+      this.isLayoutsDropdownOpen = false; // Reset the orientation.
+
+      this.dropdownOrientation = 'top';
     }
   }
 });
@@ -1199,20 +1226,20 @@ var _hoisted_2 = {
   "class": "z-20"
 };
 var _hoisted_3 = {
-  key: 0,
-  "class": "z-20 absolute rounded-lg shadow-lg max-w-full top-full mt-3 pin-b max-h-search overflow-y-auto border border-gray-100 dark:border-gray-700"
-};
-var _hoisted_4 = {
   "class": "list-reset"
 };
-var _hoisted_5 = ["dusk", "onClick"];
-var _hoisted_6 = {
+var _hoisted_4 = ["dusk", "onClick"];
+var _hoisted_5 = {
   "class": "text-90"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_default_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("default-button");
 
-  return $props.layouts ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$props.layouts.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$data.isLayoutsDropdownOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.filteredLayouts, function (layout) {
+  return $props.layouts ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$props.layouts.length > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$data.isLayoutsDropdownOpen ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    key: 0,
+    ref: "dropdown",
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["absolute rounded-lg shadow-lg max-w-full max-h-search overflow-y-auto border border-40", $options.dropdownClasses])
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.filteredLayouts, function (layout) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       "class": "border-b border-gray-100 dark:border-gray-700",
       key: 'add-' + layout.name
@@ -1222,18 +1249,21 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $options.addGroup(layout);
       },
       "class": "cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-900 block py-2 px-3 no-underline font-normal bg-white dark:bg-gray-800"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(layout.title), 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(layout.title), 1
     /* TEXT */
     )])], 8
     /* PROPS */
-    , _hoisted_5)]);
+    , _hoisted_4)]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.isBelowLayoutLimits ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_default_button, {
+  ))])])], 2
+  /* CLASS */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.isBelowLayoutLimits ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_default_button, {
     key: 1,
     dusk: "toggle-layouts-dropdown-or-add-default",
     type: "button",
     tabindex: "0",
+    ref: "dropdownButton",
     onClick: $options.toggleLayoutsDropdownOrAddDefault
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -2580,7 +2610,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.top-full {\n        top: 100%\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.top-full {\n        top: 100%\n}\n.pin-b {\n        top: 100%;\n        bottom: auto;\n}\n.pin-t {\n        top: auto;\n        bottom: 100%;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
