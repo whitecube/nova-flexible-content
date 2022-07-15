@@ -1,23 +1,25 @@
 {
     "private": true,
     "scripts": {
-        "dev": "mix",
+        "dev": "npm run development",
         "development": "mix",
         "watch": "mix watch",
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
-        "production": "mix --production"
+        "prod": "npm run production",
+        "production": "mix --production",
+        "nova:install": "npm --prefix='../../vendor/laravel/nova' ci"
     },
     "devDependencies": {
-        "laravel-nova": "^1.0",
         "@vue/compiler-sfc": "^3.2.22",
+        "form-backend-validation": "^2.3.3",
         "laravel-mix": "^6.0.41",
-        "postcss": "^8.2",
-        "resolve-url-loader": "^3.1.2",
+        "lodash": "^4.17.21",
+        "postcss": "^8.3.11",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.8",
         "sass-loader": "10.*",
         "vue-loader": "^16.8.3",
-        "@vue/babel-plugin-jsx": "^1.1.1",
         "@vueform/multiselect": "^2.3.3"
     }
 }

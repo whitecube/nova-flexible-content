@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
@@ -15,6 +16,8 @@ use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
+    use SupportsDependentFields;
+
     /**
      * The field's component.
      *

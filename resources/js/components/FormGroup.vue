@@ -72,7 +72,6 @@
                     :is="'form-' + item.component"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
-                    :resource="resource"
                     :field="item"
                     :errors="errors"
                     :show-help-text="item.helpText != null"
@@ -84,7 +83,7 @@
 </template>
 
 <script>
-import BehavesAsPanel from '../../../vendor/laravel/nova/resources/js/mixins/BehavesAsPanel.js';
+import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
 
 export default {
     mixins: [BehavesAsPanel],

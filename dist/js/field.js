@@ -145,8 +145,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mixins: [laravel_nova__WEBPACK_IMPORTED_MODULE_1__.FormField, laravel_nova__WEBPACK_IMPORTED_MODULE_1__.HandlesValidationErrors],
-  props: ['resourceName', 'resourceId', 'resource', 'field'],
+  mixins: [laravel_nova__WEBPACK_IMPORTED_MODULE_1__.HandlesValidationErrors, laravel_nova__WEBPACK_IMPORTED_MODULE_1__.DependentFormField],
   components: {
     FullWidthField: _FullWidthField__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
@@ -332,10 +331,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _vendor_laravel_nova_resources_js_mixins_BehavesAsPanel_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../vendor/laravel/nova/resources/js/mixins/BehavesAsPanel.js */ "./vendor/laravel/nova/resources/js/mixins/BehavesAsPanel.js");
+/* harmony import */ var nova_mixins_BehavesAsPanel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! nova-mixins/BehavesAsPanel */ "./vendor/laravel/nova/resources/js/mixins/BehavesAsPanel.js");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mixins: [_vendor_laravel_nova_resources_js_mixins_BehavesAsPanel_js__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  mixins: [nova_mixins_BehavesAsPanel__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: ['errors', 'group', 'index', 'field'],
   emits: ['move-up', 'move-down', 'remove'],
   data: function data() {
@@ -438,7 +437,6 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -760,13 +758,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           index: index,
           last: index === $options.groups.length - 1,
           group: group,
-          resource: $props.resource,
           resourceName: $props.resourceName,
           resourceId: $props.resourceId,
           attribute: $props.field.attribute
         }, null, 8
         /* PROPS */
-        , ["index", "last", "group", "resource", "resourceName", "resourceId", "attribute"])]);
+        , ["index", "last", "group", "resourceName", "resourceId", "attribute"])]);
       }), 256
       /* UNKEYED_FRAGMENT */
       ))];
@@ -830,7 +827,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: index,
       "resource-name": $props.resourceName,
       "resource-id": $props.resourceId,
-      resource: $props.resource,
       field: item,
       "validation-errors": null,
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
@@ -838,7 +834,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })
     }, null, 8
     /* PROPS */
-    , ["resource-name", "resource-id", "resource", "field", "class"]);
+    , ["resource-name", "resource-id", "field", "class"]);
   }), 128
   /* KEYED_FRAGMENT */
   ))], 10
@@ -868,24 +864,23 @@ var _hoisted_1 = {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_form_nova_flexible_content_group = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("form-nova-flexible-content-group");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)($props.field.fullWidth ? 'FullWidthField' : 'default-field'), {
-    dusk: $props.field.attribute,
-    field: $props.field,
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.field.fullWidth ? 'FullWidthField' : 'default-field'), {
+    dusk: _ctx.field.attribute,
+    field: _ctx.currentField,
     errors: _ctx.errors,
-    "full-width-content": "",
-    "show-help-text": _ctx.showHelpText
+    "show-help-text": _ctx.showHelpText,
+    "full-width-content": ""
   }, {
     field: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [$data.order.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.orderedGroups, function (group, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_form_nova_flexible_content_group, {
-          dusk: $props.field.attribute + '-' + index,
+          dusk: _ctx.field.attribute + '-' + index,
           key: group.key,
-          field: $props.field,
+          field: _ctx.field,
           group: group,
           index: index,
-          "resource-name": $props.resourceName,
-          "resource-id": $props.resourceId,
-          resource: $props.resource,
+          "resource-name": _ctx.resourceName,
+          "resource-id": _ctx.resourceId,
           errors: _ctx.errors,
           onMoveUp: function onMoveUp($event) {
             return $options.moveUp(group.key);
@@ -898,24 +893,23 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           }
         }, null, 8
         /* PROPS */
-        , ["dusk", "field", "group", "index", "resource-name", "resource-id", "resource", "errors", "onMoveUp", "onMoveDown", "onRemove"]);
+        , ["dusk", "field", "group", "index", "resource-name", "resource-id", "errors", "onMoveUp", "onMoveDown", "onRemove"]);
       }), 128
       /* KEYED_FRAGMENT */
-      ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)($props.field.menu.component), {
+      ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.field.menu.component), {
         layouts: $options.layouts,
-        field: $props.field,
+        field: _ctx.field,
         "limit-counter": $options.limitCounter,
         "limit-per-layout-counter": $options.limitPerLayoutCounter,
         errors: _ctx.errors,
-        "resource-name": $props.resourceName,
-        "resource-id": $props.resourceId,
-        resource: $props.resource,
+        "resource-name": _ctx.resourceName,
+        "resource-id": _ctx.resourceId,
         onAddGroup: _cache[0] || (_cache[0] = function ($event) {
           return $options.addGroup($event);
         })
       }, null, 8
       /* PROPS */
-      , ["layouts", "field", "limit-counter", "limit-per-layout-counter", "errors", "resource-name", "resource-id", "resource"]))];
+      , ["layouts", "field", "limit-counter", "limit-per-layout-counter", "errors", "resource-name", "resource-id"]))];
     }),
     _: 1
     /* STABLE */
@@ -1077,7 +1071,6 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: index,
       "resource-name": _ctx.resourceName,
       "resource-id": _ctx.resourceId,
-      resource: _ctx.resource,
       field: item,
       errors: $props.errors,
       "show-help-text": item.helpText != null,
@@ -1086,7 +1079,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })
     }, null, 8
     /* PROPS */
-    , ["resource-name", "resource-id", "resource", "field", "errors", "show-help-text", "class"]);
+    , ["resource-name", "resource-id", "field", "errors", "show-help-text", "class"]);
   }), 128
   /* KEYED_FRAGMENT */
   ))], 2
@@ -1480,9 +1473,18 @@ var Group = /*#__PURE__*/function () {
   }, {
     key: "renameFields",
     value: function renameFields() {
+      var _this = this;
+
       for (var i = this.fields.length - 1; i >= 0; i--) {
         this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
         this.fields[i].validationKey = this.fields[i].attribute;
+
+        if (this.fields[i].dependsOn) {
+          Object.keys(this.fields[i].dependsOn).forEach(function (key) {
+            _this.fields[i].dependsOn["".concat(_this.key, "__").concat(key)] = _this.fields[i].dependsOn[key];
+            delete _this.fields[i].dependsOn[key];
+          });
+        }
       }
     }
   }]);

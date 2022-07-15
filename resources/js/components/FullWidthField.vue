@@ -30,8 +30,7 @@
 </template>
 
 <script>
-import { mapProps } from 'laravel-nova'
-import { HandlesValidationErrors, Errors } from 'laravel-nova'
+import { HandlesValidationErrors, mapProps } from 'laravel-nova'
 
 export default {
     mixins: [HandlesValidationErrors],
