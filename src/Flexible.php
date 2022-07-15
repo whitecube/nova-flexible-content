@@ -4,6 +4,7 @@ namespace Whitecube\NovaFlexibleContent;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
+use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
@@ -15,6 +16,8 @@ use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
 
 class Flexible extends Field
 {
+    use SupportsDependentFields;
+
     /**
      * The field's component.
      *
@@ -112,6 +115,17 @@ class Flexible extends Field
     }
 
     /**
+     * Make the flexible content take up the full width
+     * of the form. Labels will sit above
+     *
+     * @return mixed
+     */
+    public function stacked()
+    {
+        return $this->fullWidth();
+    }
+
+    /**
      *  Prevent the 'Add Layout' button from appearing more than once
      *
      * @return $this
@@ -173,7 +187,7 @@ class Flexible extends Field
         }
 
         $layout = $arguments[0];
-        
+
         if(is_string($layout) && is_a($layout, LayoutInterface::class, true)) {
             $layout = new $layout();
         }
