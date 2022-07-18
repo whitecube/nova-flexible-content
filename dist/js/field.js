@@ -151,7 +151,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: {
     layouts: function layouts() {
-      return this.field.layouts || false;
+      return this.currentField.layouts || false;
     },
     orderedGroups: function orderedGroups() {
       var _this = this;
@@ -162,11 +162,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, []);
     },
     limitCounter: function limitCounter() {
-      if (this.field.limit === null || typeof this.field.limit == "undefined") {
+      if (this.currentField.limit === null || typeof this.currentField.limit == "undefined") {
         return null;
       }
 
-      return this.field.limit - Object.keys(this.groups).length;
+      return this.currentField.limit - Object.keys(this.groups).length;
     },
     limitPerLayoutCounter: function limitPerLayoutCounter() {
       var _this2 = this;
@@ -197,7 +197,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
      * Set the initial, internal value for the field.
      */
     setInitialValue: function setInitialValue() {
-      this.value = this.field.value || [];
+      this.value = this.currentField.value || [];
       this.files = {};
       this.populateGroups();
     },
@@ -223,8 +223,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.files = _objectSpread(_objectSpread({}, this.files), group.files);
       }
 
-      this.appendFieldAttribute(formData, this.field.attribute);
-      formData.append(this.field.attribute, this.value.length ? JSON.stringify(this.value) : ''); // Append file uploads
+      this.appendFieldAttribute(formData, this.currentField.attribute);
+      formData.append(this.currentField.attribute, this.value.length ? JSON.stringify(this.value) : ''); // Append file uploads
 
       for (var file in this.files) {
         formData.append(file, this.files[file]);
@@ -262,7 +262,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.groups = {};
 
       for (var i = 0; i < this.value.length; i++) {
-        this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key, this.field.collapsed);
+        this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key, this.currentField.collapsed);
       }
     },
 
@@ -283,7 +283,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (!layout) return;
       collapsed = collapsed || false;
       var fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-          group = new _group__WEBPACK_IMPORTED_MODULE_2__["default"](layout.name, layout.title, fields, this.field, key, collapsed);
+          group = new _group__WEBPACK_IMPORTED_MODULE_2__["default"](layout.name, layout.title, fields, this.currentField, key, collapsed);
       this.groups[group.key] = group;
       this.order.push(group.key);
     },
@@ -891,8 +891,8 @@ var _hoisted_1 = {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_form_nova_flexible_content_group = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("form-nova-flexible-content-group");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.field.fullWidth ? 'FullWidthField' : 'default-field'), {
-    dusk: _ctx.field.attribute,
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.currentField.fullWidth ? 'FullWidthField' : 'default-field'), {
+    dusk: _ctx.currentField.attribute,
     field: _ctx.currentField,
     errors: _ctx.errors,
     "show-help-text": _ctx.showHelpText,
@@ -901,9 +901,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     field: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [$data.order.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.orderedGroups, function (group, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_form_nova_flexible_content_group, {
-          dusk: _ctx.field.attribute + '-' + index,
+          dusk: _ctx.currentField.attribute + '-' + index,
           key: group.key,
-          field: _ctx.field,
+          field: _ctx.currentField,
           group: group,
           index: index,
           "resource-name": _ctx.resourceName,
@@ -923,9 +923,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         , ["dusk", "field", "group", "index", "resource-name", "resource-id", "errors", "onMoveUp", "onMoveDown", "onRemove"]);
       }), 128
       /* KEYED_FRAGMENT */
-      ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.field.menu.component), {
+      ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)((0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDynamicComponent)(_ctx.currentField.menu.component), {
         layouts: $options.layouts,
-        field: _ctx.field,
+        field: _ctx.currentField,
         "limit-counter": $options.limitCounter,
         "limit-per-layout-counter": $options.limitPerLayoutCounter,
         errors: _ctx.errors,
