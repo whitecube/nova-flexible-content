@@ -11,7 +11,10 @@
         "nova:install": "npm --prefix='../../vendor/laravel/nova' ci"
     },
     "devDependencies": {
+        "@inertiajs/inertia": "^0.11.0",
+        "@vue/babel-plugin-jsx": "^1.1.1",
         "@vue/compiler-sfc": "^3.2.22",
+        "@vueform/multiselect": "^2.3.3",
         "form-backend-validation": "^2.3.3",
         "laravel-mix": "^6.0.41",
         "lodash": "^4.17.21",
@@ -20,6 +23,6 @@
         "sass": "^1.32.8",
         "sass-loader": "10.*",
         "vue-loader": "^16.8.3",
-        "@vueform/multiselect": "^2.3.3"
+        "vuex": "^4.0.2"
     }
 }
