@@ -8,3 +8,5 @@ phpunit.xml
 .phpunit.result.cache
 .DS_Store
 Thumbs.db
+yarn-error.log
+webpack.mix.js
