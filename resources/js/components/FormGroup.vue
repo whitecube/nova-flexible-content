@@ -30,6 +30,14 @@
 
                     <div class="flex" v-if="!readonly">
                         <button
+                            dusk="drag-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
+                            :title="__('Drag')"
+                            >
+                            <icon type="selector" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
                             dusk="move-up-group"
                             type="button"
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
