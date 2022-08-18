@@ -198,13 +198,18 @@ export default {
             }
 
             this.$nextTick(() => {
-                tinyMCE.editors
+                tinyMCE.get()
                     .filter((editor) => editor.id.startsWith(this.group.key))
                     .forEach((editor) => {
-                        let settings = editor.settings;
+                        const id = editor.id;
+
                         editor.remove();
-                        tinyMCE.init(settings);
-                    })
+
+                        tinyMCE.init({
+                            selector: `#${id}`,
+                            ...window.Scholieren?.tinyMCEDefaults || {}
+                        });
+                    });
             });
         }
     },
