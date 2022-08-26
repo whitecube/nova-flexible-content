@@ -633,7 +633,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             throw new \Exception("No cryptographically secure random function available");
         }
 
-        return substr(bin2hex($bytes), 0, 16);
+        return 'c' . substr(bin2hex($bytes), 0, 15);
     }
 
     /**
