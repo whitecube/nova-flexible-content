@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 
 trait HasMediaLibrary {
 
@@ -143,7 +144,7 @@ trait HasMediaLibrary {
      * Should remove all related medias except if shouldDeletePreservingMedia returns true
      *
      * @param  Flexible $flexible
-     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     * @param  Layout $layout
      *
      * @return mixed
      */
