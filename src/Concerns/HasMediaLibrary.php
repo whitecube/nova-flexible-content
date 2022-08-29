@@ -27,7 +27,7 @@ trait HasMediaLibrary {
      *
      * @return \Spatie\MediaLibrary\HasMedia
      */
-    protected function getMediaModel() : HasMedia
+    public function getMediaModel() : HasMedia
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
