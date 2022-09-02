@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 
 trait HasMediaLibrary {
 
