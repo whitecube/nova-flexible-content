@@ -1,23 +1,21 @@
 <template>
     <div class="relative" v-if="layouts">
-        <div class="z-20" v-if="layouts.length > 1">
-            <div v-if="isLayoutsDropdownOpen"
-                 ref="dropdown"
-                 class="z-20 absolute rounded-lg shadow-lg max-w-full max-h-search overflow-y-auto border border-40"
-                 v-bind:class="dropdownClasses"
-            >
-                <div>
-                    <ul class="list-reset">
-                        <li v-for="layout in filteredLayouts" class="border-b border-gray-100 dark:border-gray-700" :key="'add-'+layout.name">
-                            <a
-                                :dusk="'add-' + layout.name"
-                                @click="addGroup(layout)"
-                                class="cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-900 block py-2 px-3 no-underline font-normal bg-white dark:bg-gray-800">
-                                <div><p class="text-90">{{ layout.title }}</p></div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+        <div v-if="isLayoutsDropdownOpen && layouts.length > 1"
+                ref="dropdown"
+                class="z-20 absolute rounded-lg shadow-lg max-w-full max-h-search overflow-y-auto border border-40"
+                v-bind:class="dropdownClasses"
+        >
+            <div>
+                <ul class="list-reset">
+                    <li v-for="layout in filteredLayouts" class="border-b border-gray-100 dark:border-gray-700" :key="'add-'+layout.name">
+                        <a
+                            :dusk="'add-' + layout.name"
+                            @click="addGroup(layout)"
+                            class="cursor-pointer flex items-center hover:bg-gray-50 dark:hover:bg-gray-900 block py-2 px-3 no-underline font-normal bg-white dark:bg-gray-800">
+                            <div><p class="text-90">{{ layout.title }}</p></div>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
         <default-button
