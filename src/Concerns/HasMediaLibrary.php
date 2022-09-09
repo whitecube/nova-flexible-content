@@ -27,12 +27,16 @@ trait HasMediaLibrary {
      *
      * @return \Spatie\MediaLibrary\HasMedia
      */
-    protected function getMediaModel() : HasMedia
+    public function getMediaModel() : HasMedia
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
         while ($model instanceof Layout) {
-          $model = $model->getMediaModel();
+            if(method_exists($model,'getMediaModel')) {
+                $model = $model->getMediaModel();
+            } else {
+                $model = $model->model;
+            }
         }
 
         if(is_null($model) || !($model instanceof HasMedia)) {
