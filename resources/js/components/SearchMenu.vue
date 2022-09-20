@@ -108,4 +108,8 @@
     }
 </script>
 
-<style src="@vueform/multiselect/themes/default.css"></style>
+<style lang="scss">
+.flexible-search-menu-multiselect {
+  @import "@vueform/multiselect/themes/default.scss";
+}
+</style>
