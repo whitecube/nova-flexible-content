@@ -153,6 +153,32 @@ By default, the field takes advantage of a **JSON column** on your model's table
 
 Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains two simple methods: `get` and `set`. [See the docs for more information on this](https://whitecube.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
+### resolveUsing, displayUsing, fillUsing
+
+This package implements the default nova methods to alter data on resolving and updating. 
+
+The resolveUsing/displayUsing needs to perform retrieve the data and format it. This differs from the default usage of these methods. This is why the flexible instance is added to the callback.
+
+```php
+Flexible::make('Content', 'content')
+    ->resolveUsing(function ($flexible, $resource, $attribute) {
+        $value = $flexible->resolveGroups($flexible->buildGroups($resource, $attribute));
+
+        return $value;
+    })
+```
+
+The fillUsing method allows you to alter the data or store the data on a different model/column.
+
+```php
+Flexible::make('Content', 'content')
+    ->fillUsing(function ($request, $model, $attribute, $requestAttribute) {
+        $value = $request->{$requestAttribute};
+        
+        $model->{$attribute} = $value;
+    })
+```
+
 ### Usage with nova-page
 
 Maybe you heard of one of our other packages, [nova-page](https://github.com/whitecube/nova-page), which is a Nova Tool that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well together! First create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add a [flexible content](https://github.com/whitecube/nova-flexible-content#adding-layouts) to the template's fields.

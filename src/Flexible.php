@@ -2,14 +2,12 @@
 
 namespace Whitecube\NovaFlexibleContent;
 
-use Illuminate\Support\Str;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
-use Whitecube\NovaFlexibleContent\Layouts\Preset;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
 use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
@@ -254,6 +252,12 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
+        if ($this->resolveCallback && is_callable($this->resolveCallback)) {
+            $this->value = call_user_func($this->resolveCallback, $this, $resource, $attribute);
+
+            return;
+        }
+
         $this->registerOriginModel($resource);
 
         $this->buildGroups($resource, $attribute);
@@ -272,11 +276,13 @@ class Flexible extends Field
     {
         $attribute = $attribute ?? $this->attribute;
 
-        $this->registerOriginModel($resource);
+        if ($this->displayCallback && is_callable($this->displayCallback)) {
+            $this->value = call_user_func($this->displayCallback, $this, $resource, $attribute);
 
-        $this->buildGroups($resource, $attribute);
+            return;
+        }
 
-        $this->value = $this->resolveGroupsForDisplay($this->groups);
+        $this->resolve($resource, $attribute);
     }
 
     /**
@@ -316,7 +322,13 @@ class Flexible extends Field
 
         $callbacks = collect($this->syncAndFillGroups($request, $requestAttribute));
 
-        $this->value = $this->resolver->set($model, $attribute, $this->groups);
+        $request->{$attribute} = $this->resolver->set($model, $attribute, $this->groups);
+
+        if (isset($this->fillCallback)) {
+            return call_user_func(
+                $this->fillCallback, $request, $model, $attribute, $requestAttribute
+            );
+        }
 
         if($callbacks->isEmpty()) {
             return;
@@ -410,7 +422,7 @@ class Flexible extends Field
      * @param  Illuminate\Support\Collection  $groups
      * @return Illuminate\Support\Collection
      */
-    protected function resolveGroups($groups)
+    public function resolveGroups($groups)
     {
         return $groups->map(function($group) {
             return $group->getResolved();
@@ -439,7 +451,7 @@ class Flexible extends Field
      * @param  string $attribute
      * @return Illuminate\Support\Collection
      */
-    protected function buildGroups($resource, $attribute)
+    public function buildGroups($resource, $attribute)
     {
         if(!$this->resolver) {
             $this->resolver(Resolver::class);
