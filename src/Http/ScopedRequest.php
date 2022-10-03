@@ -7,6 +7,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class ScopedRequest extends NovaRequest
 {
 
+    public $group;
+
     /**
      * Create a copy of the given request, only containing the group's input
      *
@@ -29,6 +31,9 @@ class ScopedRequest extends NovaRequest
      */
     public function scopeInto($group, $attributes)
     {
+
+        $this->group = $group;
+
         [$input, $files] = $this->getScopeState($group, $attributes);
         
         $input['_method'] = $this->input('_method');
