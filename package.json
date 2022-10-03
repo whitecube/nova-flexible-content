@@ -15,7 +15,7 @@
         "@vue/babel-plugin-jsx": "^1.1.1",
         "@vue/compiler-sfc": "^3.2.22",
         "@vueform/multiselect": "^2.3.3",
-        "form-backend-validation": "^2.3.3",
+        "form-backend-validation": "^2.4.0",
         "laravel-mix": "^6.0.41",
         "lodash": "^4.17.21",
         "postcss": "^8.3.11",
