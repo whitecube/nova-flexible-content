@@ -85,7 +85,7 @@
 
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
-import {mapProps} from 'laravel-nova';
+import { mapProps } from 'laravel-nova';
 
 export default {
     mixins: [BehavesAsPanel],
@@ -111,20 +111,25 @@ export default {
     computed: {
         titleStyle() {
             let classes = ['border-t', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-t-lg'];
+
             if (this.collapsed) {
                 classes.push('border-b rounded-b-lg');
             }
+
             return classes;
         },
         containerStyle() {
             let classes = ['grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-b-lg'];
-            if(!this.group.title) {
+
+            if (! this.group.title) {
                 classes.push('border-t');
                 classes.push('rounded-tr-lg');
             }
+
             if (this.collapsed) {
                 classes.push('hidden');
             }
+
             return classes;
         }
     },
@@ -155,7 +160,7 @@ export default {
          * Confirm remove message
          */
         confirmRemove() {
-            if(this.field.confirmRemove){
+            if (this.field.confirmRemove){
                 this.removeMessage = true;
             } else {
                 this.remove()
@@ -205,10 +210,6 @@ export default {
 
     .confirm-message .text-danger {
         color: #ee3f22;
-    }
-
-    .closebtn {
-        /*color: #B7CAD6;*/
     }
 
     .rounded-l {
