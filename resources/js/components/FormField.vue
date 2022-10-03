@@ -8,8 +8,7 @@
         full-width-content>
         <template #field>
 
-            <div
-                v-if="order.length > 0">
+            <div ref="flexibleFieldContainer">
                 <form-nova-flexible-content-group
                     v-for="(group, index) in orderedGroups"
                     :dusk="currentField.attribute + '-' + index"
@@ -46,6 +45,7 @@
 <script>
 
 import FullWidthField from './FullWidthField';
+import Sortable from 'sortablejs'
 import { DependentFormField, HandlesValidationErrors, mapProps } from 'laravel-nova';
 import Group from '../group';
 
@@ -98,8 +98,15 @@ export default {
         return {
             order: [],
             groups: {},
-            files: {}
+            files: {},
+            sortableInstance: null
         };
+    },
+
+    beforeUnmount() {
+        if (this.sortableInstance) {
+            this.sortableInstance.destroy();
+        }
     },
 
     methods: {
@@ -111,6 +118,7 @@ export default {
             this.files = {};
 
             this.populateGroups();
+            this.$nextTick(this.initSortable.bind(this));
         },
 
         /**
@@ -141,9 +149,11 @@ export default {
             formData.append(this.currentField.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
-            for(let file in this.files) {
+            for (let file in this.files) {
                 formData.append(file, this.files[file]);
             }
+
+            this.$nextTick(this.initSortable.bind(this));
         },
 
         /**
@@ -152,7 +162,7 @@ export default {
         appendFieldAttribute(formData, attribute) {
             let registered = [];
 
-            if(formData.has('___nova_flexible_content_fields')) {
+            if (formData.has('___nova_flexible_content_fields')) {
                 registered = JSON.parse(formData.get('___nova_flexible_content_fields'));
             }
 
@@ -243,7 +253,38 @@ export default {
 
             this.order.splice(index, 1);
             delete this.groups[key];
-        }
+        },
+
+
+        initSortable() {
+            const containerRef = this.$refs['flexibleFieldContainer']
+
+            if (! containerRef || this.sortableInstance) {
+                return;
+            }
+
+            this.sortableInstance = Sortable.create(containerRef, {
+                ghostClass: 'nova-flexible-content-sortable-ghost',
+                dragClass: 'nova-flexible-content-sortable-drag',
+                chosenClass: 'nova-flexible-content-sortable-chosen',
+                direction: 'vertical',
+                handle: '.nova-flexible-content-drag-button',
+                scrollSpeed: 5,
+                animation: 500,
+                onEnd: (evt) => {
+                    const item = evt.item;
+                    const key = item.id;
+                    const oldIndex = evt.oldIndex;
+                    const newIndex = evt.newIndex;
+
+                    if (newIndex < oldIndex) {
+                        this.moveUp(key);
+                    } else if (newIndex > oldIndex) {
+                        this.moveDown(key);
+                    }
+                 }
+            });
+        },
     }
 }
 </script>
