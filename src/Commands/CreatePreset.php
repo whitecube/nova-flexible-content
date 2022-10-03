@@ -59,7 +59,7 @@ class CreatePreset extends Command
 
         $this->files->put($path, $this->buildClass());
 
-        $this->info('Created ' . $path);
+        $this->info('Created '.$path);
     }
 
     /**
@@ -69,7 +69,7 @@ class CreatePreset extends Command
      */
     public function getClassnameArgument()
     {
-        if(!$this->argument('classname')) {
+        if (! $this->argument('classname')) {
             return $this->ask('Please provide a class name for your preset');
         }
 
@@ -84,21 +84,21 @@ class CreatePreset extends Command
     protected function getPath()
     {
         return $this->makeDirectory(
-            app_path('Nova/Flexible/Presets/' . $this->classname . '.php')
+            app_path('Nova/Flexible/Presets/'.$this->classname.'.php')
         );
     }
 
     /**
      * Create the directories if they do not exist yet
      *
-     * @param string $path
+     * @param  string  $path
      * @return string
      */
     protected function makeDirectory($path)
     {
         $directory = dirname($path);
 
-        if(!$this->files->isDirectory($directory)) {
+        if (! $this->files->isDirectory($directory)) {
             $this->files->makeDirectory($directory, 0755, true, true);
         }
 
@@ -115,8 +115,7 @@ class CreatePreset extends Command
         return str_replace(
             ':classname',
             $this->classname,
-            $this->files->get(__DIR__ . '/../Stubs/Preset.php')
+            $this->files->get(__DIR__.'/../Stubs/Preset.php')
         );
     }
-
 }

@@ -9,10 +9,9 @@ use Whitecube\NovaFlexibleContent\FileAdder\FileAdder as NewFileAdder;
 class FileAdderFactory extends OriginalFileAdderFactory
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Model $subject
-     * @param string|\Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @param string|null $suffix
-     *
+     * @param  \Illuminate\Database\Eloquent\Model  $subject
+     * @param  string|\Symfony\Component\HttpFoundation\File\UploadedFile  $file
+     * @param  string|null  $suffix
      * @return \Spatie\MediaLibrary\MediaCollections\FileAdder
      */
     public static function create(Model $subject, $file, string $suffix = null): \Spatie\MediaLibrary\MediaCollections\FileAdder

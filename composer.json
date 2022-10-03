@@ -52,9 +52,11 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "laravel/pint": "^1.2"
     },
     "scripts": {
-        "test": "phpunit --colors=always tests"
+        "test": "phpunit --colors=always tests",
+        "fix-style": "./vendor/bin/pint"
     }
 }

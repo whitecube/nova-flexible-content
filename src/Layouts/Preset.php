@@ -12,5 +12,4 @@ abstract class Preset
      * @return void
      */
     abstract public function handle(Flexible $field);
-
 }
