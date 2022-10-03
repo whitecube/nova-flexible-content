@@ -230,7 +230,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $fields = $this->fields->map(function($field) {
             return $this->cloneField($field);
         });
-        
+
         $clone = new static(
             $this->title,
             $this->name,
@@ -264,7 +264,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $field;
     }
-    
+
     /**
      * Resolve fields using given attributes.
      *
@@ -633,7 +633,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             throw new \Exception("No cryptographically secure random function available");
         }
 
-        return substr(bin2hex($bytes), 0, 16);
+        return 'c'.substr(bin2hex($bytes), 0, 15);
     }
 
     /**
