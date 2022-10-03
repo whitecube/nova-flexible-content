@@ -27,7 +27,7 @@ trait HasMediaLibrary {
      *
      * @return \Spatie\MediaLibrary\HasMedia
      */
-    protected function getMediaModel() : HasMedia
+    public function getMediaModel() : HasMedia
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
@@ -144,7 +144,7 @@ trait HasMediaLibrary {
      * Should remove all related medias except if shouldDeletePreservingMedia returns true
      *
      * @param  Flexible $flexible
-     * @param  Whitecube\NovaFlexibleContent\Layout $layout
+     * @param  Layout $layout
      *
      * @return mixed
      */
