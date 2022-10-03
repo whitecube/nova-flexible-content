@@ -20,6 +20,7 @@
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :errors="errors"
+                    :mode="mode"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -45,11 +46,15 @@
 <script>
 
 import FullWidthField from './FullWidthField';
-import { DependentFormField, HandlesValidationErrors } from 'laravel-nova';
+import { DependentFormField, HandlesValidationErrors, mapProps } from 'laravel-nova';
 import Group from '../group';
 
 export default {
     mixins: [HandlesValidationErrors, DependentFormField],
+
+    props: {
+        ...mapProps(['mode']),
+    },
 
     components: { FullWidthField },
 

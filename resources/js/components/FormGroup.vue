@@ -74,6 +74,7 @@
                     :resource-id="resourceId"
                     :field="item"
                     :errors="errors"
+                    :mode="mode"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
                 />
@@ -84,11 +85,18 @@
 
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
+import {mapProps} from 'laravel-nova';
 
 export default {
     mixins: [BehavesAsPanel],
 
-    props: ['errors', 'group', 'index', 'field'],
+    props: {
+        errors: {},
+        group: {},
+        index: {},
+        field: {},
+        ...mapProps(['mode'])
+    },
 
     emits: ['move-up', 'move-down', 'remove'],
 
