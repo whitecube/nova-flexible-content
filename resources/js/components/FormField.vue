@@ -98,6 +98,12 @@ export default {
         };
     },
 
+    beforeUnmount() {
+        if (this.sortableInstance) {
+            this.sortableInstance.destroy();
+        }
+    },
+
     methods: {
         /*
          * Set the initial, internal value for the field.
@@ -107,9 +113,7 @@ export default {
             this.files = {};
 
             this.populateGroups();
-            this.$nextTick(() => {
-              this.initSortable()
-            })
+            this.$nextTick(this.initSortable.bind(this));
         },
 
         /**
@@ -140,13 +144,11 @@ export default {
             formData.append(this.currentField.attribute, this.value.length ? JSON.stringify(this.value) : '');
 
             // Append file uploads
-            for(let file in this.files) {
+            for (let file in this.files) {
                 formData.append(file, this.files[file]);
             }
 
-            this.$nextTick(() => {
-              this.initSortable()
-            })
+            this.$nextTick(this.initSortable.bind(this));
         },
 
         /**
@@ -155,7 +157,7 @@ export default {
         appendFieldAttribute(formData, attribute) {
             let registered = [];
 
-            if(formData.has('___nova_flexible_content_fields')) {
+            if (formData.has('___nova_flexible_content_fields')) {
                 registered = JSON.parse(formData.get('___nova_flexible_content_fields'));
             }
 
@@ -250,39 +252,34 @@ export default {
 
 
         initSortable() {
-          const containerRef = this.$refs['flexibleFieldContainer']
+            const containerRef = this.$refs['flexibleFieldContainer']
 
-          if(!containerRef || this.sortableInstance) {
-            return
-          }
-
-          this.sortableInstance = Sortable.create(containerRef, {
-            ghostClass: 'nova-flexible-content-sortable-ghost',
-            dragClass: 'nova-flexible-content-sortable-drag',
-            chosenClass: 'nova-flexible-content-sortable-chosen',
-            direction: 'vertical',
-            handle: '.nova-flexible-content-drag-button',
-            scrollSpeed: 5,
-            dragoverBubble: true,
-            onEnd: (evt) => {
-              const item = evt.item
-              const key = item.id
-              const oldIndex = evt.oldIndex
-              const newIndex = evt.newIndex
-
-              if(newIndex < oldIndex) {
-                this.moveUp(key)
-              }else if(newIndex > oldIndex){
-                this.moveDown(key)
-              }
+            if (! containerRef || this.sortableInstance) {
+                return;
             }
-          })
+
+            this.sortableInstance = Sortable.create(containerRef, {
+                ghostClass: 'nova-flexible-content-sortable-ghost',
+                dragClass: 'nova-flexible-content-sortable-drag',
+                chosenClass: 'nova-flexible-content-sortable-chosen',
+                direction: 'vertical',
+                handle: '.nova-flexible-content-drag-button',
+                scrollSpeed: 5,
+                animation: 500,
+                onEnd: (evt) => {
+                    const item = evt.item;
+                    const key = item.id;
+                    const oldIndex = evt.oldIndex;
+                    const newIndex = evt.newIndex;
+
+                    if (newIndex < oldIndex) {
+                        this.moveUp(key);
+                    } else if (newIndex > oldIndex) {
+                        this.moveDown(key);
+                    }
+                 }
+            });
         },
-    },
-    beforeUnmount() {
-      if (this.sortableInstance) {
-        this.sortableInstance.destroy();
-      }
-    },
+    }
 }
 </script>
