@@ -22,6 +22,21 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     use HidesAttributes;
     use HasFlexible;
 
+
+    /**
+     * Define that Layout is a model, when in fact it is not.
+     *
+     * @var bool
+     */
+    protected $exists = false;
+
+    /**
+     * Define that Layout is a model, when in fact it is not.
+     *
+     * @var bool
+     */
+    protected $wasRecentlyCreated = false;
+
     /**
      * The layout's name
      *
