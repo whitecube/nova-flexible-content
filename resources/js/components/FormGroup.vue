@@ -95,7 +95,7 @@
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
 import { mapProps } from 'laravel-nova';
-import { ref, reactive, computed } from 'vue'
+import { ref } from 'vue'
 
 export default {
     mixins: [BehavesAsPanel],
