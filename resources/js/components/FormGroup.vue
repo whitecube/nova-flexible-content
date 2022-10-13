@@ -25,7 +25,7 @@
 
                     <p class="text-80 grow px-4">
                       <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
-                      {{ group.title }}<span v-if="collapsedPreview">: <span class="mr-3 font-semibold">{{ truncate(collapsedPreview, 30) }}</span></span>
+                      {{ group.title }}<span v-if="collapsedPreview !== null">: <span class="mr-3 font-semibold">{{ truncate(collapsedPreview, 30) }}</span></span>
                     </p>
 
                     <div class="flex" v-if="!readonly">
