@@ -25,7 +25,7 @@
 
                     <p class="text-80 grow px-4">
                       <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
-                      {{ group.title }}
+                      {{ group.title }}<span v-if="collapsedPreview">: <span class="mr-3 font-semibold">{{ collapsedPreview }}</span></span>
                     </p>
 
                     <div class="flex" v-if="!readonly">
@@ -85,6 +85,7 @@
                     :mode="mode"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
+                    @change="handleFieldChanged($event, item)"
                 />
             </div>
         </div>
@@ -94,6 +95,7 @@
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
 import { mapProps } from 'laravel-nova';
+import { ref, reactive, computed } from 'vue'
 
 export default {
     mixins: [BehavesAsPanel],
@@ -107,6 +109,28 @@ export default {
     },
 
     emits: ['move-up', 'move-down', 'remove'],
+
+    setup(props) {
+        const collapsedPreview = ref("")
+
+        let collapsedPreviewAttribute = null;
+        for (const [key, layout] of Object.entries(props.field.layouts)) {
+            if (layout.name === props.group.name) {
+                collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
+            }
+        }
+
+        Object.values(props.group.fields).forEach(field => {
+            let attribute = field.attribute.split('__').pop();
+            if (collapsedPreviewAttribute && attribute === collapsedPreviewAttribute) {
+                collapsedPreview.value = field.value;
+            }
+        });
+
+        return {
+            collapsedPreview,
+        };
+    },
 
     data() {
         return {
@@ -187,7 +211,20 @@ export default {
          */
         collapse() {
             this.collapsed = true;
-        }
+        },
+
+        handleFieldChanged(event, item) {
+            let collapsedPreviewAttribute = null;
+            for (const [key, layout] of Object.entries(this.field.layouts)) {
+                if (layout.name === this.group.name) {
+                    collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
+                }
+            }
+
+            if (item.attribute.split('__').pop() === collapsedPreviewAttribute) {
+                this.collapsedPreview = event.target.value;
+            }
+        },
     },
 }
 </script>
