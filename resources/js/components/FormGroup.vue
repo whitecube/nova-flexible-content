@@ -95,7 +95,6 @@
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
 import { mapProps } from 'laravel-nova';
-import { ref } from 'vue'
 
 export default {
     mixins: [BehavesAsPanel],
@@ -110,37 +109,26 @@ export default {
 
     emits: ['move-up', 'move-down', 'remove'],
 
-    setup(props) {
-        const collapsedPreview = ref("")
-
-        let collapsedPreviewAttribute = null;
-        for (const [key, layout] of Object.entries(props.field.layouts)) {
-            if (layout.name === props.group.name) {
-                collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
-            }
-        }
-
-        Object.values(props.group.fields).forEach(field => {
-            let attribute = field.attribute.split('__').pop();
-            if (collapsedPreviewAttribute && attribute === collapsedPreviewAttribute) {
-                collapsedPreview.value = field.value;
-            }
-        });
-
-        return {
-            collapsedPreview,
-        };
-    },
-
     data() {
         return {
             removeMessage: false,
             collapsed: this.group.collapsed,
             readonly: this.group.readonly,
+            collapsedPreview: null,
         };
     },
 
     computed: {
+        collapsedPreviewAttribute() {
+            let collapsedPreviewAttribute = null;
+            for (const [key, layout] of Object.entries(this.field.layouts)) {
+                if (layout.name === this.group.name) {
+                    collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
+                }
+            }
+
+            return collapsedPreviewAttribute;
+        },
         titleStyle() {
             let classes = ['border-t', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-t-lg'];
 
@@ -164,6 +152,15 @@ export default {
 
             return classes;
         }
+    },
+
+    mounted() {
+        Object.values(this.group.fields).forEach(field => {
+          let attribute = field.attribute.split('__').pop();
+          if (this.collapsedPreviewAttribute && attribute === this.collapsedPreviewAttribute) {
+            this.collapsedPreview = field.value;
+          }
+        });
     },
 
     methods: {
@@ -214,14 +211,7 @@ export default {
         },
 
         handleFieldChanged(event, item) {
-            let collapsedPreviewAttribute = null;
-            for (const [key, layout] of Object.entries(this.field.layouts)) {
-                if (layout.name === this.group.name) {
-                    collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
-                }
-            }
-
-            if (item.attribute.split('__').pop() === collapsedPreviewAttribute) {
+            if (item.attribute.split('__').pop() === this.collapsedPreviewAttribute) {
                 this.collapsedPreview = event.target.value;
             }
         },
