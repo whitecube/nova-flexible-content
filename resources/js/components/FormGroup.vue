@@ -192,25 +192,8 @@ export default {
 
     watch: {
         // https://github.com/whitecube/nova-flexible-content/issues/156#issuecomment-932327771
-        index() {
-            if (!window.tinyMCE) {
-                return;
-            }
-
-            this.$nextTick(() => {
-                tinyMCE.get()
-                    .filter((editor) => editor.id.startsWith(this.group.key))
-                    .forEach((editor) => {
-                        const id = editor.id;
-
-                        editor.remove();
-
-                        tinyMCE.init({
-                            selector: `#${id}`,
-                            ...window.Scholieren?.tinyMCEDefaults || {}
-                        });
-                    });
-            });
+        index(index) {
+            Nova.$emit('flexible-content-order-changed', index);
         }
     },
 }
