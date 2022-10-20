@@ -2,6 +2,7 @@
 
 namespace Whitecube\NovaFlexibleContent\Value;
 
+use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Collection;
 
 class Resolver implements ResolverInterface
@@ -57,7 +58,13 @@ class Resolver implements ResolverInterface
      */
     protected function extractValueFromResource($resource, $attribute)
     {
-        $value = data_get($resource, str_replace('->', '.', $attribute)) ?? [];
+        $attribute = str_replace('->', '.', $attribute);
+
+        if ($this->attributeIsFlexible($resource, $attribute)) {
+            $value = $resource->getRawOriginal($attribute) ?? [];
+        } else {
+            $value = data_get($resource, $attribute) ?? [];
+        }
 
         if ($value instanceof Collection) {
             $value = $value->toArray();
@@ -73,5 +80,19 @@ class Resolver implements ResolverInterface
         return array_map(function ($item) {
             return is_array($item) ? (object) $item : $item;
         }, $value);
+    }
+
+    /**
+     * Indicate whether resource attribute is flexible or not.
+     *
+     * @param   mixed  $resource
+     * @param   string  $attribute
+     * @return  bool
+     */
+    protected function attributeIsFlexible($resource, $attribute)
+    {
+        return is_object($resource) &&
+            in_array(HasAttributes::class, class_uses_recursive($resource), true) &&
+            is_subclass_of($resource->getCasts()[$attribute] ?? null, FlexibleCast::class);
     }
 }
