@@ -2,8 +2,9 @@
 
 namespace Whitecube\NovaFlexibleContent\Value;
 
-use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Support\Collection;
+use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
+use Whitecube\NovaFlexibleContent\Layouts\Layout;
 
 class Resolver implements ResolverInterface
 {
@@ -39,13 +40,16 @@ class Resolver implements ResolverInterface
         $value = $this->extractValueFromResource($resource, $attribute);
 
         return collect($value)->map(function ($item) use ($layouts) {
-            $layout = $layouts->find($item->layout);
+            $layout = $layouts->find($item instanceof Layout ? $item->name() : $item->layout);
 
             if (! $layout) {
                 return;
             }
 
-            return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
+            $key = $item instanceof Layout ? $item->key() : $item->key;
+            $attributes = $item instanceof Layout ? $item->getAttributes() : (array) $item->attributes;
+
+            return $layout->duplicateAndHydrate($key, $attributes);
         })->filter()->values();
     }
 
@@ -58,15 +62,11 @@ class Resolver implements ResolverInterface
      */
     protected function extractValueFromResource($resource, $attribute)
     {
-        $attribute = str_replace('->', '.', $attribute);
+        $value = data_get($resource, str_replace('->', '.', $attribute)) ?? [];
 
-        if ($this->attributeIsFlexible($resource, $attribute)) {
-            $value = $resource->getRawOriginal($attribute) ?? [];
-        } else {
-            $value = data_get($resource, $attribute) ?? [];
-        }
-
-        if ($value instanceof Collection) {
+        if ($value instanceof LayoutsCollection) {
+            $value = $value->all();
+        } elseif ($value instanceof Collection) {
             $value = $value->toArray();
         } elseif (is_string($value)) {
             $value = json_decode($value) ?? [];
@@ -80,19 +80,5 @@ class Resolver implements ResolverInterface
         return array_map(function ($item) {
             return is_array($item) ? (object) $item : $item;
         }, $value);
-    }
-
-    /**
-     * Indicate whether resource attribute is flexible or not.
-     *
-     * @param   mixed  $resource
-     * @param   string  $attribute
-     * @return  bool
-     */
-    protected function attributeIsFlexible($resource, $attribute)
-    {
-        return is_object($resource) &&
-            in_array(HasAttributes::class, class_uses_recursive($resource), true) &&
-            is_subclass_of($resource->getCasts()[$attribute] ?? null, FlexibleCast::class);
     }
 }
