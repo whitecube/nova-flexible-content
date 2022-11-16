@@ -119,9 +119,7 @@ export default {
     mounted() {
         if(this.field.collapsePrevious) {
             Nova.$on('nova-flexible-content-add-group', (layout) => {
-                if(layout.name !== this.group.name) {
                     this.collapsed = true;
-                }
             });
         }
     },
