@@ -105,6 +105,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $model;
 
     /**
+     * The relation resolver callbacks for the Layout.
+     *
+     * @var array
+     */
+    protected  $relationResolvers = [];
+
+    /**
+     * The loaded relationships for the Layout.
+     *
+     * @var array
+     */
+    protected $relations = [];
+
+    /**
      * Create a new base Layout instance
      *
      * @param string $title
@@ -245,7 +259,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $fields = $this->fields->map(function($field) {
             return $this->cloneField($field);
         });
-        
+
         $clone = new static(
             $this->title,
             $this->name,
@@ -279,7 +293,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         return $field;
     }
-    
+
     /**
      * Resolve fields using given attributes.
      *
@@ -519,7 +533,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  mixed  $offset
      * @return void
      */
-    #[\ReturnTypeWillChange]    
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->attributes[$offset]);
@@ -601,6 +615,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected function relationLoaded()
     {
         return false;
+    }
+
+    /**
+     * Get the dynamic relation resolver if defined or inherited, or return null.
+     * Since it is not possible to define a relation on a layout, this method
+     * returns null
+     *
+     * @param  string  $class
+     * @param  string  $key
+     * @return mixed
+     */
+    public function relationResolver($class, $key)
+    {
+        return null;
     }
 
     /**
