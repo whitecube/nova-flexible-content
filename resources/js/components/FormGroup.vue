@@ -34,7 +34,15 @@
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"
                         :title="__('Move down')"
                         @click.prevent="moveDown">
-                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10" />
+                        <icon type="arrow-down" view-box="0 0 8 4.8" width="10" height="10"/>
+                    </button>
+                    <button
+                        dusk="duplicate-group"
+                        type="button"
+                        class="group-control btn border-t border-r border-40 w-8 h-8 block"
+                        :title="__('Duplicate')"
+                        @click.prevent="duplicate">
+                        <icon type="duplicate" view-box="0 0 512 512" width="16" height="16" fill="none"/>
                     </button>
                     <button
                         dusk="delete-group"
@@ -42,7 +50,7 @@
                         class="group-control btn border-t border-r border-40 w-8 h-8 block"
                         :title="__('Delete')"
                         @click.prevent="confirmRemove">
-                        <icon type="delete" view-box="0 0 20 20" width="16" height="16" />
+                        <icon type="delete" view-box="0 0 20 20" width="16" height="16"/>
                     </button>
                     <portal to="modals">
                         <delete-flexible-content-group-modal
@@ -86,7 +94,7 @@
 </template>
 
 <script>
-import { BehavesAsPanel } from 'laravel-nova';
+import {BehavesAsPanel} from 'laravel-nova';
 
 export default {
     mixins: [BehavesAsPanel],
@@ -123,6 +131,13 @@ export default {
     },
 
     methods: {
+        /**
+         * Duplicate this group
+         */
+        duplicate() {
+            this.$emit('duplicate');
+        },
+
         /**
          * Move this group up
          */

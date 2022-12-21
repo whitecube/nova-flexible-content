@@ -21,6 +21,7 @@
                     :resource-id="resourceId"
                     :resource="resource"
                     :errors="errors"
+                    @duplicate="duplicate(group.key)"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -47,7 +48,7 @@
 <script>
 
 import FullWidthField from './FullWidthField';
-import { FormField, HandlesValidationErrors } from 'laravel-nova';
+import {FormField, HandlesValidationErrors} from 'laravel-nova';
 import Group from '../group';
 
 export default {
@@ -209,12 +210,30 @@ export default {
         },
 
         /**
+         * Duplicate a group
+         */
+        duplicate(key) {
+            let group = this.groups[key],
+                layout = this.getLayout(group.name),
+                attributes = JSON.parse(JSON.stringify(group.fields)); //Duplicate without reference
+
+            attributes.forEach((element, index, array) => {
+                element.attribute = element.attribute.split('__')[1] ?? element.attribute;
+                element.validationKey = element.validationKey.split('__')[1] ?? element.validationKey;
+
+                array[index] = element;
+            });
+
+            this.addGroup(layout, attributes);
+        },
+
+        /**
          * Move a group up
          */
         moveUp(key) {
             let index = this.order.indexOf(key);
 
-            if(index <= 0) return;
+            if (index <= 0) return;
 
             this.order.splice(index - 1, 0, this.order.splice(index, 1)[0]);
         },
