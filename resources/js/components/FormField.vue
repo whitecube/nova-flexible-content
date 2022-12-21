@@ -213,16 +213,26 @@ export default {
          * Duplicate a group
          */
         duplicate(key) {
+            let cleanAttributes = function (attributes) {
+                attributes.forEach((element, index, array) => {
+                    element.attribute = element.attribute.split('__')[1] ?? element.attribute;
+                    element.validationKey = element.validationKey.split('__')[1] ?? element.validationKey;
+
+                    if (element.component === 'nova-flexible-content') {
+                        element.value.forEach((value, index, array) => {
+                            array[index].attributes = cleanAttributes(value.attributes);
+                        });
+                    }
+
+                    array[index] = element;
+                });
+
+                return attributes;
+            }
+
             let group = this.groups[key],
                 layout = this.getLayout(group.name),
-                attributes = JSON.parse(JSON.stringify(group.fields)); //Duplicate without reference
-
-            attributes.forEach((element, index, array) => {
-                element.attribute = element.attribute.split('__')[1] ?? element.attribute;
-                element.validationKey = element.validationKey.split('__')[1] ?? element.validationKey;
-
-                array[index] = element;
-            });
+                attributes = cleanAttributes(JSON.parse(JSON.stringify(group.fields))); //Duplicate without reference
 
             this.addGroup(layout, attributes);
         },
