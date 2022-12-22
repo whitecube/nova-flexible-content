@@ -256,6 +256,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function duplicateAndHydrate($key, array $attributes = [])
     {
         $fields = $this->fields->map(function ($field) {
+            if (request()->boolean('editing')) {
+                $reflection = new \ReflectionClass($field);
+                $property = $reflection->getProperty('defaultCallback');
+                $property->setAccessible(true);
+
+                $value = $property->getValue($field);
+
+                if (is_null($field->value)) {
+                    $field->value = $value;
+                }
+
+                $property->setAccessible(false);
+            }
+
             return $this->cloneField($field);
         });
 
