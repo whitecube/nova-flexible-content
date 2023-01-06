@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Whitecube\NovaFlexibleContent\Flexible;
+use Illuminate\Contracts\Support\MessageBag;
 
 trait TransformsFlexibleErrors
 {
