@@ -30,11 +30,15 @@ trait TransformsFlexibleErrors
      */
     protected function transformFlexibleErrors(Response $response)
     {
-        $response->setData(
-            $this->updateResponseErrors($response->original)
-        );
+        $updatedResponseErrors = $this->updateResponseErrors($response->original);
 
-        return $response;
+        $errorBag = $response->exception?->validator?->errors();
+        if ($errorBag instanceof MessageBag) {
+            $replaceMessages = function (array $messages) { $this->messages = $messages; };
+            $replaceMessages->call($errorBag, $updatedResponseErrors['errors']);
+        }
+
+        return $response->setData($updatedResponseErrors);
     }
 
     /**
