@@ -115,7 +115,7 @@ class CreatePreset extends Command
         return str_replace(
             ':classname',
             $this->classname,
-            $this->files->get(__DIR__.'/../Stubs/Preset.php')
+            $this->files->get(__DIR__.'/../Stubs/Preset.stub')
         );
     }
 }
