@@ -115,7 +115,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @var array
      */
-    protected  $relationResolvers = [];
+    protected $relationResolvers = [];
 
     /**
      * The loaded relationships for the Layout.
@@ -452,7 +452,6 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {
-
     }
 
     /**

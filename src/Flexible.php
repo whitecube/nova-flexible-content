@@ -374,7 +374,7 @@ class Flexible extends Field
     /**
      * Fire's the remove callbacks on the layouts
      *
-     * @param Collection $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     * @param  Collection  $new_groups This should be (all) the new groups to bne compared against to find the removed groups
      */
     protected function fireRemoveCallbacks(Collection $new_groups)
     {

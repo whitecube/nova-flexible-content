@@ -17,6 +17,7 @@ class Collection extends BaseCollection
      *
      * @param  string  $name
      * @return \Whitecube\NovaFlexibleContent\Layouts\Layout|null
+     *
      * @psalm-return TLayout|null
      */
     public function find($name)
