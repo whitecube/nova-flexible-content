@@ -11,11 +11,13 @@ class Resolver implements ResolverInterface
      *
      * @param  mixed  $model
      * @param  string  $attribute
-     * @param  Illuminate\Support\Collection  $groups
+     * @param  \Illuminate\Support\Collection  $value
      * @return string
      */
-    public function set($model, $attribute, $groups)
+    public function set($model, $attribute, $value)
     {
+        $groups = $value; // to avoid Named Arguments issue but keep using better var name;
+
         return $model->$attribute = $groups->map(function ($group) {
             return [
                 'layout' => $group->name(),
@@ -28,20 +30,22 @@ class Resolver implements ResolverInterface
     /**
      * get the field's value
      *
-     * @param  mixed  $resource
+     * @param  mixed  $model
      * @param  string  $attribute
-     * @param  Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
-     * @return Illuminate\Support\Collection
+     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
+     * @return \Illuminate\Support\Collection|null
      */
-    public function get($resource, $attribute, $layouts)
+    public function get($model, $attribute, $layouts)
     {
+        $resource = $model; // to avoid Named Arguments issue but keep using better var name;
+
         $value = $this->extractValueFromResource($resource, $attribute);
 
         return collect($value)->map(function ($item) use ($layouts) {
             $layout = $layouts->find($item->layout);
 
             if (! $layout) {
-                return;
+                return null;
             }
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
