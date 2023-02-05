@@ -1,6 +1,11 @@
 <template>
-    <div class="relative mb-4 pb-1" :id="group.key">
-        <div class="w-full shrink">
+    <div class="mb-4 pb-1" 
+        :class="{
+            'fixed inset-0 h-screen z-30 bg-white dark:bg-gray-800 ': fullScreen,
+            relative: !fullScreen,
+        }"
+        :id="group.key">
+        <div class="h-full w-full shrink">
             <div :class="titleStyle" v-if="group.title">
                 <div class="h-8 leading-normal h-full flex items-center box-content"
                     :class="{'border-b border-gray-200 dark:border-gray-700 ': !collapsed}">
@@ -27,6 +32,18 @@
                       <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
                       {{ group.title }}
                     </p>
+
+                    <button
+                        dusk="fullscreen-group"
+                        type="button"
+                        class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
+                        :title="__('Toggle full screen')"
+                        v-if="field.enablePreview && !collapsed"
+                        @click.prevent="toggleFullScreen"
+                    >
+                        <icon type="arrows-expand" class="align-top" width="16" height="16"
+                        />
+                    </button>
 
                     <div class="flex" v-if="!readonly">
                         <button
@@ -73,37 +90,45 @@
 
                 </div>
             </div>
-            <div :class="containerStyle">
-                <component
-                    v-for="(item, index) in group.fields"
-                    :key="index"
-                    :is="'form-' + item.component"
-                    :resource-name="resourceName"
-                    :resource-id="resourceId"
-                    :field="item"
-                    :errors="errors"
-                    :mode="mode"
-                    :show-help-text="item.helpText != null"
-                    :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
-                />
-            </div>
+               <field-list-with-preview
+                v-if="field.enablePreview"
+                :fullScreen="fullScreen"
+                :class="containerStyle"
+                :fields="group.fields"
+                :resource-name="resourceName"
+                :resource-id="resourceId"
+                :layoutName="group.name"
+                :fieldName="field.attribute"
+                :errors="errors"
+                :stylesheet="field.previewStylesheet"
+                :flexible_key="group.key"
+            />
+
+            <field-list
+                v-else
+                :class="containerStyle"
+                :fields="group.fields"
+                :errors="errors"
+            />
         </div>
     </div>
 </template>
 
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
-import { mapProps } from 'laravel-nova';
+import FieldList from "./FieldList";
+import FieldListWithPreview from "./FieldListWithPreview";
 
 export default {
     mixins: [BehavesAsPanel],
+
+    components: { FieldList, FieldListWithPreview },
 
     props: {
         errors: {},
         group: {},
         index: {},
         field: {},
-        ...mapProps(['mode'])
     },
 
     emits: ['move-up', 'move-down', 'remove'],
@@ -113,6 +138,7 @@ export default {
             removeMessage: false,
             collapsed: this.group.collapsed,
             readonly: this.group.readonly,
+            fullScreen: false,
         };
     },
 
@@ -143,6 +169,13 @@ export default {
     },
 
     methods: {
+        /**
+         * Toggle displaying this group full screen
+         */
+        toggleFullScreen() {
+            this.fullScreen = !this.fullScreen;
+        },
+
         /**
          * Move this group up
          */

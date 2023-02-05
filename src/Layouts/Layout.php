@@ -203,6 +203,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Retrieve the layout's view template name
+     *
+     * @return string
+     */
+    public function view()
+    {
+        return $this->view;
+    }
+
+    /**
      * Check if this group matches the given key
      *
      * @param  string  $key

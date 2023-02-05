@@ -148,6 +148,32 @@ class Flexible extends Field
     }
 
     /**
+     * Set the preview stylesheet
+     *
+     * @return $this
+     */
+    public function enablePreview()
+    {
+        return $this->withMeta([
+            'enablePreview' => true,
+        ]);
+    }
+
+    /**
+     * Set the preview stylesheet
+     *
+     * @param  string  $stylesheetPath
+     * @return $this
+     */
+    public function previewStylesheet(
+        $stylesheetPath
+    ) {
+        return $this->withMeta([
+            'previewStylesheet' => $stylesheetPath
+        ]);
+    }
+
+    /**
      * Set the field's resolver
      *
      * @param  mixed  $resolver

@@ -3,6 +3,7 @@
 namespace Whitecube\NovaFlexibleContent;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
 use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;
 use Whitecube\NovaFlexibleContent\Commands\CreateCast;
@@ -21,6 +22,10 @@ class FieldServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->addMiddleware();
+
+        $this->app->booted(function () {
+            $this->routes();
+        });
 
         Nova::serving(function (ServingNova $event) {
             Nova::script('nova-flexible-content', __DIR__.'/../dist/js/field.js');
@@ -68,5 +73,21 @@ class FieldServiceProvider extends ServiceProvider
                 [InterceptFlexibleAttributes::class]
             ));
         }
+    }
+
+    /**
+     * Adds required routes
+     *
+     * @return void
+     */
+    protected function routes()
+    {
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+
+        Route::middleware(['nova'])
+            ->prefix('nova-vendor/flexible')
+            ->group(__DIR__.'/../routes/api.php');
     }
 }
