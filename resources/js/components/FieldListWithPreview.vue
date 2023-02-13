@@ -66,6 +66,7 @@
 
 <script>
 import { tsImportEqualsDeclaration } from '@babel/types';
+import _, { map } from 'underscore';
 
 export default {
     props: {
@@ -146,6 +147,7 @@ export default {
                 this.$refs.iframe.style.width = window.innerWidth + "px";
             }
         },
+        
         setIframeHeight(iframe) {
             if(iframe) {
                 this.$refs.iframe.style.height =
