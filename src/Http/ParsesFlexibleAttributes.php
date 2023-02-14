@@ -82,11 +82,12 @@ trait ParsesFlexibleAttributes
         $clean = [
             'layout' => $group['layout'] ?? null,
             'key' => $group['key'] ?? null,
+            'view' => $group['view'] ?? null,
             'attributes' => [],
         ];
 
         foreach ($group['attributes'] ?? [] as $attribute => $value) {
-            $this->fillFlexibleAttributes($clean['attributes'], $clean['key'], $attribute, $value);
+            $this->fillFlexibleAttributes($clean['attributes'], $clean['key'], $clean['view'], $attribute, $value);
         }
 
         foreach ($clean['attributes'] as $attribute => $value) {

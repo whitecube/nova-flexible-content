@@ -20,7 +20,7 @@ class ViewController extends NovaActionController
             ->resolveFieldForAttribute($request, urldecode($fieldName))
             ->meta['layouts']->find($layoutName);
 
-        $view = $layout->view();
+        
 
         $values = $request->except(["__key"]);
 
@@ -30,7 +30,7 @@ class ViewController extends NovaActionController
         }
 
         return response()->json([
-            'view' => view($view, $this->getDataForViewTemplate($layout, $values, $request->__key))->render(),
+            'view' => view('flexible.' . $layoutName, $this->getDataForViewTemplate($layout, $values, $request->__key))->render(),
             'data' =>  $values,
             'has_uploads' => !!count($request->files)
         ]);
