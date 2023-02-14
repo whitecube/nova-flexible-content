@@ -150,26 +150,12 @@ class Flexible extends Field
     /**
      * Set the preview stylesheet
      *
-     * @return $this
-     */
-    public function enablePreview()
-    {
-        return $this->withMeta([
-            'enablePreview' => true,
-        ]);
-    }
-
-    /**
-     * Set the preview stylesheet
-     *
      * @param  string  $stylesheetPath
      * @return $this
      */
-    public function previewStylesheet(
-        $stylesheetPath
-    ) {
+    public function enablePreview($stylesheetPath) {
         return $this->withMeta([
-            'previewStylesheet' => $stylesheetPath
+            'enablePreview' => $stylesheetPath
         ]);
     }
 

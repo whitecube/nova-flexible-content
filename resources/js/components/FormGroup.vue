@@ -100,7 +100,7 @@
                 :layoutName="group.name"
                 :fieldName="field.attribute"
                 :errors="errors"
-                :stylesheet="field.previewStylesheet"
+                :stylesheet="field.enablePreview"
                 :flexible_key="group.key"
             />
 
