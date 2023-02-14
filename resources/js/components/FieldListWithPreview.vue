@@ -1,7 +1,7 @@
 <template>
     <div class="flex overflow-hidden flex-row bg-gray-50 dark:bg-gray-900 items-center">
         <div class="flex-shrink w-full">
-            <div class="relative" style="height: 480px;" v-if="initialPreviewHtml">
+            <div class="relative" style="height: 960px;" v-if="initialPreviewHtml">
                 <iframe
                     :style="{
                         transform: `translate(-50%,-50%) scale(${scale})`,
