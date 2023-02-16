@@ -404,11 +404,29 @@ class Flexible extends Field
             return;
         }
 
-        if (! is_array($value)) {
-            throw new \Exception('Unable to parse incoming Flexible content, data should be an array.');
+        if (!is_array($value)) {
+            return $this->mapPolymorphicRelationships($value);
         }
 
         return $value;
+    }
+
+    /**
+     * Try decoding value to array to make it work with Polymorphic Relationships
+     * @param string $value
+     * @return \Illuminate\Support\Collection
+     * @throws \Exception
+     */
+    protected function mapPolymorphicRelationships(string $value) {
+        if (!$value = @json_decode($value, true)) {
+            throw new \Exception('Unable to parse incoming Flexible content, data should be an array.');
+        }
+        return collect($value)->map(function ($item) {
+            $item['attributes'] = collect($item['attributes'])->mapWithKeys(function ($layout, $key) use ($item) {
+                return [str_replace("{$item['key']}__", "", $key) => $layout];
+            })->toArray();
+            return $item;
+        });
     }
 
     /**
