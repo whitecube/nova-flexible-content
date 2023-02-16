@@ -405,7 +405,9 @@ class Flexible extends Field
         }
 
         if (! is_array($value)) {
-            throw new \Exception('Unable to parse incoming Flexible content, data should be an array.');
+            if(!$value = @json_decode($value, true)) {
+                throw new \Exception('Unable to parse incoming Flexible content, data should be an array.');
+            }
         }
 
         return $value;
