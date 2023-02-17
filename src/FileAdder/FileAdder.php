@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\FileAdder;
+namespace Dwarfhq\NovaFlexibleContent\FileAdder;
 
 use Spatie\MediaLibrary\MediaCollections\FileAdder as OriginalFileAdder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;

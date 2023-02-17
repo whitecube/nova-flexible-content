@@ -1,17 +1,17 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent;
+namespace Dwarfhq\NovaFlexibleContent;
 
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\SupportsDependentFields;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
-use Whitecube\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
-use Whitecube\NovaFlexibleContent\Layouts\LayoutInterface;
-use Whitecube\NovaFlexibleContent\Layouts\Preset;
-use Whitecube\NovaFlexibleContent\Value\Resolver;
-use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
+use Dwarfhq\NovaFlexibleContent\Http\ScopedRequest;
+use Dwarfhq\NovaFlexibleContent\Layouts\Collection as LayoutsCollection;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\Layouts\LayoutInterface;
+use Dwarfhq\NovaFlexibleContent\Layouts\Preset;
+use Dwarfhq\NovaFlexibleContent\Value\Resolver;
+use Dwarfhq\NovaFlexibleContent\Value\ResolverInterface;
 
 class Flexible extends Field
 {
@@ -27,7 +27,7 @@ class Flexible extends Field
     /**
      * The available layouts collection
      *
-     * @var Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @var Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
     protected $layouts;
 
@@ -41,7 +41,7 @@ class Flexible extends Field
     /**
      * The field's value setter & getter
      *
-     * @var Whitecube\NovaFlexibleContent\Value\ResolverInterface
+     * @var Dwarfhq\NovaFlexibleContent\Value\ResolverInterface
      */
     protected $resolver;
 
@@ -229,7 +229,7 @@ class Flexible extends Field
     /**
      * Push a layout instance into the layouts collection
      *
-     * @param  Whitecube\NovaFlexibleContent\Layouts\LayoutInterface  $layout
+     * @param  Dwarfhq\NovaFlexibleContent\Layouts\LayoutInterface  $layout
      * @return void
      */
     protected function registerLayout(LayoutInterface $layout)
@@ -459,7 +459,7 @@ class Flexible extends Field
      * Find an existing group based on its key
      *
      * @param  string  $key
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Layout
      */
     protected function findGroup($key)
     {
@@ -473,7 +473,7 @@ class Flexible extends Field
      *
      * @param  string  $layout
      * @param  string  $key
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Layout
      */
     protected function newGroup($layout, $key)
     {
@@ -616,7 +616,7 @@ class Flexible extends Field
      * Return a previously registered validation key
      *
      * @param  string  $key
-     * @return null|\Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @return null|\Dwarfhq\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public static function getValidationKey($key)
     {
@@ -633,7 +633,7 @@ class Flexible extends Field
     {
         if (is_a($model, \Laravel\Nova\Resource::class)) {
             $model = $model->model();
-        } elseif (is_a($model, \Whitecube\NovaPage\Pages\Template::class)) {
+        } elseif (is_a($model, \Dwarfhq\NovaPage\Pages\Template::class)) {
             $model = $model->getOriginal();
         }
 

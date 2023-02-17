@@ -1,12 +1,12 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+namespace Dwarfhq\NovaFlexibleContent\Http;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
-use Whitecube\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Flexible;
 
 trait TransformsFlexibleErrors
 {
@@ -85,7 +85,7 @@ trait TransformsFlexibleErrors
      *
      * @param  array  $messages
      * @param  string  $key
-     * @param  \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute  $attribute
+     * @param  \Dwarfhq\NovaFlexibleContent\Http\FlexibleAttribute  $attribute
      * @return array
      */
     protected function transformMessages($messages, $key, $attribute)

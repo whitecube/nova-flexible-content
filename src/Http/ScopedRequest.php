@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+namespace Dwarfhq\NovaFlexibleContent\Http;
 
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -14,7 +14,7 @@ class ScopedRequest extends NovaRequest
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $from
      * @param  array  $attributes
      * @param  string  $group
-     * @return \Whitecube\NovaFlexibleContent\Http\ScopedRequest
+     * @return \Dwarfhq\NovaFlexibleContent\Http\ScopedRequest
      */
     public static function scopeFrom(NovaRequest $from, $attributes, $group)
     {

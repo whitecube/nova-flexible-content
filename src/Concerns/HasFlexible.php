@@ -1,12 +1,12 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Concerns;
+namespace Dwarfhq\NovaFlexibleContent\Concerns;
 
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
-use Whitecube\NovaFlexibleContent\Layouts\Collection;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
-use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+use Dwarfhq\NovaFlexibleContent\Layouts\Collection;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\Value\FlexibleCast;
 
 trait HasFlexible
 {
@@ -15,7 +15,7 @@ trait HasFlexible
      *
      * @param  string  $attribute
      * @param  array  $layoutMapping
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
     public function flexible($attribute, $layoutMapping = [])
     {
@@ -29,7 +29,7 @@ trait HasFlexible
      *
      * @param  array  $value
      * @param  array  $layoutMapping
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
     public function cast($value, $layoutMapping = [])
     {
@@ -45,7 +45,7 @@ trait HasFlexible
      *
      * @param  mixed  $value
      * @param  array  $layoutMapping
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
     public function toFlexible($value, $layoutMapping = [])
     {
@@ -104,7 +104,7 @@ trait HasFlexible
      *
      * @param  mixed  $item
      * @param  array  $layoutMapping
-     * @return null|Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return null|Dwarfhq\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function getMappedLayout($item, array $layoutMapping)
     {
@@ -144,7 +144,7 @@ trait HasFlexible
      * @param  string  $key
      * @param  array  $attributes
      * @param  array  $layoutMapping
-     * @return \Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function createMappedLayout($name, $key, $attributes, array $layoutMapping)
     {

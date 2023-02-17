@@ -16,7 +16,7 @@ See the full docs at [https://whitecube.github.io/nova-flexible-content](https:/
 ### Install
 
 ```
-composer require whitecube/nova-flexible-content
+composer require dwarfhq/nova-flexible-content
 ```
 
 ### Usage
@@ -35,7 +35,7 @@ Layouts can be added using the following method on your Flexible fields:
 The `$name` parameter is used to store the chosen layout in the field's value. Choose it wisely, you'll probably use it to identify the layouts in your application.
 
 ```php
-use Whitecube\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Flexible;
 
 /**
  * Get the fields displayed by the resource.
@@ -87,7 +87,7 @@ Laravel 7 brings custom casts to the table, and flexible content fields are the 
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+use Dwarfhq\NovaFlexibleContent\Value\FlexibleCast;
 
 class MyModel extends Model
 {
@@ -163,7 +163,7 @@ As explained in the documentation, you can [access nova-page's static content](h
 namespace App\Nova\Templates;
 
 // ...
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible;
 
 class Home extends Template
 {

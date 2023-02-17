@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Layouts;
+namespace Dwarfhq\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
 use Illuminate\Contracts\Support\Arrayable;
@@ -13,10 +13,10 @@ use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
-use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
-use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible;
+use Dwarfhq\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Http\FlexibleAttribute;
+use Dwarfhq\NovaFlexibleContent\Http\ScopedRequest;
 
 class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
@@ -454,7 +454,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * The default behaviour when removed
      *
      * @param  Flexible  $flexible
-     * @param  Whitecube\NovaFlexibleContent\Layout  $layout
+     * @param  Dwarfhq\NovaFlexibleContent\Layout  $layout
      * @return mixed
      */
     protected function removeCallback(Flexible $flexible, $layout)

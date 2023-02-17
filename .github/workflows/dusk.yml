@@ -16,5 +16,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
-          repository: whitecube/nova-flexible-content-tests
+          repository: dwarfhq/nova-flexible-content-tests
           event-type: dusk-tests
