@@ -7,9 +7,11 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use JsonSerializable;
 use Laravel\Nova\Fields\Field;
 use Laravel\Nova\Fields\FieldCollection;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 use Whitecube\NovaFlexibleContent\Flexible;
@@ -255,9 +257,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     public function duplicateAndHydrate($key, array $attributes = [])
     {
-        $fields = $this->fields->map(function ($field) {
-            return $this->cloneField($field);
+        // PASSING attributes is CUSTOM
+        $fields = $this->fields->map(function ($field) use ($attributes) {
+            return $this->cloneField($field, $attributes);
         });
+        // PASSING attributes is CUSTOM
 
         $clone = new static(
             $this->title,
@@ -279,11 +283,21 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * Create a working field clone instance
      *
      * @param  \Laravel\Nova\Fields\Field  $original
+     * @param array $attributes
      * @return \Laravel\Nova\Fields\Field
      */
-    protected function cloneField(Field $original)
+    protected function cloneField(Field $original, $attributes)
     {
         $field = clone $original;
+
+        // CUSTOM
+        if ($field instanceof Image && (array_key_exists('image', $attributes) && !is_null($attributes['image']))) {
+            $field->readonly();
+            $field->thumbnail(function() use ($attributes) {
+                return $attributes['image'] ? Storage::disk('azure')->url($attributes['image']) : null;
+            });
+        }
+        // CUSTOM
 
         $callables = ['displayCallback', 'resolveCallback', 'fillCallback', 'requiredCallback'];
 
@@ -373,11 +387,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return  $this->fields->map(function ($field) use ($request) {
             return $field->fill($request, $this);
         })
-                ->filter(function ($callback) {
-                    return is_callable($callback);
-                })
-                ->values()
-                ->all();
+            ->filter(function ($callback) {
+                return is_callable($callback);
+            })
+            ->values()
+            ->all();
     }
 
     /**
@@ -393,8 +407,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return  $this->fields->map(function ($field) use ($request, $specificty, $key) {
             return $this->getScopedFieldRules($field, $request, $specificty, $key);
         })
-                ->collapse()
-                ->all();
+            ->collapse()
+            ->all();
     }
 
     /**
@@ -417,8 +431,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
             return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
         })
-                ->filter()
-                ->all();
+            ->filter()
+            ->all();
     }
 
     /**
