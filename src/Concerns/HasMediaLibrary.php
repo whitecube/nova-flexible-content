@@ -1,6 +1,6 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Concerns;
+namespace Dwarfhq\NovaFlexibleContent\Concerns;
 
 use Ebess\AdvancedNovaMediaLibrary\Fields\Media;
 use Illuminate\Support\Collection;
@@ -10,9 +10,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\InvalidUrl;
 use Spatie\MediaLibrary\MediaCollections\MediaRepository;
-use Whitecube\NovaFlexibleContent\FileAdder\FileAdderFactory;
-use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\FileAdder\FileAdderFactory;
+use Dwarfhq\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
 
 trait HasMediaLibrary
 {

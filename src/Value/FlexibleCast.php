@@ -1,9 +1,9 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Value;
+namespace Dwarfhq\NovaFlexibleContent\Value;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible;
 
 class FlexibleCast implements CastsAttributes
 {
@@ -20,7 +20,7 @@ class FlexibleCast implements CastsAttributes
     protected $model;
 
     /**
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection|array<\Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection|array<\Dwarfhq\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($model, string $key, $value, array $attributes)
     {

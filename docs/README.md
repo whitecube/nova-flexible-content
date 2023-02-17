@@ -11,7 +11,7 @@ The Flexible field can be used in various ways and for different purposes, but i
 ### Install
 
 ```
-composer require whitecube/nova-flexible-content
+composer require dwarfhq/nova-flexible-content
 ```
 
 ### Usage
@@ -30,7 +30,7 @@ Layouts can be added using the following method on your Flexible fields:
 The `$name` parameter is used to store the chosen layout in the field's value. Choose it wisely, you'll probably use it to identify the layouts in your application.
 
 ```php
-use Whitecube\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Flexible;
 
 /**
  * Get the fields displayed by the resource.
@@ -143,7 +143,7 @@ This can be done trivially by using the `FlexibleCast` class in this package:
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+use Dwarfhq\NovaFlexibleContent\Value\FlexibleCast;
 
 class MyModel extends Model
 {
@@ -199,7 +199,7 @@ By implementing the `HasFlexible` trait on your models, you can call the `flexib
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible;
 
 class MyModel extends Model
 {
@@ -264,7 +264,7 @@ namespace App\Nova\Flexible\Layouts;
 
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Markdown;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
 
 class SimpleWysiwygLayout extends Layout
 {
@@ -332,8 +332,8 @@ In addition to reusable Layout classes, you can go a step further and create `Pr
 namespace App\Nova\Flexible\Presets;
 
 use App\PageBlocks;
-use Whitecube\NovaFlexibleContent\Flexible;
-use Whitecube\NovaFlexibleContent\Layouts\Preset;
+use Dwarfhq\NovaFlexibleContent\Flexible;
+use Dwarfhq\NovaFlexibleContent\Layouts\Preset;
 
 class WysiwygPagePreset extends Preset
 {
@@ -475,7 +475,7 @@ Quick example, consider `Post` has a flexible field with a `SliderLayout`:
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasFlexible;
 
 class Post extends Model implements HasMedia
 {
@@ -486,9 +486,9 @@ class Post extends Model implements HasMedia
 
 ```php
 use Spatie\MediaLibrary\HasMedia;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
 use Ebess\AdvancedNovaMediaLibrary\Fields\Images;
-use Whitecube\NovaFlexibleContent\Concerns\HasMediaLibrary;
+use Dwarfhq\NovaFlexibleContent\Concerns\HasMediaLibrary;
 
 class SliderLayout extends Layout implements HasMedia
 {
