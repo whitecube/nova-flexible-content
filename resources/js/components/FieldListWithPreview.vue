@@ -1,5 +1,5 @@
 <template>
-    <div class="flex overflow-hidden flex-row bg-gray-50 dark:bg-gray-900 items-center">
+    <div class="flex overflow-hidden flex-row bg-gray-200 dark:bg-gray-900 items-center">
         <div class="flex-shrink w-full">
             <div class="relative" style="height: 960px;" v-if="initialPreviewHtml">
                 <iframe
@@ -11,6 +11,7 @@
                     :srcdoc="`
                   <html>
                     <head>
+                      <base target='_blank' />
                       <link rel='stylesheet' href='${stylesheet}' />
                       <script type='module'>
                         window.addEventListener('message', (event) => {
@@ -19,11 +20,13 @@
                         });
                         window.addEventListener('load', (event)=> {
                             window.parent.postMessage('${flexible_key}', '*');
+                            
                         });
                         window.addEventListener('resize', (event)=> {
                             window.parent.postMessage('${flexible_key}', '*');
                         });
                       </script>
+                      <script src='//unpkg.com/alpinejs' defer></script>
                     </head>
                     <body>
                         ${ initialPreviewHtml }
@@ -103,9 +106,12 @@ export default {
     mounted() {
         this.form.append("__key", this.flexible_key);
 
-        this.fields.forEach((field) => {
-            // field.fill(this.form);
-            this.form.set(field.attribute, field.value ?? '');
+        this.$nextTick(() => {
+            this.fields.forEach((field) => {
+                this.form.set(field.attribute, field.value ?? '');
+                    field.fill(this.form);                
+            });
+            this.getPreview();
         });
 
         window.addEventListener(
@@ -127,9 +133,7 @@ export default {
                 });
             },
             false
-        );
-
-        this.getPreview();
+        );    
     },
 
     watch: {
@@ -143,8 +147,10 @@ export default {
     methods: {
         setIframeScale(iframe) {
             if(iframe) {
-                this.scale = iframe.parentNode.clientWidth / window.innerWidth;
-                this.$refs.iframe.style.width = window.innerWidth + "px";
+                let width = Math.min(window.innerWidth, 1800);
+                this.scale = iframe.parentNode.clientWidth / width;
+                this.$refs.iframe.style.width = width + "px";
+
             }
         },
         
@@ -186,11 +192,11 @@ export default {
             )
                 .then((response) => response.json())
                 .then((json) => {
+
+                    // Reset the form so we don't keep uploading files on every refresh
                     this.form = new FormData();
                     this.form.append("__key", this.flexible_key);
-             
                     this.fields.forEach((field) => {
-                        console.log(field.attribute, json.data, json.data[field.attribute]);
                         this.form.set(field.attribute, json.data[field.attribute] ?? '');
                     });
 
@@ -236,8 +242,45 @@ export default {
     /* font-weight: bold; */
 }
 
-.fields .flex {
+.fields label .flex {
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.fields .form-file {
+    width: 100%;
+}
+
+.fields .md\:w-1\/4,
+.fields .w-1\/2 {
+    width: 100%
+}
+
+.nsr-w-full.nsr-flex.nsr-border-b.nsr-py-2 {
+    display: none;
+}
+
+.fields .simple-repeatable-fields-wrapper {
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.fields .simple-repeatable.form-field .simple-repeatable-row {
+    margin-left: 0;
+    padding-left: 0;
+    width: 100%;
+}
+
+.fields .simple-repeatable.form-field>:nth-child(2) {
+    margin-right: 0;
+    width: 80% !important;
+}
+
+.fields .simple-repeatable.form-field .simple-repeatable-row .delete-icon, .simple-repeatable.form-field .simple-repeatable-row .vue-draggable-handle {
+    margin-right: 0;
+}
+
+.simple-repeatable.form-field .simple-repeatable-row>.simple-repeatable-fields-wrapper .translatable-field>div:not(:first-child)>div, .simple-repeatable.form-field .simple-repeatable-row>.simple-repeatable-fields-wrapper>* {
+    margin-right: 0;
 }
 </style>

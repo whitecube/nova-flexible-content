@@ -62,6 +62,7 @@ export default {
         layouts() {
             return this.currentField.layouts || false
         },
+        
         orderedGroups() {
             return this.order.reduce((groups, key) => {
                 groups.push(this.groups[key]);
@@ -214,8 +215,10 @@ export default {
 
             collapsed = collapsed || false;
 
+            console.log(layout);
+
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed);
+                group = new Group(layout.name, layout.title, fields, this.currentField, key, layout.preview, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);

@@ -1,7 +1,7 @@
 <template>
     <div class="mb-4 pb-1" 
         :class="{
-            'fixed inset-0 h-screen z-30 bg-white dark:bg-gray-800 ': fullScreen,
+            'fixed inset-0 h-screen z-50 bg-white dark:bg-gray-800 ': fullScreen,
             relative: !fullScreen,
         }"
         :id="group.key">
@@ -91,7 +91,7 @@
                 </div>
             </div>
                <field-list-with-preview
-                v-if="field.enablePreview"
+                v-if="field.enablePreview && group.preview"
                 :fullScreen="fullScreen"
                 :class="containerStyle"
                 :fields="group.fields"

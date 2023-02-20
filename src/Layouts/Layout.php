@@ -51,6 +51,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $title;
 
     /**
+     * The layout's preview
+     *
+     * @var string
+     */
+    protected $preview;
+
+    /**
      * The layout's registered fields
      *
      * @var \Laravel\Nova\Fields\FieldCollection
@@ -653,6 +660,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize(),
             'limit' => $this->limit,
+            'preview' => $this->preview
         ];
     }
 
