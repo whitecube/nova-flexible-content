@@ -5,39 +5,58 @@
         :field="currentField"
         :errors="errors"
         :show-help-text="showHelpText"
-        full-width-content>
+        full-width-content
+        class="relative"    
+        @keyup.escape="fullScreen = false">
         <template #field>
 
-            <div ref="flexibleFieldContainer">
-                <form-nova-flexible-content-group
-                    v-for="(group, index) in orderedGroups"
-                    :dusk="currentField.attribute + '-' + index"
-                    :key="group.key"
+            <div :class="{
+                '-mx-8 -mt-5' : currentField.enablePreview && !fullScreen,
+                'fixed inset-0 bg-gray-50 z-50 flex flex-col' : fullScreen
+    
+                }">
+                <div ref="flexibleFieldContainer"                
+                :class="{
+                    '' : currentField.enablePreview,
+                    'flex-grow overflow-y-auto ml-sidebar border-l' : currentField.enablePreview && fullScreen
+                }"
+                >
+                    
+                    <component
+                        v-for="(group, index) in orderedGroups"
+                        :is="currentField.enablePreview ? 'form-nova-flexible-content-group-with-preview' : 'form-nova-flexible-content-group'"
+                        :dusk="currentField.attribute + '-' + index"
+                        :key="group.key"
+                        :field="currentField"
+                        :group="group"
+                        :index="index"
+                        :resource-name="resourceName"
+                        :resource-id="resourceId"
+                        :errors="errors"
+                        :mode="mode"
+                        :selectedGroup="selectedGroupKey == group.key"
+                        :full-screen="fullScreen"
+                        
+                        @move-up="moveUp(group.key)"
+                        @move-down="moveDown(group.key)"
+                        @remove="remove(group.key)"
+                        @group-selected="selectGroup(group.key, $event)"
+                    />            
+                </div>
+
+                <component
+                    :layouts="layouts"
+                    :is="currentField.menu.component"
                     :field="currentField"
-                    :group="group"
-                    :index="index"
+                    :limit-counter="limitCounter"
+                    :limit-per-layout-counter="limitPerLayoutCounter"
+                    :errors="errors"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
-                    :errors="errors"
-                    :mode="mode"
-                    @move-up="moveUp(group.key)"
-                    @move-down="moveDown(group.key)"
-                    @remove="remove(group.key)"
+                    @addGroup="addGroup($event)"
+                    :class="{'fixed z-50 ml-sidebar p-2 border-l' : currentField.enablePreview && fullScreen}"
                 />
             </div>
-
-            <component
-                :layouts="layouts"
-                :is="currentField.menu.component"
-                :field="currentField"
-                :limit-counter="limitCounter"
-                :limit-per-layout-counter="limitPerLayoutCounter"
-                :errors="errors"
-                :resource-name="resourceName"
-                :resource-id="resourceId"
-                @addGroup="addGroup($event)"
-            />
-
         </template>
     </component>
 </template>
@@ -100,7 +119,9 @@ export default {
             order: [],
             groups: {},
             files: {},
-            sortableInstance: null
+            sortableInstance: null,
+            selectedGroupKey: null,
+            fullScreen: false,
         };
     },
 
@@ -111,6 +132,25 @@ export default {
     },
 
     methods: {
+
+        /**
+         * Select the current group
+         */
+        selectGroup(groupKey, element) {
+            if(this.selectedGroupKey == groupKey) {
+               this.selectedGroupKey = null;
+               this.fullScreen = false;
+
+            }
+            else {
+                this.fullScreen = true;
+                this.selectedGroupKey = groupKey;
+                this.$nextTick(() => {
+                element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                });
+            }
+        },
+
         /*
          * Set the initial, internal value for the field.
          */
@@ -215,13 +255,18 @@ export default {
 
             collapsed = collapsed || false;
 
-            console.log(layout);
-
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
                 group = new Group(layout.name, layout.title, fields, this.currentField, key, layout.preview, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+            
+            if(this.fullScreen) {
+                this.selectedGroupKey = group.key;
+                this.$nextTick(() => {
+                    this.$refs.flexibleFieldContainer.lastElementChild.scrollIntoView({behavior: "smooth", block: "end", inline: "end"});
+                });
+            }
         },
 
         /**
@@ -291,3 +336,16 @@ export default {
     }
 }
 </script>
+
+<style>
+.ml-sidebar {
+    margin-left: 20%;
+}
+.h-\[40vw\] {
+    height: 40vw;
+}
+
+.-mt-5 {
+    margin-top: -1.25rem;
+}
+</style>

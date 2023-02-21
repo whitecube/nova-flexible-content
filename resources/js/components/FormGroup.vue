@@ -90,45 +90,40 @@
 
                 </div>
             </div>
-               <field-list-with-preview
-                v-if="field.enablePreview && group.preview"
-                :fullScreen="fullScreen"
-                :class="containerStyle"
-                :fields="group.fields"
-                :resource-name="resourceName"
-                :resource-id="resourceId"
-                :layoutName="group.name"
-                :fieldName="field.attribute"
-                :errors="errors"
-                :stylesheet="field.enablePreview"
-                :flexible_key="group.key"
-            />
-
-            <field-list
-                v-else
-                :class="containerStyle"
-                :fields="group.fields"
-                :errors="errors"
-            />
+   
+            <div :class="containerStyle">
+                <component
+                    v-for="(item, index) in group.fields"
+                    :key="index"
+                    :is="'form-' + item.component"
+                    :resource-name="resourceName"
+                    :resource-id="resourceId"
+                    :field="item"
+                    :errors="errors"
+                    :mode="mode"
+                    :show-help-text="item.helpText != null"
+                    :class="{
+                        'remove-bottom-border': index == group.fields.length - 1,
+                    }"
+                />
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
-import FieldList from "./FieldList";
-import FieldListWithPreview from "./FieldListWithPreview";
+import { mapProps } from 'laravel-nova';
 
 export default {
     mixins: [BehavesAsPanel],
-
-    components: { FieldList, FieldListWithPreview },
 
     props: {
         errors: {},
         group: {},
         index: {},
         field: {},
+        ...mapProps(["mode"]),
     },
 
     emits: ['move-up', 'move-down', 'remove'],
