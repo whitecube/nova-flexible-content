@@ -27,5 +27,21 @@ export default {
         errors: {},
         ...mapProps(["mode"]),
     },
+    computed: {
+        containerStyle() {
+            let classes = ['grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-b-lg'];
+
+            // if (! this.group.title) {
+            //     classes.push('border-t');
+            //     classes.push('rounded-tr-lg');
+            // }
+
+            // if (this.collapsed) {
+            //     classes.push('hidden');
+            // }
+
+            return classes;
+        }
+    },
 };
 </script>

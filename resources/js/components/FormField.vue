@@ -264,7 +264,7 @@ export default {
             if(this.fullScreen) {
                 this.selectedGroupKey = group.key;
                 this.$nextTick(() => {
-                    this.$refs.flexibleFieldContainer.lastElementChild.scrollIntoView({behavior: "smooth", block: "end", inline: "end"});
+                    this.$refs.flexibleFieldContainer.lastElementChild.scrollIntoView({behavior: "smooth", block: "end", inline: "center"});
                 });
             }
         },
@@ -341,11 +341,13 @@ export default {
 .ml-sidebar {
     margin-left: 20%;
 }
-.h-\[40vw\] {
-    height: 40vw;
-}
 
 .-mt-5 {
     margin-top: -1.25rem;
+}
+
+.-mx-8 {
+    margin-left: -2rem;
+    margin-right: -2rem;
 }
 </style>

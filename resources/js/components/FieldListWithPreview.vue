@@ -42,7 +42,8 @@
             <div class="w-full py-4 overflow-hidden">
                 <div class="px-6 py-6  flex flex-row items-center justify-between">
                     <h3 class="text-lg font-semibold">{{  title }}</h3>
-                    <button :aria-label="`Close ${ title }`" @click.prevent="$emit('group-selected')">  <icon type="x-circle" class="align-top" width="36" height="36" /></button>
+                    <button :aria-label="`Close ${ title }`" @click.prevent="$emit('group-selected')">
+                        <icon type="x-circle" class="align-top" width="36" height="36" /></button>
                 </div>
                 <div
                     class="fields relative divide-y divide-gray-100 dark:divide-gray-700"
@@ -290,23 +291,6 @@ export default {
 
 .simple-repeatable.form-field .simple-repeatable-row>.simple-repeatable-fields-wrapper .translatable-field>div:not(:first-child)>div, .simple-repeatable.form-field .simple-repeatable-row>.simple-repeatable-fields-wrapper>* {
     margin-right: 0;
-}
-
-.-top-6 {
-    top: -1.5rem;
-}
-
-.-right-6 {
-    right: -1.5rem;
-}
-
-.-mx-8 {
-    margin-left: -2rem;
-    margin-right: -2rem;
-}
-
-.-mt-6 {
-    margin-top: -1.5rem;
 }
 
 .hover\:ring:hover {

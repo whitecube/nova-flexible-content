@@ -1,12 +1,9 @@
 <template>
     <div
-        :class="{
-            '' : !selectedGroup
-        }"
+    class="group"
         :id="group.key">
-        
-        <div class="h-full w-full relative">
-            <div v-if="selectedGroup" class="absolute bg-white box-content flex h-8 items-center leading-normal overflow-hidden right-[3px] rounded-bl-lg shadow top-[3px] z-10">
+        <div class="w-full relative">
+            <div :class="{'group-hover:block hidden': !selectedGroup} "  class="absolute bg-white box-content flex h-8 items-center leading-normal overflow-hidden right-[3px] rounded-bl-lg shadow top-[3px] z-20">
             
                 <div class="flex" v-if="!readonly">
                     <button
@@ -55,7 +52,7 @@
         </div>
             <field-list
             v-if="!group.preview"
-            @click="$emit('group-selected', $el)"
+            @click="($event) => {if(!selectedGroup) {$emit('group-selected', $el)}}"
             :fullScreen="fullScreen"
             :class="containerStyle"
             :fields="group.fields"
@@ -66,6 +63,7 @@
             :errors="errors"
             :stylesheet="field.enablePreview"
             :flexible_key="group.key"
+            class="py-12"
         />
             <field-list-with-preview
             v-else
@@ -233,5 +231,9 @@ export default {
 
     .right-\[3px\] {
         right: 3px;
+    }
+
+    .group:hover .group-hover\:block {
+        display: block;
     }
 </style>
