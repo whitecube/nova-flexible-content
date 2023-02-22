@@ -17,11 +17,11 @@
                 }">
                 <div ref="flexibleFieldContainer"                
                 :class="{
-                    '' : currentField.enablePreview,
+                    'mb-4' : currentField.enablePreview && !fullScreen,
                     'flex-grow overflow-y-auto ml-sidebar border-l' : currentField.enablePreview && fullScreen
                 }"
                 >
-                    
+                <div class="md:w-1/5 fixed top-0 left-0 bottom-0 h-full bg-gray-100" v-if="currentField.enablePreview && fullScreen">Sidebar</div>
                     <component
                         v-for="(group, index) in orderedGroups"
                         :is="currentField.enablePreview ? 'form-nova-flexible-content-group-with-preview' : 'form-nova-flexible-content-group'"
@@ -54,7 +54,7 @@
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     @addGroup="addGroup($event)"
-                    :class="{'fixed z-50 ml-sidebar p-2 border-l' : currentField.enablePreview && fullScreen}"
+                    :class="{'px-8' : currentField.enablePreview , 'fixed z-50 border-t bg-100 ml-sidebar p-2 border-l' : currentField.enablePreview && fullScreen}"
                 />
             </div>
         </template>

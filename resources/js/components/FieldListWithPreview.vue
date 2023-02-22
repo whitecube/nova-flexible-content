@@ -1,50 +1,20 @@
 <template>
     <div>
-        <div @click="$emit('group-selected')"
-            class="relative" style="height: 960px;" v-if="initialPreviewHtml">
-            <div class="absolute z-10 inset-0 ring-inset hover:ring" :class="{'pointer-events-none ring ring-primary-200' : selectedGroup, 'ring-primary-100' : !selectedGroup}"></div>
-            <iframe
-                :style="{
-                    transform: `translate(-50%,-50%) scale(${scale})`,
-                }"
-                class=" absolute block left-1/2 top-1/2 h-full transform w-screen"
-                ref="iframe"
-                :srcdoc="`
-                <html>
-                <head>
-                    <base target='_blank' />
-                    <link rel='stylesheet' href='${stylesheet}' />
-                    <script type='module'>
-                    window.addEventListener('message', (event) => {
-                        document.body.innerHTML = event.data;
-                        window.parent.postMessage('${flexible_key}', '*');
-                    });
-                    window.addEventListener('load', (event)=> {
-                        window.parent.postMessage('${flexible_key}', '*');
-                        
-                    });
-                    window.addEventListener('resize', (event)=> {
-                        window.parent.postMessage('${flexible_key}', '*');
-                    });
-                    </script>
-                    <script src='//unpkg.com/alpinejs' defer></script>
-                </head>
-                <body>
-                    ${ initialPreviewHtml }
-                </body>
-                </html>`"
-            >
-            </iframe>
+        <div @click="$emit('group-selected')" class="relative" v-if="initialPreviewHtml">
+            <div class="absolute z-10 inset-0 transition border-2" :class="{ 'pointer-events-none  border-primary-500 border-dashed' : selectedGroup, 'hover:border-gray-200 border-transparent' : !selectedGroup }"></div>
+            <preview-iframe :stylesheet="stylesheet" :flexible_key="flexible_key" :fullScreen="fullScreen" :initialPreviewHtml="initialPreviewHtml" :updatedPreviewHtml="updatedPreviewHtml" />
         </div>
          <div v-show="selectedGroup"
             class="absolute top-0 left-0 md:w-1/5 bottom-0 h-full  bg-gray-50 overflow-y-scroll self-stretch">
            
-            <div class="w-full py-4 overflow-hidden">
-                <div class="px-6 py-6  flex flex-row items-center justify-between">
-                    <h3 class="text-lg font-semibold">{{  title }}</h3>
-                    <button :aria-label="`Close ${ title }`" @click.prevent="$emit('group-selected')">
-                        <icon type="x-circle" class="align-top" width="36" height="36" /></button>
+            <div class="w-full py-5 overflow-hidden">
+                <div class="px-6 py-6 gap-2 flex flex-row items-center ">
+                    <button :aria-label="`Close ${ title }`" @click.prevent="$emit('group-selected')">    
+                        <icon type="arrow-left" class="align-top rounded-full hover:bg-gray-200 p-2" width="36" height="36" />
+                    </button>
+                    <h3 class="font-semibold">{{  title }}</h3>
                 </div>
+
                 <div
                     class="fields relative divide-y divide-gray-100 dark:divide-gray-700"
                     style="width: 125%; margin-left: -0.25rem; margin-right: -0.25rem;">
@@ -73,6 +43,7 @@
 <script>
 import { tsImportEqualsDeclaration } from '@babel/types';
 import _, { map } from 'underscore';
+import PreviewIframe from './PreviewIframe';
 
 export default {
     props: {
@@ -87,15 +58,16 @@ export default {
         flexible_key: null,
         fullScreen: false,
         selectedGroup: false,
-        title: null
+        title: null,
     },
+
+    components: {PreviewIframe},
 
     data() {
         return {
             form: new FormData(),
-            scale: 1,
-            initialPreviewHtml: null
-
+            initialPreviewHtml: null,
+            updatedPreviewHtml: null
         };
     },
 
@@ -119,60 +91,13 @@ export default {
             this.getPreview();
         });
 
-        window.addEventListener(
-            "message",
-            (event) => {
-                if(event.data == this.flexible_key) {
-                    this.setIframeHeight(this.$refs.iframe);
-                }
-            },
-            false
-        );
-
-        window.addEventListener(
-            "resize",
-            () => {
-                this.setIframeScale(this.$refs.iframe);
-                this.$nextTick(() => {
-                    this.setIframeHeight(this.$refs.iframe);
-                });
-            },
-            false
-        );    
     },
 
     watch: {
-        fullScreen: function() {
-            this.$nextTick(() => {
-                this.setIframeScale(this.$refs.iframe);
-                this.$nextTick(() => {
-                    this.setIframeHeight(this.$refs.iframe);
-                });
-            });
-        },
     },
 
     methods: {
-        setIframeScale(iframe) {
-            if(iframe) {
-                let width = Math.min(window.innerWidth, 1800);
-                this.scale = iframe.parentNode.clientWidth / width;
-                this.$refs.iframe.style.width = width + "px";
-
-            }
-        },
         
-        setIframeHeight(iframe) {
-            if(iframe) {
-
-                this.$refs.iframe.style.height =
-                    iframe.contentWindow.document.body.scrollHeight + "px";
-                this.$refs.iframe.parentNode.style.height =
-                    iframe.contentWindow.document.body.scrollHeight * this.scale +
-                    "px";
-            }
-        },
-
         onInput: _.debounce(function debounceRead(evt, updatedField) {
             this.update(updatedField);
         }, 150),
@@ -211,12 +136,9 @@ export default {
 
                     if(!this.initialPreviewHtml || json.has_uploads) {
                         this.initialPreviewHtml = json.view;
-                        this.$nextTick(() => {
-                            this.setIframeScale(this.$refs.iframe);
-                        });
                     }
                     else {
-                        this.$refs.iframe.contentWindow.postMessage(json.view, "*");
+                        this.updatedPreviewHtml = json.view;
                     }
                 });
         },
@@ -293,10 +215,8 @@ export default {
     margin-right: 0;
 }
 
-.hover\:ring:hover {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+.hover\:border-gray-200:hover {
+    border-color: rgba(var(--colors-gray-200));
 }
 </style>
 

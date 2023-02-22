@@ -1,9 +1,8 @@
 <template>
-    <div class="mb-4 pb-1 relative" 
-        :id="group.key">
-        <div class="h-full w-full shrink">
+    <div class="relative mb-4 pb-1" :id="group.key">
+        <div class="w-full shrink">
             <div :class="titleStyle" v-if="group.title">
-                <div class="h-8 leading-normal flex items-center box-content"
+                <div class="h-8 leading-normal h-full flex items-center box-content"
                     :class="{'border-b border-gray-200 dark:border-gray-700 ': !collapsed}">
                     <button
                         dusk="expand-group"
@@ -74,7 +73,6 @@
 
                 </div>
             </div>
-   
             <div :class="containerStyle">
                 <component
                     v-for="(item, index) in group.fields"
@@ -105,7 +103,7 @@ export default {
         group: {},
         index: {},
         field: {},
-        ...mapProps(['mode']),
+        ...mapProps(['mode'])
     },
 
     emits: ['move-up', 'move-down', 'remove'],

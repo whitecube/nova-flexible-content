@@ -3,7 +3,7 @@
     class="group"
         :id="group.key">
         <div class="w-full relative">
-            <div :class="{'group-hover:block hidden': !selectedGroup} "  class="absolute bg-white box-content flex h-8 items-center leading-normal overflow-hidden right-[3px] rounded-bl-lg shadow top-[3px] z-20">
+            <div :class="{'group-hover:block hidden': !selectedGroup} "  class="absolute bg-white box-content flex h-8 items-center leading-normal overflow-hidden right-0 rounded-bl-lg shadow top-0 z-20">
             
                 <div class="flex" v-if="!readonly">
                     <button
@@ -50,22 +50,38 @@
 
             </div>
         </div>
-            <field-list
-            v-if="!group.preview"
-            @click="($event) => {if(!selectedGroup) {$emit('group-selected', $el)}}"
-            :fullScreen="fullScreen"
-            :class="containerStyle"
-            :fields="group.fields"
-            :resource-name="resourceName"
-            :resource-id="resourceId"
-            :layoutName="group.name"
-            :fieldName="field.attribute"
-            :errors="errors"
-            :stylesheet="field.enablePreview"
-            :flexible_key="group.key"
-            class="py-12"
-        />
-            <field-list-with-preview
+           
+        <div 
+            v-if="!group.preview" 
+            class="py-6 border-2"
+            :class="{'border-primary-500 border-dashed' : selectedGroup, '  hover:border-gray-200 border-transparent' : !selectedGroup}">
+
+
+            <div v-show="fullScreen && selectedGroup" class="absolute top-0 left-0 md:w-1/5 bottom-0 h-full  bg-gray-50 overflow-y-scroll self-stretch">           
+                <div class="w-full py-5 overflow-hidden">
+                    <div class="px-6 py-6 gap-2 flex flex-row items-center ">
+                        <button :aria-label="`Close ${ group.title }`" @click.prevent="$emit('group-selected')">    
+                            <icon type="arrow-left" class="align-top rounded-full hover:bg-gray-200 p-2" width="36" height="36" />
+                        </button>
+                        <h3 class="font-semibold">{{  group.title }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            <component
+                @click="($event) => {if(!selectedGroup) {$emit('group-selected', $el)}}"
+                v-for="(item, index) in group.fields"
+                :key="index"
+                :is="'form-' + item.component"
+                :resource-name="resourceName"
+                :resource-id="resourceId"
+                :field="item"
+                :errors="errors"
+                :mode="mode"
+                :show-help-text="item.helpText != null"
+            />
+        </div>
+        <field-list-with-preview
             v-else
             :fullScreen="fullScreen"
             :fields="group.fields"
@@ -80,21 +96,17 @@
             :title="group.title"
             @group-selected="$emit('group-selected', $el)"
         />
-
-            
-        
     </div>
 </template>
 
 <script>
 import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
-import FieldList from "./FieldList";
 import FieldListWithPreview from "./FieldListWithPreview";
 
 export default {
     mixins: [BehavesAsPanel],
 
-    components: {  FieldList, FieldListWithPreview },
+    components: {  FieldListWithPreview },
 
     props: {
         errors: {},
