@@ -93,6 +93,8 @@ export default {
 
     methods: {
         setIframeScaleThenHeight() {
+            if(!this.$refs.iframe) return false;
+
             this.setIframeScale();
             this.$nextTick(() => {
                 this.setIframeHeight();

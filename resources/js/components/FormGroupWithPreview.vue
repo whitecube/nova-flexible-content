@@ -123,6 +123,7 @@ export default {
         return {
             removeMessage: false,
             readonly: this.group.readonly,
+            storedScrollTop: 0
         };
     },
 
@@ -138,6 +139,21 @@ export default {
 
             return classes;
         }
+    },
+
+    watch: {
+        fullScreen: function(value) {
+            if(value) {
+                this.storedScrollTop = document.documentElement.scrollTop;
+                document.documentElement.classList.add('overflow-hidden');
+            }
+            else {
+                document.documentElement.classList.remove('overflow-hidden');
+                this.$nextTick(() => {
+                    document.documentElement.scrollTop = this.storedScrollTop;
+                });
+            }
+        },
     },
 
     methods: {
