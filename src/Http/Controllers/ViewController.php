@@ -34,11 +34,22 @@ class ViewController extends NovaActionController
 
         // Upload all files. This is very rough at the minute.
         // At a minimum need to think about deletion
-        foreach ($request->files as $fieldName => $file) {
-            $filename = $request->file($fieldName)->store("flexible_preview_temporary_uploads", "public");
-            $values[$fieldName] = $filename;
+        // foreach ($request->files as $fieldName => $file) {
+        //     $filename = $request->file($fieldName)->store("flexible_preview_temporary_uploads", "public");
+        //     $values[$fieldName] = $filename;
+        // }
+
+
+        if(method_exists($layout, 'imagePreviews') && count($layout->imagePreviews())) {
+            foreach($layout->imagePreviews() as $field_name => $conversion_function) {
+                $field_name_with_key = $request->__key . '__' . $field_name;
+                if($request->file($field_name_with_key)) {
+                    $values[$field_name_with_key] = $conversion_function($request->file($field_name_with_key));
+                }
+            }
         }
 
+    
         // Set attributes on our layout
         foreach($this->removeKeyPrefixFromFields($values, $request->__key) as $key => $value) {
             $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
