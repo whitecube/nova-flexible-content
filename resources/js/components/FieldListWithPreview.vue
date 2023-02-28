@@ -26,6 +26,7 @@
                         :resource-id="resourceId"
                         fullWidthContent="true"
                         @input="onInput($event, item)"
+                        @change="onInput($event, item)"
                         :field="item"
                         :errors="errors"
                         :mode="mode"
@@ -99,6 +100,7 @@ export default {
     methods: {
         
         onInput: _.debounce(function debounceRead(evt, updatedField) {
+            console.log(evt, updatedField);
             this.update(updatedField);
         }, 150),
 

@@ -32,14 +32,6 @@ class ViewController extends NovaActionController
 
         $values = $request->except(["__key"]);
 
-        // Upload all files. This is very rough at the minute.
-        // At a minimum need to think about deletion
-        // foreach ($request->files as $fieldName => $file) {
-        //     $filename = $request->file($fieldName)->store("flexible_preview_temporary_uploads", "public");
-        //     $values[$fieldName] = $filename;
-        // }
-
-
         if(method_exists($layout, 'imagePreviews') && count($layout->imagePreviews())) {
             foreach($layout->imagePreviews() as $field_name => $conversion_function) {
                 $field_name_with_key = $request->__key . '__' . $field_name;
@@ -48,7 +40,6 @@ class ViewController extends NovaActionController
                 }
             }
         }
-
     
         // Set attributes on our layout
         foreach($this->removeKeyPrefixFromFields($values, $request->__key) as $key => $value) {
