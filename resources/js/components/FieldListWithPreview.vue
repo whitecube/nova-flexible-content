@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div @click="$emit('group-selected')" class="relative" :class="{'pointer-events-none': !initialPreviewHtml}" style="min-height: 80px;" >
+        <div @click="$emit('group-selected')" class="relative" :class="{'pointer-events-none': selectedGroup && !initialPreviewHtml}" style="min-height: 80px;" >
             <div class="absolute z-10 inset-0 transition border-2" :class="{ 'pointer-events-none  border-primary-500 border-dashed' : selectedGroup, 'hover:border-gray-200 border-transparent' : !selectedGroup }"></div>
             <preview-iframe v-if="initialPreviewHtml" :stylesheet="stylesheet" :flexible_key="flexible_key" :fullScreen="fullScreen" :initialPreviewHtml="initialPreviewHtml" :updatedPreviewHtml="updatedPreviewHtml" />
         </div>
