@@ -100,7 +100,6 @@ export default {
     methods: {
         
         onInput: _.debounce(function debounceRead(evt, updatedField) {
-            console.log(evt, updatedField);
             this.update(updatedField);
         }, 150),
 

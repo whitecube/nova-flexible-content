@@ -32,18 +32,23 @@ class ViewController extends NovaActionController
 
         $values = $request->except(["__key"]);
 
-        if(method_exists($layout, 'imagePreviews') && count($layout->imagePreviews())) {
-            foreach($layout->imagePreviews() as $field_name => $conversion_function) {
-                $field_name_with_key = $request->__key . '__' . $field_name;
-                if($request->file($field_name_with_key)) {
-                    $values[$field_name_with_key] = $conversion_function($request->file($field_name_with_key));
-                }
-            }
-        }
+        // if(method_exists($layout, 'imagePreviews') && count($layout->imagePreviews())) {
+        //     foreach($layout->imagePreviews() as $field_name => $conversion_function) {
+        //         $field_name_with_key = $request->__key . '__' . $field_name;
+        //         if($request->file($field_name_with_key)) {
+        //             $values[$field_name_with_key] = $conversion_function($request->file($field_name_with_key));
+        //         }
+        //     }
+        // }
     
         // Set attributes on our layout
         foreach($this->removeKeyPrefixFromFields($values, $request->__key) as $key => $value) {
-            $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
+            if(is_array($value)) {
+                $layout->setAttribute($key, json_encode($value));
+            }
+            else {
+                $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
+            }
         }
         
         return response()->json([

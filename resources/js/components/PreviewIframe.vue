@@ -1,5 +1,6 @@
 <template>
     <div class="relative" :style="{
+                'min-height': '80px', 
                 height: `${iframeParentHeight}px`,
             }">
         <iframe
