@@ -11,10 +11,13 @@
         <template #field>
 
             <div :class="{
-                '-mx-8 -mt-5' : currentField.enablePreview && !fullScreen,
+                '-mx-8 -mt-6' : currentField.enablePreview && !fullScreen,
                 'fixed inset-0 bg-gray-50 z-50 flex flex-col' : fullScreen
     
                 }">
+                <div v-if="fullScreen" class="px-4 py-2 z-20 bg-white border-b text-right">
+                    <button class="shadow relative bg-primary-500 hover:bg-primary-400 text-white dark:text-gray-900 cursor-pointer rounded text-sm font-bold focus:outline-none focus:ring ring-primary-200 dark:ring-gray-600 inline-flex items-center justify-center h-9 px-3" @click="selectGroup(null)">Exit full screen mode</button>
+                </div>
                 <div ref="flexibleFieldContainer"                
                 :class="{
                     'mb-4' : currentField.enablePreview && !fullScreen,
@@ -343,6 +346,10 @@ export default {
 
 .-mt-5 {
     margin-top: -1.25rem;
+}
+
+.-mt-6 {
+    margin-top: -1.5rem;
 }
 
 .-mx-8 {

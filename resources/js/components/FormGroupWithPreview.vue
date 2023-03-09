@@ -80,6 +80,7 @@
                 :mode="mode"
                 :show-help-text="item.helpText != null"
             />
+        
         </div>
         <field-list-with-preview
             v-else

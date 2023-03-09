@@ -1,11 +1,16 @@
 <template>
     <div>
+        
         <div @click="$emit('group-selected')" class="relative" :class="{'pointer-events-none': selectedGroup && !initialPreviewHtml}" style="min-height: 80px;" >
-            <div class="absolute z-10 inset-0 transition border-2" :class="{ 'pointer-events-none  border-primary-500 border-dashed' : selectedGroup, 'hover:border-gray-200 border-transparent' : !selectedGroup }"></div>
+            <div v-if="fieldListErrorCount" class="font-bold z-20 mt-3 ml-3 border shadow absolute bg-white px-4 py-2 rounded">
+                <icon type="exclamation-circle" class="text-red-600 align-middle" width="20" height="20" />
+                {{fieldListErrorCount }} errors
+            </div>
+            <div class="absolute  z-10 inset-0 transition border-2" :class="{ 'pointer-events-none  border-primary-500 border-dashed' : selectedGroup, 'hover:border-gray-200 border-transparent' : !selectedGroup }"></div>
             <preview-iframe v-if="initialPreviewHtml" :stylesheet="stylesheet" :flexible_key="flexible_key" :fullScreen="fullScreen" :initialPreviewHtml="initialPreviewHtml" :updatedPreviewHtml="updatedPreviewHtml" />
         </div>
          <div v-show="selectedGroup"
-            class="absolute top-0 left-0 md:w-1/5 bottom-0 h-full  bg-gray-50 overflow-y-scroll self-stretch">
+            class="absolute pt-4 top-0 left-0 md:w-1/5 bottom-0 h-full  bg-gray-50 overflow-y-scroll self-stretch">
            
             <div class="w-full py-5 overflow-hidden">
                 <div class="px-6 py-6 gap-2 flex flex-row items-center ">
@@ -17,7 +22,8 @@
 
                 <div
                     class="fields relative divide-y divide-gray-100 dark:divide-gray-700"
-                    style="width: 125%; margin-left: -0.25rem; margin-right: -0.25rem;">
+                    style="margin-left: -0.25rem; margin-right: -0.25rem;">
+                    <fieldset ref="fieldset">
                     <component
                         v-for="(item, index) in stackedFields"
                         :key="index"
@@ -35,6 +41,7 @@
                             'remove-bottom-border': index == fields.length - 1,
                         }"
                     />
+                    </fieldset>
                 </div>
             </div>
         </div>
@@ -68,7 +75,8 @@ export default {
         return {
             form: new FormData(),
             initialPreviewHtml: null,
-            updatedPreviewHtml: null
+            updatedPreviewHtml: null,
+            containsInvalidFormElements: false
         };
     },
 
@@ -79,6 +87,10 @@ export default {
                 return field;
             });
         },
+
+        fieldListErrorCount() {
+            return this.fields.filter((field) => Object.keys(this.errors.errors).includes(field.attribute)).length 
+        }
     },
 
     mounted() {
@@ -95,9 +107,30 @@ export default {
     },
 
     watch: {
+        selectedGroup(newValue, oldValue) {
+            if(!newValue) {
+                this.validateFields();
+                if(this.containsInvalidFormElements) {
+                    this.$emit('group-selected');
+                    this.$refs.fieldset.elements.forEach(field => {
+                        field.reportValidity();
+                    })
+                }
+            }
+        }
+
     },
 
     methods: {
+
+        validateFields() {            
+            this.containsInvalidFormElements = false;
+            this.$refs.fieldset.elements.forEach(field => {
+                if(!field.checkValidity()) {
+                    this.containsInvalidFormElements = true;
+                }
+            });
+        },
         
         onInput: _.debounce(function debounceRead(evt, updatedField) {
             this.update(updatedField);
@@ -184,9 +217,13 @@ export default {
 }
 
 .fields .md\:w-1\/4,
-.fields .w-1\/2 {
+.fields .w-1\/2,
+.fields .md\:w-4\/5,
+.fields .md\:w-3\/5  {
+
     width: 100%
 }
+
 
 .nsr-w-full.nsr-flex.nsr-border-b.nsr-py-2 {
     display: none;
@@ -203,10 +240,10 @@ export default {
     width: 100%;
 }
 
-.fields .simple-repeatable.form-field>:nth-child(2) {
+/* .fields .simple-repeatable.form-field>:nth-child(2) {
     margin-right: 0;
     width: 80% !important;
-}
+} */
 
 .fields .simple-repeatable.form-field .simple-repeatable-row .delete-icon, .simple-repeatable.form-field .simple-repeatable-row .vue-draggable-handle {
     margin-right: 0;
