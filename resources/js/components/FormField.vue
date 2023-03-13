@@ -69,6 +69,7 @@ import FullWidthField from './FullWidthField';
 import Sortable from 'sortablejs'
 import { DependentFormField, HandlesValidationErrors, mapProps } from 'laravel-nova';
 import Group from '../group';
+import { ElementTypes } from '@vue/compiler-core';
 
 export default {
     mixins: [HandlesValidationErrors, DependentFormField],
@@ -128,6 +129,7 @@ export default {
     },
 
     beforeUnmount() {
+        document.documentElement.classList.remove('overflow-hidden');
         if (this.sortableInstance) {
             this.sortableInstance.destroy();
         }
@@ -139,16 +141,26 @@ export default {
          * Select the current group
          */
         selectGroup(groupKey, element) {
-            if(this.selectedGroupKey == groupKey || groupKey == null) {
-               this.selectedGroupKey = null;
-               this.fullScreen = false;
 
+
+            
+            if(this.selectedGroupKey == groupKey || groupKey == null) {
+                this.selectedGroupKey = null;
+                this.fullScreen = false;
+                document.documentElement.classList.remove('overflow-hidden');
+                let scrollY = this.$refs.flexibleFieldContainer.scrollTop;
+                this.$nextTick(() => {
+                    console.log(scrollY, this.$refs.flexibleFieldContainer.getBoundingClientRect().top);
+                    document.documentElement.scrollTop = scrollY + this.$refs.flexibleFieldContainer.getBoundingClientRect().top;
+                });
             }
             else {
+                document.documentElement.classList.add('overflow-hidden');
+                let elementY = element.offsetTop - element.clientHeight/2;
                 this.fullScreen = true;
                 this.selectedGroupKey = groupKey;
                 this.$nextTick(() => {
-                element.scrollIntoView({behavior: "smooth", block: "center", inline: "nearest"});
+                    element.parentElement.scrollTop = elementY;
                 });
             }
         },

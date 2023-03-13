@@ -6,9 +6,9 @@ use Whitecube\NovaFlexibleContent\Http\Controllers\ViewController;
 Route::post(
     'view/{resource}/{resourceId}/{fieldName}/{layoutName}',
     ViewController::class
-)->name('view');
+)->name('view.post');
 
 Route::get(
     'view/{resource}/{resourceId}/{fieldName}/{layoutName}',
     ViewController::class
-)->name('view');
+)->name('view.get');
