@@ -159,6 +159,12 @@ class Flexible extends Field
         ]);
     }
 
+    public function defaultLayouts($layouts) {
+        return $this->withMeta([
+            'defaultLayouts' => $layouts
+        ]);
+    }
+
     /**
      * Set the field's resolver
      *

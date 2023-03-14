@@ -141,16 +141,12 @@ export default {
          * Select the current group
          */
         selectGroup(groupKey, element) {
-
-
-            
             if(this.selectedGroupKey == groupKey || groupKey == null) {
                 this.selectedGroupKey = null;
                 this.fullScreen = false;
                 document.documentElement.classList.remove('overflow-hidden');
                 let scrollY = this.$refs.flexibleFieldContainer.scrollTop;
                 this.$nextTick(() => {
-                    console.log(scrollY, this.$refs.flexibleFieldContainer.getBoundingClientRect().top);
                     document.documentElement.scrollTop = scrollY + this.$refs.flexibleFieldContainer.getBoundingClientRect().top;
                 });
             }
@@ -174,6 +170,7 @@ export default {
 
             this.populateGroups();
             this.$nextTick(this.initSortable.bind(this));
+            
         },
 
         /**
@@ -240,8 +237,9 @@ export default {
          * Set the displayed layouts from the field's current value
          */
         populateGroups() {
-            this.order.splice(0, this.order.length);
             this.groups = {};
+
+            console.log('hi', this.currentField);
 
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
@@ -250,6 +248,11 @@ export default {
                     this.value[i].key,
                     this.currentField.collapsed
                 );
+            }
+            if(!this.resourceId) {
+                this.currentField.defaultLayouts.forEach((layoutName) => {
+                    this.addGroup(this.getLayout(layoutName));
+                });
             }
         },
 
