@@ -11,7 +11,7 @@
             class=" absolute block left-1/2 top-1/2 h-full transform w-screen"
             ref="iframe"
             :srcdoc="`
-            <html>
+            <html class="h-screen overflow-hidden">
             <head>
                 <base target='_blank' />
                 <link rel='stylesheet' href='${stylesheet}' />
@@ -29,7 +29,7 @@
                 </script>
                 <script src='//unpkg.com/alpinejs' defer></script> 
             </head>
-            <body>
+            <body class="overflow-hidden h-screen w-screen">
                 ${ initialPreviewHtml }
             </body>
             </html>`"

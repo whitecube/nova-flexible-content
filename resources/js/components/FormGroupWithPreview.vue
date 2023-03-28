@@ -67,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
             <component
                 @click="($event) => {if(!selectedGroup) {$emit('group-selected', $el)}}"
                 v-for="(item, index) in group.fields"
