@@ -204,7 +204,7 @@ export default {
                     this.fields.forEach((field) => {
                         this.form.set(
                             field.attribute,
-                            JSON.parse(json.data[field.attribute] ?? "")
+                            json.data[field.attribute] ?? ""
                         );
                     });
 
