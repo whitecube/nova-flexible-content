@@ -188,7 +188,7 @@ export default {
                 `/nova-vendor/flexible/view/${this.resourceName}/${this.resourceId}/${this.fieldName}/${this.layoutName}`,
                 {
                     method: "post",
-                    body: JSON.stringify(this.form),
+                    body: this.form,
                     headers: {
                         "X-CSRF-TOKEN": document.querySelector(
                             'meta[name="csrf-token"]'
