@@ -204,18 +204,13 @@ export default {
                     this.form = new FormData();
                     this.form.append("__key", this.flexible_key);
                     this.fields.forEach((field) => {
-                        console.log(field.attribute);
-                        if(typeof(json.data[field.attribute]) == 'object') {
-                            console.log(json.data[field.attribute]);
+                        if(json.data[field.attribute] && typeof(json.data[field.attribute]) == 'object') {   
                             json.data[field.attribute] = JSON.stringify(json.data[field.attribute]);
-                            console.log(JSON.stringify(json.data[field.attribute]));
                         }
-                        
                         this.form.set(
                             field.attribute,
                             json.data[field.attribute] ?? ""
                         );
-                        // console.log(this.form.get(field.attribute));
                     });
 
                     if (!this.initialPreviewHtml || json.has_uploads) {

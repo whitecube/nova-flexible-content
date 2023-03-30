@@ -46,15 +46,9 @@ class ViewController extends NovaActionController
             $this->removeKeyPrefixFromFields($values, $request->__key)
             as $key => $value
         ) {
-            // $field = Arr::first($layout->fields(), function ($field) use (
-            //     $key
-            // ) {
-            //     return $field->attribute == $key;
-            // });
+ 
 
             if ($request->file($request->__key . "__" . $key)) {
-
-                // We have file... let’s see if it’s an image field
 
                 $field = $this->findFieldInLayout($key, $layout);
 
