@@ -110,7 +110,7 @@ export default {
         
         setIframeHeight() {
                 this.iframeHeight =
-                    this.$refs.iframe.contentWindow.document.body.clientHeight;
+                    this.$refs.iframe.contentWindow.document.body.clientHeight;                    
                 this.iframeParentHeight =
                     this.iframeHeight * this.scale;
         },

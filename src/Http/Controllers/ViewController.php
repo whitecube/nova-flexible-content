@@ -46,30 +46,39 @@ class ViewController extends NovaActionController
             $this->removeKeyPrefixFromFields($values, $request->__key)
             as $key => $value
         ) {
-            $field = Arr::first($layout->fields(), function ($field) use (
-                $key
-            ) {
-                return $field->attribute == $key;
-            });
+            // $field = Arr::first($layout->fields(), function ($field) use (
+            //     $key
+            // ) {
+            //     return $field->attribute == $key;
+            // });
 
-            if (
-                get_class($field) == "Laravel\Nova\Fields\Image" &&
-                $request->file($request->__key . "__" . $key)
-            ) {
+            if ($request->file($request->__key . "__" . $key)) {
 
-                $layout->setAttribute(
-                    $key,
-                    json_encode(
-                        $field->storageCallback->__invoke(
-                            $request,
-                            $layout,
-                            $key,
-                            $request->__key . "__" . $key,
-                            null,
-                            "temporary_uploads/"
-                        )[$key]
-                    )
-                );
+                // We have file... let’s see if it’s an image field
+
+                $field = $this->findFieldInLayout($key, $layout);
+
+                if(get_class($field) == "Laravel\Nova\Fields\Image") {
+                    $images = $field->storageCallback->__invoke(
+                        $request,
+                        $layout,
+                        $key,
+                        $request->__key . "__" . $key,
+                        null,
+                        "public/temporary_uploads/"
+                    )[$key];
+
+                    $values[$request->__key . "__" . $key] = $images;
+
+                    $layout->setAttribute(
+                        $key,
+                        $images                    
+                    );
+                }
+                else {
+                    return false;
+                }
+        
             } elseif (is_array($value)) {
                 $layout->setAttribute($key, json_encode($value));
             } else {
@@ -91,4 +100,13 @@ class ViewController extends NovaActionController
         $unprefixed_keys = str_replace($key . "__", "", array_keys($array));
         return array_combine($unprefixed_keys, $array);
     }
+
+    private function findFieldInLayout($key, $layout) {
+        return Arr::first($layout->fields(), function ($field) use (
+                    $key
+                ) {
+                    return $field->attribute == $key;
+                });
+    }
 }
+

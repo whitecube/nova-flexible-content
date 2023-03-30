@@ -139,9 +139,10 @@ export default {
 
         this.$nextTick(() => {
             this.fields.forEach((field) => {
-                this.form.set(field.attribute, field.value ?? "");
+                this.form.set(field.attribute, JSON.stringify(field.value) ?? "");
                 field.fill(this.form);
             });
+          
             this.getPreview();
         });
     },
@@ -180,6 +181,7 @@ export default {
             );
             this.form.delete(field.attribute);
             field.fill(this.form);
+
             this.getPreview();
         },
 
@@ -202,10 +204,18 @@ export default {
                     this.form = new FormData();
                     this.form.append("__key", this.flexible_key);
                     this.fields.forEach((field) => {
+                        console.log(field.attribute);
+                        if(typeof(json.data[field.attribute]) == 'object') {
+                            console.log(json.data[field.attribute]);
+                            json.data[field.attribute] = JSON.stringify(json.data[field.attribute]);
+                            console.log(JSON.stringify(json.data[field.attribute]));
+                        }
+                        
                         this.form.set(
                             field.attribute,
                             json.data[field.attribute] ?? ""
                         );
+                        // console.log(this.form.get(field.attribute));
                     });
 
                     if (!this.initialPreviewHtml || json.has_uploads) {

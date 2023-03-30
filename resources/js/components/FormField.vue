@@ -239,8 +239,6 @@ export default {
         populateGroups() {
             this.groups = {};
 
-            console.log('hi', this.currentField);
-
             for (var i = 0; i < this.value.length; i++) {
                 this.addGroup(
                     this.getLayout(this.value[i].layout),
