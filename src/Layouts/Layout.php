@@ -601,6 +601,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     {
         return false;
     }
+    
+    /**
+     * Get the dynamic relation resolver if defined or inherited, or return null.
+     * Since it is not possible to define a relation on a layout, this method
+     * returns null
+     *
+     * @param  string  $class
+     * @param  string  $key
+     * @return mixed
+     */
+    public function relationResolver($class, $key)
+    {
+        return null;
+    }
 
     /**
      * Transform layout for serialization
