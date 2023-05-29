@@ -41,7 +41,7 @@
             v-show="selectedGroup"
             class="absolute pt-4 top-0 left-0 md:w-1/5 bottom-0 h-full bg-gray-50 overflow-y-scroll self-stretch"
         >
-            <div class="w-full py-5 overflow-hidden">
+            <div class="w-full py-5">
                 <div class="px-6 py-6 gap-2 flex flex-row items-center">
                     <button
                         :aria-label="`Close ${title}`"
