@@ -58,7 +58,7 @@
 
 
             <div v-show="fullScreen && selectedGroup" class="absolute top-0 left-0 md:w-1/5 bottom-0 h-full  bg-gray-50 overflow-y-scroll self-stretch">           
-                <div class="w-full py-5 overflow-hidden">
+                <div class="w-full py-5">
                     <div class="px-6 py-6 gap-2 flex flex-row items-center ">
                         <button :aria-label="`Close ${ group.title }`" @click.prevent="$emit('group-selected')">    
                             <icon type="arrow-left" class="align-top rounded-full hover:bg-gray-200 p-2" width="36" height="36" />

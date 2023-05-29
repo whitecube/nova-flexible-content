@@ -139,10 +139,12 @@ export default {
 
         this.$nextTick(() => {
             this.fields.forEach((field) => {
-                this.form.set(field.attribute, JSON.stringify(field.value) ?? "");
                 field.fill(this.form);
+                if(!this.form.has(field.attribute)) {
+                    this.form.delete(field.attribute);
+                    this.form.set(field.attribute, field.value ? JSON.stringify(field.value) : "");
+                }
             });
-          
             this.getPreview();
         });
     },
@@ -179,6 +181,7 @@ export default {
             let field = this.fields.find(
                 (field) => field.uniqueKey == updatedField.uniqueKey
             );
+
             this.form.delete(field.attribute);
             field.fill(this.form);
 
@@ -207,6 +210,7 @@ export default {
                         if(json.data[field.attribute] && typeof(json.data[field.attribute]) == 'object') {   
                             json.data[field.attribute] = JSON.stringify(json.data[field.attribute]);
                         }
+                        
                         this.form.set(
                             field.attribute,
                             json.data[field.attribute] ?? ""

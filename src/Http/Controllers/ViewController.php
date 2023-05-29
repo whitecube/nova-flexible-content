@@ -28,6 +28,7 @@ class ViewController extends NovaActionController
 
         // Not sure if there's a way of finding the layout that does this automatically.
         // Needed to give us access to $layout->model, e.g. in accessors.
+
         $layout->setModel($request->findModel($resourceId));
 
         $values = $request->except(["__key"]);
@@ -46,33 +47,25 @@ class ViewController extends NovaActionController
             $this->removeKeyPrefixFromFields($values, $request->__key)
             as $key => $value
         ) {
- 
-
             if ($request->file($request->__key . "__" . $key)) {
-
                 $field = $this->findFieldInLayout($key, $layout);
 
-                if(get_class($field) == "Laravel\Nova\Fields\Image") {
+                if (get_class($field) == "Laravel\Nova\Fields\Image") {
                     $images = $field->storageCallback->__invoke(
                         $request,
                         $layout,
                         $key,
                         $request->__key . "__" . $key,
                         null,
-                        "public/temporary_uploads/"
-                    )[$key];
+                        "public/temporary_flexible_uploads/"
+                    );
 
                     $values[$request->__key . "__" . $key] = $images;
 
-                    $layout->setAttribute(
-                        $key,
-                        $images                    
-                    );
+                    $layout->setAttribute($key, $images);
+                } else {
+                    $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
                 }
-                else {
-                    return false;
-                }
-        
             } elseif (is_array($value)) {
                 $layout->setAttribute($key, json_encode($value));
             } else {
@@ -95,12 +88,10 @@ class ViewController extends NovaActionController
         return array_combine($unprefixed_keys, $array);
     }
 
-    private function findFieldInLayout($key, $layout) {
-        return Arr::first($layout->fields(), function ($field) use (
-                    $key
-                ) {
-                    return $field->attribute == $key;
-                });
+    private function findFieldInLayout($key, $layout)
+    {
+        return Arr::first($layout->fields(), function ($field) use ($key) {
+            return $field->attribute == $key;
+        });
     }
 }
-
