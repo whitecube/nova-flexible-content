@@ -229,9 +229,13 @@ export default {
         moveToBottom(key) {
             let index = this.order.indexOf(key);
 
+            console.log(index);
+
             if (index <= 0) return;
 
-            this.order.push(this.order.shift());
+            console.log(`after index check: ${index}`);
+
+            this.order.push(this.order.splice(index, 1)[0]);
         },
 
         /**
