@@ -231,7 +231,7 @@ export default {
 
             console.log(index);
 
-            if (index <= 0) return;
+            if (index < 0 || index >= this.order.length - 1) return;
 
             console.log(`after index check: ${index}`);
 
