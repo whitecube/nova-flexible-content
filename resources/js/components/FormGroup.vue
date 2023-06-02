@@ -43,7 +43,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                             :title="__('Move to top')"
                             @click.prevent="moveToTop">
-                            <icon type="chevron-double-down" class="align-top" width="16" height="16" />
+                            <icon type="chevron-double-up" class="align-top" width="16" height="16" />
                         </button>
                         <button
                             dusk="move-to-bottom-group"
@@ -51,7 +51,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                             :title="__('Move to bottom')"
                             @click.prevent="moveToBottom">
-                            <icon type="chevron-double-up" class="align-top" width="16" height="16" />
+                            <icon type="chevron-double-down" class="align-top" width="16" height="16" />
                         </button>
                         <button
                             dusk="move-up-group"
