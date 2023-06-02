@@ -231,7 +231,7 @@ export default {
 
             if (index <= 0) return;
 
-            this.order.push(this.order.splice(index, 1)[0]);
+            this.order.push(this.order.shift());
         },
 
         /**
