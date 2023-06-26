@@ -117,7 +117,7 @@ class CreateCast extends Command
         ], [
             $this->classname,
         ],
-            $this->files->get(__DIR__.'/../Stubs/Cast.php')
+            $this->files->get(__DIR__.'/../Stubs/Cast.stub')
         );
     }
 }

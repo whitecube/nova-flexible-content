@@ -141,7 +141,7 @@ class CreateLayout extends Command
             $this->classname,
             $this->name,
         ],
-            $this->files->get(__DIR__.'/../Stubs/Layout.php')
+            $this->files->get(__DIR__.'/../Stubs/Layout.stub')
         );
     }
 }
