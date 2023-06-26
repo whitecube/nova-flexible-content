@@ -43,7 +43,7 @@ trait HasFlexible
     /**
      * Parse a Flexible Content from value
      *
-     * @param  array|string|BaseCollection|null  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @param  array  $layoutMapping
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
@@ -63,7 +63,7 @@ trait HasFlexible
     /**
      * Transform incoming value into an array of usable layouts
      *
-     * @param  array|string|BaseCollection|null  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @return array|null
      */
     protected function getFlexibleArrayFromValue($value)
