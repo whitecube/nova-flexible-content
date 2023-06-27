@@ -66,11 +66,11 @@ export default class Group {
     randomString(len, charSet) {
         charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var randomString = '';
-        for (var i = 0; i < len; i++) {
+        for (var i = 0; i < len - 1; i++) {
             var randomPoz = Math.floor(Math.random() * charSet.length);
             randomString += charSet.substring(randomPoz,randomPoz+1);
         }
-        return randomString;
+        return 'c' + randomString;
     }
 
     /**
@@ -80,6 +80,13 @@ export default class Group {
         for (var i = this.fields.length - 1; i >= 0; i--) {
             this.fields[i].attribute = this.key + '__' + this.fields[i].attribute;
             this.fields[i].validationKey = this.fields[i].attribute;
+
+            if (this.fields[i].dependsOn) {
+                Object.keys(this.fields[i].dependsOn).forEach(key => {
+                    this.fields[i].dependsOn[`${this.key}__${key}`] = this.fields[i].dependsOn[key];
+                    delete this.fields[i].dependsOn[key];
+                });
+            }
         }
     }
 

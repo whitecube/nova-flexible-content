@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="5.6.0@e784128902dfe01d489c4123d69918a9f3c1eac5">
+  <file src="src/FileAdder/FileAdder.php">
+    <UndefinedClass>
+      <code>OriginalFileAdder</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/FileAdder/FileAdderFactory.php">
+    <UndefinedClass>
+      <code>OriginalFileAdderFactory</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/Flexible.php">
+    <UndefinedClass>
+      <code>$model</code>
+      <code>\Whitecube\NovaPage\Pages\Template</code>
+    </UndefinedClass>
+  </file>
+  <file src="src/Layouts/Collection.php">
+    <UnimplementedInterfaceMethod>
+      <code>Collection</code>
+    </UnimplementedInterfaceMethod>
+  </file>
+  <file src="src/Layouts/Layout.php">
+    <UndefinedTrait>
+      <code>HasAttributes</code>
+    </UndefinedTrait>
+  </file>
+</files>

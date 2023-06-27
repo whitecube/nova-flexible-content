@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.2, 7.4, 8]
+        php: [7.3, 7.4, 8.0, 8.1]
         prefer: ['--prefer-lowest', '--prefer-stable']
 
     steps:
@@ -31,7 +31,7 @@ jobs:
 
       - name: Install PHP dependencies
         run: |
-          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_PASSWORD }}
+          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
           composer update ${{ matrix.prefer }} --prefer-dist --no-interaction --no-suggest --ansi
 
       - name: PHPUnit
