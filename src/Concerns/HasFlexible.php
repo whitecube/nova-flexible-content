@@ -27,7 +27,7 @@ trait HasFlexible
     /**
      * Cast a Flexible Content value
      *
-     * @param  array  $value
+     * @param  mixed  $value
      * @param  array  $layoutMapping
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
@@ -43,7 +43,7 @@ trait HasFlexible
     /**
      * Parse a Flexible Content from value
      *
-     * @param  mixed  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @param  array  $layoutMapping
      * @return \Whitecube\NovaFlexibleContent\Layouts\Collection
      */
@@ -63,7 +63,7 @@ trait HasFlexible
     /**
      * Transform incoming value into an array of usable layouts
      *
-     * @param  mixed  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @return array|null
      */
     protected function getFlexibleArrayFromValue($value)
@@ -104,7 +104,7 @@ trait HasFlexible
      *
      * @param  mixed  $item
      * @param  array  $layoutMapping
-     * @return null|Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
+     * @return null|\Whitecube\NovaFlexibleContent\Layouts\LayoutInterface
      */
     protected function getMappedLayout($item, array $layoutMapping)
     {
@@ -131,7 +131,7 @@ trait HasFlexible
         }
 
         if (is_null($name)) {
-            return;
+            return null;
         }
 
         return $this->createMappedLayout($name, $key, $attributes, $layoutMapping);

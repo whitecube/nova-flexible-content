@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
+        "ext-json": "*",
         "laravel/framework": "^8.0|^9.0|^10.0",
         "laravel/nova": "^4.0",
         "nova-kit/nova-packages-tool": "^1.3.1"

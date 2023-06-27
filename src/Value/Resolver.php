@@ -7,16 +7,16 @@ use Illuminate\Support\Collection;
 class Resolver implements ResolverInterface
 {
     /**
-     * Set the field's value
+     * Save the Flexible field's content somewhere the get method will be able to access it.
      *
-     * @param  mixed  $model
+     * @param  mixed  $resource
      * @param  string  $attribute
-     * @param  Illuminate\Support\Collection  $groups
+     * @param  \Illuminate\Support\Collection  $groups
      * @return string
      */
-    public function set($model, $attribute, $groups)
+    public function set($resource, $attribute, $groups)
     {
-        return $model->$attribute = $groups->map(function ($group) {
+        return $resource->$attribute = $groups->map(function ($group) {
             return [
                 'layout' => $group->name(),
                 'key' => $group->key(),
@@ -26,12 +26,12 @@ class Resolver implements ResolverInterface
     }
 
     /**
-     * get the field's value
+     * Resolve the Flexible field's content.
      *
      * @param  mixed  $resource
      * @param  string  $attribute
-     * @param  Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
-     * @return Illuminate\Support\Collection
+     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
+     * @return \Illuminate\Support\Collection<int, \Whitecube\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($resource, $attribute, $layouts)
     {
@@ -41,7 +41,7 @@ class Resolver implements ResolverInterface
             $layout = $layouts->find($item->layout);
 
             if (! $layout) {
-                return;
+                return null;
             }
 
             return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
