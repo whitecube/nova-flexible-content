@@ -53,10 +53,13 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
+        "laravel/pint": "^1.2",
         "phpunit/phpunit": "^9.5",
-        "laravel/pint": "^1.2"
+        "psalm/plugin-laravel": "^2.0"
     },
     "scripts": {
+        "psalm": "psalm --find-unused-psalm-suppress --output-format=phpstorm",
+        "psalm-update-baseline": "psalm --set-baseline=psalm-baseline.xml",
         "test": "phpunit --colors=always tests",
         "fix-style": "./vendor/bin/pint"
     }
