@@ -10,3 +10,6 @@ phpunit.xml
 Thumbs.db
 yarn-error.log
 webpack.mix.js
+
+# Used by Psalm and potentially by other tools
+/.cache
