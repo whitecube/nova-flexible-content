@@ -5,12 +5,17 @@ namespace Whitecube\NovaFlexibleContent\Value;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 
+/**
+ * @template TGet of string
+ * @template TSet of \Whitecube\NovaFlexibleContent\Layouts\Layout
+ * @implements \Illuminate\Contracts\Database\Eloquent\CastsAttributes<TGet, TSet>
+ */
 class FlexibleCast implements CastsAttributes
 {
     use HasFlexible;
 
     /**
-     * @var array
+     * @var array<string, class-string<\Whitecube\NovaFlexibleContent\Layouts\LayoutInterface>>
      */
     protected $layouts = [];
 
