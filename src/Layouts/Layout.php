@@ -388,6 +388,22 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Force Fill the layout with an array of attributes.
+     *
+     * @param  array  $attributes
+     * @return $this
+     */
+    public function forceFill(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $attribute = Str::replace('->', '.', $key);
+            Arr::set($this->attributes, $attribute, $value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get validation rules for fields concerned by given request
      *
      * @param  ScopedRequest  $request
