@@ -3,6 +3,8 @@
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
