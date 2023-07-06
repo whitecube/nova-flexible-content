@@ -4,9 +4,11 @@ namespace Whitecube\NovaFlexibleContent\Concerns;
 
 use Illuminate\Support\Collection as BaseCollection;
 use Laravel\Nova\NovaServiceProvider;
+use Laravel\Nova\Support\Fluent;
 use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
+
 
 trait HasFlexible
 {
@@ -120,7 +122,7 @@ trait HasFlexible
             $name = $item['layout'] ?? null;
             $key = $item['key'] ?? null;
             $attributes = (array) ($item['attributes'] ?? []);
-        } elseif (is_a($item, \stdClass::class)) {
+        } elseif (is_a($item, Fluent::class)) {
             $name = $item->layout ?? null;
             $key = $item->key ?? null;
             $attributes = (array) ($item->attributes ?? []);
