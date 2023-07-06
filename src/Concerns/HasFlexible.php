@@ -9,7 +9,6 @@ use Whitecube\NovaFlexibleContent\Layouts\Collection;
 use Whitecube\NovaFlexibleContent\Layouts\Layout;
 use Whitecube\NovaFlexibleContent\Value\FlexibleCast;
 
-
 trait HasFlexible
 {
     /**
@@ -122,7 +121,7 @@ trait HasFlexible
             $name = $item['layout'] ?? null;
             $key = $item['key'] ?? null;
             $attributes = (array) ($item['attributes'] ?? []);
-        } elseif (is_a($item, Fluent::class)) {
+        } elseif (is_a($item, \stdClass::class) || is_a($item, Fluent::class)) {
             $name = $item->layout ?? null;
             $key = $item->key ?? null;
             $attributes = (array) ($item->attributes ?? []);
