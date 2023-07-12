@@ -1,0 +1,45 @@
+name: Psalm
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.php'
+      - 'composer*'
+      - 'psalm*'
+
+jobs:
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      # mtime needs to be restored for Psalm cache to work correctly
+      - name: Restore mtimes
+        uses: chetan/git-restore-mtime-action@v1
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          coverage: none
+
+      - name: Install composer dependencies
+        run: |
+          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
+          composer install --no-interaction --no-progress --no-scripts
+
+      # the way cache keys are set up will always cause a cache miss
+      # but will restore the cache generated during the previous run based on partial match
+      - name: Retrieve Psalm’s cache
+        uses: actions/cache@v3
+        with:
+          path: ./cache/psalm
+          key: ${{ runner.os }}-psalm-cache-${{ hashFiles('psalm.xml', 'psalm-baseline.xml', './composer.json') }}
+
+      - name: Run Psalm
+        run: ./vendor/bin/psalm --find-unused-psalm-suppress --output-format=github

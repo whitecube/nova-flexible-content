@@ -115,7 +115,7 @@ class CreateResolver extends Command
         return str_replace(
             ':classname',
             $this->classname,
-            $this->files->get(__DIR__.'/../Stubs/Resolver.php')
+            $this->files->get(__DIR__.'/../Stubs/Resolver.stub')
         );
     }
 }
