@@ -15,7 +15,7 @@ class FlexibleCast implements CastsAttributes
     protected $layouts = [];
 
     /**
-     * @var Illuminate\Database\Eloquent\Model
+     * @var \Illuminate\Database\Eloquent\Model
      */
     protected $model;
 

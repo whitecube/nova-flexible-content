@@ -7,12 +7,12 @@ use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
 class :classname implements ResolverInterface
 {
     /**
-     * get the field's value
+     * Resolve the Flexible field's content.
      *
      * @param  mixed  $resource
-     * @param  string $attribute
-     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
-     * @return \Illuminate\Support\Collection
+     * @param  string  $attribute
+     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
+     * @return  \Illuminate\Support\Collection<array-key, \Whitecube\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($resource, $attribute, $layouts)
     {
@@ -20,14 +20,14 @@ class :classname implements ResolverInterface
     }
 
     /**
-     * Set the field's value
+     * Save the Flexible field's content somewhere the get method will be able to access it.
      *
-     * @param  mixed  $model
-     * @param  string $attribute
-     * @param  \Illuminate\Support\Collection $groups
-     * @return string
+     * @param  mixed  $resource
+     * @param  string  $attribute Attribute name set for a Flexible field.
+     * @param  \Illuminate\Support\Collection<int, \Whitecube\NovaFlexibleContent\Layouts\Layout>  $groups
+     * @return  mixed
      */
-    public function set($model, $attribute, $groups)
+    public function set($resource, $attribute, $groups)
     {
         
     }

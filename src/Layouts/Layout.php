@@ -3,6 +3,8 @@
 namespace Whitecube\NovaFlexibleContent\Layouts;
 
 use ArrayAccess;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Concerns\HasAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
@@ -16,6 +18,13 @@ use Whitecube\NovaFlexibleContent\Flexible;
 use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
 use Whitecube\NovaFlexibleContent\Http\ScopedRequest;
 
+/**
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @implements \ArrayAccess<TKey, TValue>
+ * @implements \Illuminate\Contracts\Support\Arrayable<TKey, TValue>
+ */
 class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayable
 {
     use HasAttributes;
@@ -92,7 +101,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The parent model instance
      *
-     * @var Illuminate\Database\Eloquent\Model
+     * @var \Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
@@ -115,7 +124,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @var array
      */
-    protected  $relationResolvers = [];
+    protected $relationResolvers = [];
 
     /**
      * The loaded relationships for the Layout.
@@ -388,6 +397,22 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
+     * Force Fill the layout with an array of attributes.
+     *
+     * @param  array  $attributes
+     * @return $this
+     */
+    public function forceFill(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            $attribute = Str::replace('->', '.', $key);
+            Arr::set($this->attributes, $attribute, $value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Get validation rules for fields concerned by given request
      *
      * @param  ScopedRequest  $request
@@ -419,13 +444,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
         $rules = call_user_func([$field, $method], $request);
 
-        return  collect($rules)->mapWithKeys(function ($validatorRules, $attribute) use ($key, $field) {
-            $key = $key.'.attributes.'.$attribute;
+        return collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field, $request) {
+                $key = $request->isFileAttribute($attribute)
+                    ? $request->getFileAttribute($attribute)
+                    : $key.'.attributes.'.$attribute;
 
-            return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
-        })
-                ->filter()
-                ->all();
+                return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
+            })->filter()->all();
     }
 
     /**
@@ -447,12 +472,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * The default behaviour when removed
      *
      * @param  Flexible  $flexible
-     * @param  Whitecube\NovaFlexibleContent\Layout  $layout
+     * @param  \Whitecube\NovaFlexibleContent\Layout  $layout
      * @return mixed
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {
-
     }
 
     /**
