@@ -29,18 +29,10 @@ class ViewController extends NovaActionController
         // Not sure if there's a way of finding the layout that does this automatically.
         // Needed to give us access to $layout->model, e.g. in accessors.
 
-        $layout->setModel($request->findModel($resourceId));
+        $model = $request->findModel($resourceId);
+        $layout->setModel($model);
 
         $values = $request->except(["__key"]);
-
-        // if(method_exists($layout, 'imagePreviews') && count($layout->imagePreviews())) {
-        //     foreach($layout->imagePreviews() as $field_name => $conversion_function) {
-        //         $field_name_with_key = $request->__key . '__' . $field_name;
-        //         if($request->file($field_name_with_key)) {
-        //             $values[$field_name_with_key] = $conversion_function($request->file($field_name_with_key));
-        //         }
-        //     }
-        // }
 
         // Set attributes on our layout
         foreach (
@@ -67,7 +59,12 @@ class ViewController extends NovaActionController
                     $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
                 }
             } elseif (is_array($value)) {
-                $layout->setAttribute($key, json_encode($value));
+                //
+                $layout->setAttribute(
+                    $key,
+                    json_decode(json_encode($value), false)
+                );
+                // $layout->setAttribute($key, $value);
             } else {
                 $layout->setAttribute($key, json_decode($value) ?? $value); // json_decode needed for simple repeater field
             }
@@ -75,8 +72,9 @@ class ViewController extends NovaActionController
 
         return response()->json([
             "view" => view("flexible." . $layoutName, [
-                "layout" => $layout,
+                "layout" => (object) $layout,
             ])->render(),
+
             "data" => $values,
             "has_uploads" => !!count($request->files),
         ]);
