@@ -127,7 +127,7 @@ export default {
             return classes;
         },
         containerStyle() {
-            let classes = ['grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-b-lg'];
+            let classes = ['grow', 'border-b', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-b-lg', 'flex', 'flex-wrap'];
 
             if (! this.group.title) {
                 classes.push('border-t');
