@@ -10,6 +10,27 @@
                     <span v-if="field.required" class="text-danger text-sm">{{
                         __('*')
                     }}</span>
+
+                    <span>
+                        <button
+                            dusk="expand-group"
+                            type="button"
+                            class="shrink-0 group-control btn border border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Expand')"
+                            @click.prevent="expand"
+                            v-if="collapsed">
+                            <icon type="plus" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
+                            dusk="collapse-group"
+                            type="button"
+                            class="group-control btn border border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Collapse')"
+                            @click.prevent="collapse"
+                            v-else>
+                            <icon type="minus" class="align-top" width="16" height="16" />
+                        </button>
+                    </span>
                 </form-label>
 
                 <help-text v-if="showHelpText">
@@ -17,7 +38,7 @@
                 </help-text>
             </div>
 
-            <slot name="field"/>
+            <slot name="field" v-bind:collapsed="collapsed" />
 
             <help-text
                 class="error-text mt-2 text-danger"
@@ -42,6 +63,12 @@ export default {
         ...mapProps(['showHelpText']),
     },
 
+    data() {
+        return {
+            collapsed: this.field.collapsed
+        };
+    },
+
     computed: {
         fieldLabel() {
             // If the field name is purposefully empty, hide the label altogether
@@ -52,5 +79,15 @@ export default {
             return this.fieldName || this.field.singularLabel || this.field.name
         },
     },
+
+    methods: {
+        expand() {
+            this.collapsed = false;
+        },
+
+        collapse() {
+            this.collapsed = true;
+        },
+    }
 };
 </script>

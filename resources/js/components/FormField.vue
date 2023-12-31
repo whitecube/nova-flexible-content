@@ -6,7 +6,7 @@
         :errors="errors"
         :show-help-text="showHelpText"
         full-width-content>
-        <template #field>
+        <template #field="{ collapsed }">
 
             <div ref="flexibleFieldContainer">
                 <form-nova-flexible-content-group
@@ -20,6 +20,7 @@
                     :resource-id="resourceId"
                     :errors="errors"
                     :mode="mode"
+                    :force-collapsed="collapsed"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
                     @remove="remove(group.key)"
@@ -99,7 +100,7 @@ export default {
             order: [],
             groups: {},
             files: {},
-            sortableInstance: null
+            sortableInstance: null,
         };
     },
 
