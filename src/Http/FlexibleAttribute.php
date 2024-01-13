@@ -29,6 +29,12 @@ class FlexibleAttribute
     const FILE_INDICATOR = '___upload-';
 
     /**
+     * Offset of a generated flexible attribute where the group
+     * separator (FlexibleAttribute::GROUP_SEPARATOR) starts
+     */
+    const FLEXIBLE_FIELD_OFFSET = 15;
+
+    /**
      * The original attribute name
      *
      * @var string

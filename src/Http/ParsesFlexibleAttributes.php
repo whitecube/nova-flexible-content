@@ -3,6 +3,7 @@
 namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 trait ParsesFlexibleAttributes
 {
@@ -14,6 +15,47 @@ trait ParsesFlexibleAttributes
     protected $registered = [];
 
     /**
+     * @param $attribute
+     * @return array
+     */
+    protected function splitFlexPartsFromFieldName(string $attribute) : array {
+        return array_combine(['key', 'field'], explode('__', $attribute));
+    }
+
+    /**
+     * Modify the request for a PATCH update-fields request
+     * @param $request
+     * @return bool
+     */
+    protected function parseFlexableFieldForPatchRequest($request) : bool {
+        $field = $request->input('field');
+        // we firstly check if the group separator starts at char index 15 (16th char)
+        if(!(strlen($field) >= FlexibleAttribute::FLEXIBLE_FIELD_OFFSET &&
+            strpos($field, FlexibleAttribute::GROUP_SEPARATOR, FlexibleAttribute::FLEXIBLE_FIELD_OFFSET) !== false)) {
+            return false;
+        }
+        // flexible keys converted to original and to be merged with the request
+        $flex_fields = [];
+        $parts = $this->splitFlexPartsFromFieldName($field);
+        // here we overwrite the query parameter 'field'.
+        $request->instance()->query->set('field', $parts['field']);
+        foreach($request->all() as $field => $value) {
+            // check if we a have a flexible generated field name
+            if(Str::startsWith($field, $parts['key'])) {
+                // remove flexible generate input
+                $request->request->remove($field);
+                // pretend it's an original field input
+                $flex_fields[
+                str_replace($parts['key'] . FlexibleAttribute::GROUP_SEPARATOR, '', $field)
+                ] = $value;
+            }
+        }
+        $request->merge($flex_fields);
+
+        return true;
+    }
+
+    /**
      * Check if given request should be handled by the middleware
      *
      * @param  \Illuminate\Http\Request  $request
@@ -21,6 +63,10 @@ trait ParsesFlexibleAttributes
      */
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
+        if($request->method() === 'PATCH' && Str::contains($request->getRequestUri(), '/update-fields?')) {
+            return $this->parseFlexableFieldForPatchRequest($request);
+        }
+
         return in_array($request->method(), ['POST', 'PUT']) &&
                 is_string($request->input(FlexibleAttribute::REGISTER));
     }
