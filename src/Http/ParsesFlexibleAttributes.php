@@ -28,28 +28,31 @@ trait ParsesFlexibleAttributes
      * @return bool
      */
     protected function parseFlexableFieldForPatchRequest($request) : bool {
-        $field = $request->input('field');
+        $field = $request->query('field');
         // we firstly check if the group separator starts at char index 15 (16th char)
-        if(!(strlen($field) >= FlexibleAttribute::FLEXIBLE_FIELD_OFFSET &&
-            strpos($field, FlexibleAttribute::GROUP_SEPARATOR, FlexibleAttribute::FLEXIBLE_FIELD_OFFSET) !== false)) {
+        if(! FlexibleAttribute::hasFlexibleGeneratedPart($field)) {
             return false;
         }
-        // flexible keys converted to original and to be merged with the request
-        $flex_fields = [];
+
+        // Flexible keys converted to original and to be merged with the request
         $parts = $this->splitFlexPartsFromFieldName($field);
+        // From here, $request->query('field') will be used to keep track
+        // of the original flexible generated field name and $request->input('field')
+        // well be used for the original field name
+        $flex_fields = ['field' => $parts['field']];
         // here we overwrite the query parameter 'field'.
-        $request->instance()->query->set('field', $parts['field']);
         foreach($request->all() as $field => $value) {
-            // check if we a have a flexible generated field name
+            // check if there is a flexible generated field name
             if(Str::startsWith($field, $parts['key'])) {
                 // remove flexible generate input
                 $request->request->remove($field);
                 // pretend it's an original field input
                 $flex_fields[
-                str_replace($parts['key'] . FlexibleAttribute::GROUP_SEPARATOR, '', $field)
+                    str_replace($parts['key'] . FlexibleAttribute::GROUP_SEPARATOR, '', $field)
                 ] = $value;
             }
         }
+
         $request->merge($flex_fields);
 
         return true;
