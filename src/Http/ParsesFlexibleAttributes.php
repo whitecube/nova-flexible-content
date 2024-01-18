@@ -66,7 +66,14 @@ trait ParsesFlexibleAttributes
      */
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
-        if($request->method() === 'PATCH' && Str::contains($request->getRequestUri(), '/update-fields?')) {
+        // dependent field requests (PATCH only).
+        if($request->method() === 'PATCH' && Str::contains($request->getRequestUri(), [
+            '/update-fields?',      // Laravel\Nova\Http\Controllers\UpdateFieldController
+            '/creation-fields?',    // Laravel\Nova\Http\Controllers\CreationFieldSyncController,
+            // @todo: find out scenario where these two routes are used.
+            // '/creation-pivot-fields/'
+            // '/update-pivot-fields/'
+        ])) {
             return $this->parseFlexableFieldForPatchRequest($request);
         }
 
