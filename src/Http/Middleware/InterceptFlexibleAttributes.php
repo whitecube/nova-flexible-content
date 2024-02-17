@@ -23,7 +23,7 @@ class InterceptFlexibleAttributes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $this->requestHasParsableFlexibleInputs($request)) {
+        if (!$this->requestHasParsableFlexibleInputs($request)) {
             return $next($request);
         }
 
@@ -32,7 +32,7 @@ class InterceptFlexibleAttributes
 
         $response = $next($request);
 
-        if (! $this->shouldTransformFlexibleErrors($response)) {
+        if (!$this->shouldTransformFlexibleErrors($response)) {
             return $response;
         }
 

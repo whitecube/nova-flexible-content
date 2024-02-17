@@ -5,39 +5,60 @@
         :field="currentField"
         :errors="errors"
         :show-help-text="showHelpText"
-        full-width-content>
+        full-width-content
+        class="relative"    
+        @keyup.escape="selectGroup(null)">
         <template #field>
 
-            <div ref="flexibleFieldContainer">
-                <form-nova-flexible-content-group
-                    v-for="(group, index) in orderedGroups"
-                    :dusk="currentField.attribute + '-' + index"
-                    :key="group.key"
+            <div :class="{
+                '-mx-8 -mt-6' : currentField.enablePreview && !fullScreen,
+                'fixed inset-0 bg-gray-50 z-50 flex flex-col' : fullScreen
+    
+                }">
+                <div v-if="fullScreen" class="px-4 py-2 z-20 bg-white border-b text-center">
+                    <button class="shadow relative bg-primary-500 hover:bg-primary-400 text-white dark:text-gray-900 cursor-pointer rounded text-sm font-bold focus:outline-none focus:ring ring-primary-200 dark:ring-gray-600 inline-flex items-center justify-center h-9 px-3" @click="selectGroup(null)">Exit full screen mode</button>
+                </div>
+                <div ref="flexibleFieldContainer"                
+                :class="{
+                    'mb-4' : currentField.enablePreview && !fullScreen,
+                    'flex-grow overflow-y-auto ml-sidebar border-l' : currentField.enablePreview && fullScreen
+                }"
+                >
+                    <component
+                        v-for="(group, index) in orderedGroups"
+                        :is="currentField.enablePreview ? 'form-nova-flexible-content-group-with-preview' : 'form-nova-flexible-content-group'"
+                        :dusk="currentField.attribute + '-' + index"
+                        :key="group.key"
+                        :field="currentField"
+                        :group="group"
+                        :index="index"
+                        :resource-name="resourceName"
+                        :resource-id="resourceId"
+                        :errors="errors"
+                        :mode="mode"
+                        :selectedGroup="selectedGroupKey == group.key"
+                        :full-screen="fullScreen"
+                        
+                        @move-up="moveUp(group.key)"
+                        @move-down="moveDown(group.key)"
+                        @remove="remove(group.key)"
+                        @group-selected="selectGroup(group.key, $event)"
+                    />            
+                </div>
+
+                <component
+                    :layouts="layouts"
+                    :is="currentField.menu.component"
                     :field="currentField"
-                    :group="group"
-                    :index="index"
+                    :limit-counter="limitCounter"
+                    :limit-per-layout-counter="limitPerLayoutCounter"
+                    :errors="errors"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
-                    :errors="errors"
-                    :mode="mode"
-                    @move-up="moveUp(group.key)"
-                    @move-down="moveDown(group.key)"
-                    @remove="remove(group.key)"
+                    @addGroup="addGroup($event)"
+                    :class="{'px-8' : currentField.enablePreview , 'fixed z-50 border-t bg-100 ml-sidebar p-2 border-l' : currentField.enablePreview && fullScreen}"
                 />
             </div>
-
-            <component
-                :layouts="layouts"
-                :is="currentField.menu.component"
-                :field="currentField"
-                :limit-counter="limitCounter"
-                :limit-per-layout-counter="limitPerLayoutCounter"
-                :errors="errors"
-                :resource-name="resourceName"
-                :resource-id="resourceId"
-                @addGroup="addGroup($event)"
-            />
-
         </template>
     </component>
 </template>
@@ -48,6 +69,7 @@ import FullWidthField from './FullWidthField';
 import Sortable from 'sortablejs'
 import { DependentFormField, HandlesValidationErrors, mapProps } from 'laravel-nova';
 import Group from '../group';
+import { ElementTypes } from '@vue/compiler-core';
 
 export default {
     mixins: [HandlesValidationErrors, DependentFormField],
@@ -62,6 +84,7 @@ export default {
         layouts() {
             return this.currentField.layouts || false
         },
+        
         orderedGroups() {
             return this.order.reduce((groups, key) => {
                 groups.push(this.groups[key]);
@@ -99,17 +122,45 @@ export default {
             order: [],
             groups: {},
             files: {},
-            sortableInstance: null
+            sortableInstance: null,
+            selectedGroupKey: null,
+            fullScreen: false,
         };
     },
 
     beforeUnmount() {
+        document.documentElement.classList.remove('overflow-hidden');
         if (this.sortableInstance) {
             this.sortableInstance.destroy();
         }
     },
 
     methods: {
+
+        /**
+         * Select the current group
+         */
+        selectGroup(groupKey, element) {
+            if(this.selectedGroupKey == groupKey || groupKey == null) {
+                this.selectedGroupKey = null;
+                this.fullScreen = false;
+                document.documentElement.classList.remove('overflow-hidden');
+                let scrollY = this.$refs.flexibleFieldContainer.scrollTop;
+                this.$nextTick(() => {
+                    document.documentElement.scrollTop = scrollY + this.$refs.flexibleFieldContainer.getBoundingClientRect().top;
+                });
+            }
+            else {
+                document.documentElement.classList.add('overflow-hidden');
+                let elementY = element.offsetTop - element.clientHeight/2;
+                this.fullScreen = true;
+                this.selectedGroupKey = groupKey;
+                this.$nextTick(() => {
+                    element.parentElement.scrollTop = elementY;
+                });
+            }
+        },
+
         /*
          * Set the initial, internal value for the field.
          */
@@ -119,6 +170,7 @@ export default {
 
             this.populateGroups();
             this.$nextTick(this.initSortable.bind(this));
+            
         },
 
         /**
@@ -185,7 +237,6 @@ export default {
          * Set the displayed layouts from the field's current value
          */
         populateGroups() {
-            this.order.splice(0, this.order.length);
             this.groups = {};
 
             for (var i = 0; i < this.value.length; i++) {
@@ -195,6 +246,11 @@ export default {
                     this.value[i].key,
                     this.currentField.collapsed
                 );
+            }
+            if(!this.resourceId) {
+                this.currentField.defaultLayouts.forEach((layoutName) => {
+                    this.addGroup(this.getLayout(layoutName));
+                });
             }
         },
 
@@ -215,10 +271,17 @@ export default {
             collapsed = collapsed || false;
 
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed);
+                group = new Group(layout.name, layout.title, fields, this.currentField, key, layout.preview, collapsed);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+            
+            if(this.fullScreen) {
+                this.selectedGroupKey = group.key;
+                this.$nextTick(() => {
+                    this.$refs.flexibleFieldContainer.lastElementChild.scrollIntoView({behavior: "smooth", block: "end", inline: "center"});
+                });
+            }
         },
 
         /**
@@ -288,3 +351,22 @@ export default {
     }
 }
 </script>
+
+<style>
+.ml-sidebar {
+    margin-left: 20%;
+}
+
+.-mt-5 {
+    margin-top: -1.25rem;
+}
+
+.-mt-6 {
+    margin-top: -1.5rem;
+}
+
+.-mx-8 {
+    margin-left: -2rem;
+    margin-right: -2rem;
+}
+</style>
