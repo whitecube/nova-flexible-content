@@ -38,6 +38,22 @@
                             <icon type="selector" class="align-top" width="16" height="16" />
                         </button>
                         <button
+                            dusk="move-to-top-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Move to top')"
+                            @click.prevent="moveToTop">
+                            <icon type="chevron-double-up" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
+                            dusk="move-to-bottom-group"
+                            type="button"
+                            class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                            :title="__('Move to bottom')"
+                            @click.prevent="moveToBottom">
+                            <icon type="chevron-double-down" class="align-top" width="16" height="16" />
+                        </button>
+                        <button
                             dusk="move-up-group"
                             type="button"
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
@@ -143,6 +159,20 @@ export default {
     },
 
     methods: {
+        /**
+         * Move this group to the top
+         */
+        moveToTop() {
+            this.$emit("move-to-top");
+        },
+
+        /**
+         * Move this group to the bottom
+         */
+        moveToBottom() {
+            this.$emit("move-to-bottom");
+        },
+
         /**
          * Move this group up
          */

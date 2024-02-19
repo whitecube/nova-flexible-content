@@ -22,6 +22,8 @@
                     :mode="mode"
                     @move-up="moveUp(group.key)"
                     @move-down="moveDown(group.key)"
+                    @move-to-bottom="moveToBottom(group.key)"
+                    @move-to-top="moveToTop(group.key)"
                     @remove="remove(group.key)"
                 />
             </div>
@@ -219,6 +221,28 @@ export default {
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+        },
+
+        /**
+         * Move a group to the bottom
+         */
+        moveToBottom(key) {
+            let index = this.order.indexOf(key);
+
+            if (index < 0 || index >= this.order.length - 1) return;
+
+            this.order.push(this.order.splice(index, 1)[0]);
+        },
+
+        /**
+         * Move a group to the top
+         */
+        moveToTop(key) {
+            let index = this.order.indexOf(key);
+
+            if (index <= 0) return;
+
+            this.order.unshift(this.order.splice(index, 1)[0]);
         },
 
         /**
