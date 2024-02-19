@@ -189,6 +189,13 @@ export default {
             this.collapsed = true;
         }
     },
+
+    watch: {
+        // https://github.com/whitecube/nova-flexible-content/issues/156#issuecomment-932327771
+        index(index) {
+            Nova.$emit('flexible-content-order-changed', index);
+        }
+    },
 }
 </script>
 
