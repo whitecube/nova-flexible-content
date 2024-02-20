@@ -103,6 +103,7 @@ export default {
         group: {},
         index: {},
         field: {},
+        forceCollapsed: false,
         ...mapProps(['mode'])
     },
 
@@ -189,6 +190,16 @@ export default {
             this.collapsed = true;
         }
     },
+
+    watch: {
+        forceCollapsed: function(collapsed) {
+            if (collapsed) {
+                this.collapse();
+            } else {
+                this.expand();
+            }
+        }
+    }
 }
 </script>
 
