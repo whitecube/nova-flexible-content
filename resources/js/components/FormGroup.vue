@@ -116,6 +116,14 @@ export default {
         };
     },
 
+    mounted() {
+        if(this.field.collapsePrevious) {
+            Nova.$on('nova-flexible-content-add-group', (layout) => {
+                    this.collapsed = true;
+            });
+        }
+    },
+    
     computed: {
         titleStyle() {
             let classes = ['border-t', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-t-lg'];

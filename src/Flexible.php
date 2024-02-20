@@ -227,6 +227,13 @@ class Flexible extends Field
         return $this;
     }
 
+    public function collapsePrevious(bool $value = true)
+    {
+        $this->withMeta(['collapsePrevious' => $value ]);
+
+        return $this;
+    }
+    
     /**
      * Push a layout instance into the layouts collection
      *
