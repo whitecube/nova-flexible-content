@@ -20,7 +20,7 @@
         "form-backend-validation": "^2.4.0",
         "laravel-mix": "^6.0.41",
         "lodash": "^4.17.21",
-        "postcss": "^8.3.11",
+        "postcss": "^8.4.31",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.8",
         "sass-loader": "10.*",
