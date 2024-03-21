@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.6.0@e784128902dfe01d489c4123d69918a9f3c1eac5">
+<files psalm-version="5.23.1@8471a896ccea3526b26d082f4461eeea467f10a4">
   <file src="src/FileAdder/FileAdder.php">
     <UndefinedClass>
-      <code>OriginalFileAdder</code>
+      <code><![CDATA[OriginalFileAdder]]></code>
     </UndefinedClass>
   </file>
   <file src="src/FileAdder/FileAdderFactory.php">
     <UndefinedClass>
-      <code>OriginalFileAdderFactory</code>
+      <code><![CDATA[OriginalFileAdderFactory]]></code>
     </UndefinedClass>
   </file>
   <file src="src/Flexible.php">
+    <MethodSignatureMismatch>
+      <code><![CDATA[Flexible]]></code>
+    </MethodSignatureMismatch>
     <UndefinedClass>
-      <code>$model</code>
-      <code>\Whitecube\NovaPage\Pages\Template</code>
+      <code><![CDATA[$model]]></code>
+      <code><![CDATA[\Whitecube\NovaPage\Pages\Template]]></code>
+    </UndefinedClass>
+  </file>
+  <file src="src/Http/TransformsFlexibleErrors.php">
+    <UndefinedClass>
+      <code><![CDATA[JsonResponse]]></code>
     </UndefinedClass>
   </file>
   <file src="src/Layouts/Collection.php">
     <UnimplementedInterfaceMethod>
-      <code>Collection</code>
+      <code><![CDATA[Collection]]></code>
     </UnimplementedInterfaceMethod>
   </file>
   <file src="src/Layouts/Layout.php">
     <UndefinedTrait>
-      <code>HasAttributes</code>
+      <code><![CDATA[HasAttributes]]></code>
     </UndefinedTrait>
   </file>
 </files>

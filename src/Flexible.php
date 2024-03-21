@@ -14,6 +14,9 @@ use Whitecube\NovaFlexibleContent\Layouts\Preset;
 use Whitecube\NovaFlexibleContent\Value\Resolver;
 use Whitecube\NovaFlexibleContent\Value\ResolverInterface;
 
+/**
+ * @phpstan-import-type TFieldValidationRules from \Laravel\Nova\Fields\Field
+ */
 class Flexible extends Field
 {
     use SupportsDependentFields;
@@ -374,14 +377,16 @@ class Flexible extends Field
     /**
      * Fire's the remove callbacks on the layouts
      *
-     * @param  Collection  $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     * @param  \Illuminate\Support\Collection<array-key, \Whitecube\NovaFlexibleContent\Layouts\Layout>  $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     * @return void
      */
     protected function fireRemoveCallbacks(Collection $new_groups)
     {
         $new_group_keys = $new_groups->map(function ($item) {
             return $item->inUseKey();
         });
-        $removed_groups = $this->groups->filter(function ($item) use ($new_group_keys) {
+
+        $this->groups->filter(function ($item) use ($new_group_keys) {
             return ! $new_group_keys->contains($item->inUseKey());
         })->each(function ($group) {
             if (method_exists($group, 'fireRemoveCallback')) {
@@ -491,7 +496,8 @@ class Flexible extends Field
      * Get the validation rules for this field & its contained fields.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
-     * @return array
+     * @return array<array-key, array<int, mixed>>
+     * @phpstan-return array<string, array<int, TFieldValidationRules>>
      */
     public function getRules(NovaRequest $request)
     {
