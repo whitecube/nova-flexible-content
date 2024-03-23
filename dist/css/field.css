@@ -23,16 +23,12 @@
   box-shadow: 0 0 0 1px transparent;
 }
 .flexible-search-menu-multiselect .multiselect__spinner:before {
-  -webkit-animation: spinning 2.4s cubic-bezier(0.41, 0.26, 0.2, 0.62);
-          animation: spinning 2.4s cubic-bezier(0.41, 0.26, 0.2, 0.62);
-  -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation: spinning 2.4s cubic-bezier(0.41, 0.26, 0.2, 0.62);
+  animation-iteration-count: infinite;
 }
 .flexible-search-menu-multiselect .multiselect__spinner:after {
-  -webkit-animation: spinning 2.4s cubic-bezier(0.51, 0.09, 0.21, 0.8);
-          animation: spinning 2.4s cubic-bezier(0.51, 0.09, 0.21, 0.8);
-  -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  animation: spinning 2.4s cubic-bezier(0.51, 0.09, 0.21, 0.8);
+  animation-iteration-count: infinite;
 }
 .flexible-search-menu-multiselect .multiselect__loading-transition {
   transition: opacity 0.4s ease-in-out;
