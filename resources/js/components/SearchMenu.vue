@@ -56,7 +56,7 @@
                 }
             },
             availableLayouts() {
-                return this.layouts.filter(layout => this.limitPerLayoutCounter[layout.name] > 0);
+                return this.layouts.filter(layout => (this.limitPerLayoutCounter[layout.name] > 0) || this.limitPerLayoutCounter[layout.name] === undefined);
             },
         },
 

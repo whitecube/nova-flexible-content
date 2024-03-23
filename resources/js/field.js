@@ -6,6 +6,7 @@ Nova.booting((Vue, router, store) => {
     Vue.component('form-nova-flexible-content-group', require('./components/FormGroup.vue').default)
     Vue.component('flexible-drop-menu', require('./components/OriginalDropMenu.vue').default)
     Vue.component('flexible-search-menu', require('./components/SearchMenu.vue').default)
+    Vue.component('flexible-select-menu', require('./components/SelectMenu.vue').default)
     Vue.component('delete-flexible-content-group-modal', require('./components/DeleteGroupModal.vue').default)
     Vue.component('icon-arrow-down', require('./components/icons/ArrowDown.vue').default)
     Vue.component('icon-arrow-up', require('./components/icons/ArrowUp.vue').default)
