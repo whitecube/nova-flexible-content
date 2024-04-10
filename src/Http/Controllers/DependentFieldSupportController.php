@@ -29,8 +29,8 @@ class DependentFieldSupportController extends Controller {
     {
         // we only act on flexible fields concerning this package
         if(! FlexibleAttribute::hasFlexibleGeneratedPart($request->query('field'))) {
-            // return native response
-            return App::makeWith(UpdateFieldController::class, [$request]);
+            // return native response calling sync
+            return App::make(UpdateFieldController::class)->sync($request);
         }
 
         $resource = UpdateViewResource::make()->newResourceWith($request);
@@ -64,9 +64,16 @@ class DependentFieldSupportController extends Controller {
         );
     }
 
+    /**
+     * Find flexible field by unpacking all flexible layouts.
+     * @param $request
+     * @param $resource
+     * @return mixed
+     */
     protected function findFlexibleField($request, $resource) {
         return $resource->creationFields($request)
             ->map(function($field) use ($resource) {
+                // we need to unpack each flexible layout
                 if($field instanceof Flexible) {
                     $resolved = $field->jsonSerialize()['layouts']->map(function($layout) {
                         return $layout->fields();
