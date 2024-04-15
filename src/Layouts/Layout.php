@@ -82,12 +82,14 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
 
     /**
      * The callback to be called when this layout is removed
+     * @var callable(\Whitecube\NovaFlexibleContent\Flexible, \Whitecube\NovaFlexibleContent\Layouts\Layout): void
      */
     protected $removeCallbackMethod;
 
     /**
      * The maximum amount of this layout type that can be added
      * Can be set in custom layouts
+     * @var int<0, max>|null
      */
     protected $limit;
 
@@ -129,13 +131,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Create a new base Layout instance
      *
-     * @param  string  $title
-     * @param  string  $name
-     * @param  array  $fields
-     * @param  string  $key
+     * @param  string|null  $title
+     * @param  string|null  $name
+     * @param  list<\Laravel\Nova\Fields\Field>|\Laravel\Nova\Fields\FieldCollection|null  $fields
+     * @param  string|null  $key
      * @param  array  $attributes
-     * @param  callable|null  $removeCallbackMethod
-     * @param  int|null  $limit
+     * @param  (callable(\Whitecube\NovaFlexibleContent\Flexible, \Whitecube\NovaFlexibleContent\Layouts\Layout): void)|null  $removeCallbackMethod
      * @return void
      */
     public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
@@ -284,12 +285,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             $fields,
             $key,
             $attributes,
-            $this->removeCallbackMethod,
-            $this->limit
+            $this->removeCallbackMethod
         );
         if (! is_null($this->model)) {
             $clone->setModel($this->model);
         }
+        $clone->limit = $this->limit;
 
         return $clone;
     }
@@ -402,7 +403,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Force Fill the layout with an array of attributes.
      *
-     * @param  array  $attributes
+     * @param  array<string, mixed>  $attributes
      * @return $this
      */
     public function forceFill(array $attributes)
@@ -460,23 +461,23 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * The method to call when this layout is removed
      *
      * @param  Flexible  $flexible
-     * @return mixed
+     * @return void
      */
     public function fireRemoveCallback(Flexible $flexible)
     {
         if (is_callable($this->removeCallbackMethod)) {
-            return $this->removeCallbackMethod($flexible, $this);
+            $this->removeCallbackMethod($flexible, $this);
         }
 
-        return $this->removeCallback($flexible, $this);
+        $this->removeCallback($flexible, $this);
     }
 
     /**
      * The default behaviour when removed
      *
      * @param  Flexible  $flexible
-     * @param  \Whitecube\NovaFlexibleContent\Layout  $layout
-     * @return mixed
+     * @param  \Whitecube\NovaFlexibleContent\Layouts\Layout  $layout
+     * @return void
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {

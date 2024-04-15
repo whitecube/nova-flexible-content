@@ -138,11 +138,11 @@ trait HasMediaLibrary
      *
      * @param  Flexible  $flexible
      * @param  Layout  $layout
-     * @return mixed
+     * @return void
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {
-        if ($this->shouldDeletePreservingMedia()) {
+        if ($this instanceof \Spatie\MediaLibrary\HasMedia && $this->shouldDeletePreservingMedia()) {
             return;
         }
 
