@@ -3,6 +3,7 @@
 namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 trait ParsesFlexibleAttributes
 {
@@ -14,6 +15,50 @@ trait ParsesFlexibleAttributes
     protected $registered = [];
 
     /**
+     * @param $attribute
+     * @return array
+     */
+    protected function splitFlexPartsFromFieldName(string $attribute) : array {
+        return array_combine(['key', 'field'], explode('__', $attribute));
+    }
+
+    /**
+     * Modify the request for a PATCH update-fields request
+     * @param $request
+     * @return bool
+     */
+    protected function parseFlexableFieldForPatchRequest($request) : bool {
+        $field = $request->query('field');
+        // we firstly check if the group separator starts at char index 15 (16th char)
+        if(! FlexibleAttribute::hasFlexibleGeneratedPart($field)) {
+            return false;
+        }
+
+        // Flexible keys converted to original and to be merged with the request
+        $parts = $this->splitFlexPartsFromFieldName($field);
+        // From here, $request->query('field') will be used to keep track
+        // of the original flexible generated field name and $request->input('field')
+        // well be used for the original field name
+        $flex_fields = ['field' => $parts['field']];
+        // here we overwrite the query parameter 'field'.
+        foreach($request->all() as $field => $value) {
+            // check if there is a flexible generated field name
+            if(Str::startsWith($field, $parts['key'])) {
+                // remove flexible generate input
+                $request->request->remove($field);
+                // pretend it's an original field input
+                $flex_fields[
+                    str_replace($parts['key'] . FlexibleAttribute::GROUP_SEPARATOR, '', $field)
+                ] = $value;
+            }
+        }
+
+        $request->merge($flex_fields);
+
+        return true;
+    }
+
+    /**
      * Check if given request should be handled by the middleware
      *
      * @param  \Illuminate\Http\Request  $request
@@ -21,6 +66,17 @@ trait ParsesFlexibleAttributes
      */
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
+        // dependent field requests (PATCH only).
+        if($request->method() === 'PATCH' && Str::contains($request->getRequestUri(), [
+            '/update-fields?',      // Laravel\Nova\Http\Controllers\UpdateFieldController
+            '/creation-fields?',    // Laravel\Nova\Http\Controllers\CreationFieldSyncController,
+            // @todo: find out scenario where these two routes are used.
+            // '/creation-pivot-fields/'
+            // '/update-pivot-fields/'
+        ])) {
+            return $this->parseFlexableFieldForPatchRequest($request);
+        }
+
         return in_array($request->method(), ['POST', 'PUT']) &&
                 is_string($request->input(FlexibleAttribute::REGISTER));
     }

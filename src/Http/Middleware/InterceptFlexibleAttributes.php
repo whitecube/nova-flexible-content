@@ -27,6 +27,11 @@ class InterceptFlexibleAttributes
             return $next($request);
         }
 
+        // we assume we can quite here because we don't need the rest after if statement
+        if($request->method() === 'PATCH') {
+            return $next($request);
+        }
+
         $request->merge($this->getParsedFlexibleInputs($request));
         $request->request->remove(FlexibleAttribute::REGISTER);
 
