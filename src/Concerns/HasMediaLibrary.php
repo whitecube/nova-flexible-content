@@ -23,12 +23,12 @@ trait HasMediaLibrary
      *
      * @return \Spatie\MediaLibrary\HasMedia
      */
-    protected function getUnderlyingMediaModel(): HasMedia
+    public function getUnderlyingMediaModel(): HasMedia
     {
         $model = Flexible::getOriginModel() ?? $this->model;
 
         while ($model instanceof Layout) {
-            $model = $model->getMediaModel();
+            $model = $model->getUnderlyingMediaModel();
         }
 
         if (is_null($model) || ! ($model instanceof HasMedia)) {
