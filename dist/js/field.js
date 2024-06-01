@@ -4046,7 +4046,7 @@ var Group = /*#__PURE__*/function () {
     this.fields = fields;
     this.key = key || this.getTemporaryUniqueKey(field.attribute);
     this.collapsed = collapsed;
-    // Si firstLoad es true, forzar que todos los fields sean readonly.
+    // if readOnlyPrevious is true and if firstLoad is true, all previus fields map to readonly.
     this.fields = field.readOnlyPrevious ? firstLoad ? fields.map(function (attributes) {
       return _objectSpread(_objectSpread({}, attributes), {}, {
         readonly: true
