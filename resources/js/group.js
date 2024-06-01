@@ -1,11 +1,13 @@
 export default class Group {
 
-    constructor(name, title, fields, field, key, collapsed = true) {
+    constructor(name, title, fields, field, key, collapsed = true, firstLoad = false) {
         this.name = name;
         this.title = title;
         this.fields = fields;
         this.key = key || this.getTemporaryUniqueKey(field.attribute);
         this.collapsed = collapsed;
+        // if readOnlyPrevious is true and if firstLoad is true, all previus fields map to readonly.
+        this.fields = field.readOnlyPrevious? (firstLoad ? fields.map(attributes => ({ ...attributes, readonly: true })) : fields):fields;
         this.readonly = field.readonly;
 
         this.renameFields();

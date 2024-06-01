@@ -124,6 +124,17 @@ class Flexible extends Field
     }
 
     /**
+     * readOnlyPrevious Previous layouts are read only. 
+     *
+     * @param  bool  $value
+     * @return mixed
+     */
+    public function readOnlyPrevious(bool $value = true)
+    {
+        return $this->withMeta(['readOnlyPrevious' => $value]);
+    }
+
+    /**
      * Make the flexible content take up the full width
      * of the form. Labels will sit above
      *

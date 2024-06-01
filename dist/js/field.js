@@ -2949,9 +2949,10 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
      * Set the initial, internal value for the field.
      */
     setInitialValue: function setInitialValue() {
+      var firstLoad = true;
       this.value = this.currentField.value || [];
       this.files = {};
-      this.populateGroups();
+      this.populateGroups(firstLoad);
       this.$nextTick(this.initSortable.bind(this));
     },
     /**
@@ -3007,10 +3008,11 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
      * Set the displayed layouts from the field's current value
      */
     populateGroups: function populateGroups() {
+      var firstLoad = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       this.order.splice(0, this.order.length);
       this.groups = {};
       for (var i = 0; i < this.value.length; i++) {
-        this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key, this.currentField.collapsed);
+        this.addGroup(this.getLayout(this.value[i].layout), this.value[i].attributes, this.value[i].key, this.currentField.collapsed, firstLoad);
       }
     },
     /**
@@ -3025,11 +3027,11 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     /**
      * Append the given layout to flexible content's list
      */
-    addGroup: function addGroup(layout, attributes, key, collapsed) {
+    addGroup: function addGroup(layout, attributes, key, collapsed, firstLoad) {
       if (!layout) return;
       collapsed = collapsed || false;
       var fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-        group = new _group__WEBPACK_IMPORTED_MODULE_3__["default"](layout.name, layout.title, fields, this.currentField, key, collapsed);
+        group = new _group__WEBPACK_IMPORTED_MODULE_3__["default"](layout.name, layout.title, fields, this.currentField, key, collapsed, firstLoad);
       this.groups[group.key] = group;
       this.order.push(group.key);
     },
@@ -4026,6 +4028,9 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) { n[e] = r[e]; } return n; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _classCallCheck(a, n) { if (!(a instanceof n)) throw new TypeError("Cannot call a class as a function"); }
 function _defineProperties(e, r) { for (var t = 0; t < r.length; t++) { var o = r[t]; o.enumerable = o.enumerable || !1, o.configurable = !0, "value" in o && (o.writable = !0), Object.defineProperty(e, _toPropertyKey(o.key), o); } }
 function _createClass(e, r, t) { return r && _defineProperties(e.prototype, r), t && _defineProperties(e, t), Object.defineProperty(e, "prototype", { writable: !1 }), e; }
@@ -4034,12 +4039,19 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 var Group = /*#__PURE__*/function () {
   function Group(name, title, fields, field, key) {
     var collapsed = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
+    var firstLoad = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : false;
     _classCallCheck(this, Group);
     this.name = name;
     this.title = title;
     this.fields = fields;
     this.key = key || this.getTemporaryUniqueKey(field.attribute);
     this.collapsed = collapsed;
+    // Si firstLoad es true, forzar que todos los fields sean readonly.
+    this.fields = field.readOnlyPrevious ? firstLoad ? fields.map(function (attributes) {
+      return _objectSpread(_objectSpread({}, attributes), {}, {
+        readonly: true
+      });
+    }) : fields : fields;
     this.readonly = field.readonly;
     this.renameFields();
   }
