@@ -28,7 +28,7 @@
                       {{ group.title }}
                     </p>
 
-                    <div class="flex" v-if="!readonly">
+                    <div class="flex" v-if="!readonly && !hideGroupButtons">
                         <button
                             dusk="drag-group"
                             type="button"
@@ -113,6 +113,7 @@ export default {
             removeMessage: false,
             collapsed: this.group.collapsed,
             readonly: this.group.readonly,
+            hideGroupButtons: this.field.hideGroupButtons,            
         };
     },
 

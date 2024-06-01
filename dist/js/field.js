@@ -3125,7 +3125,8 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
     return {
       removeMessage: false,
       collapsed: this.group.collapsed,
-      readonly: this.group.readonly
+      readonly: this.group.readonly,
+      hideGroupButtons: this.field.hideGroupButtons
     };
   },
   computed: {
@@ -3725,7 +3726,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "align-top",
     width: "16",
     height: "16"
-  })], 8 /* PROPS */, _hoisted_4)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_6, "#" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.index + 1), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.group.title), 1 /* TEXT */)]), !$data.readonly ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  })], 8 /* PROPS */, _hoisted_4)), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_6, "#" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.index + 1), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.group.title), 1 /* TEXT */)]), !$data.readonly && !$data.hideGroupButtons ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     dusk: "drag-group",
     type: "button",
     "class": "group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button",
