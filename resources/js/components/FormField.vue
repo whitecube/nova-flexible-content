@@ -114,10 +114,10 @@ export default {
          * Set the initial, internal value for the field.
          */
         setInitialValue() {
+            const firstLoad = true
             this.value = this.currentField.value || [];
             this.files = {};
-
-            this.populateGroups();
+            this.populateGroups(firstLoad);
             this.$nextTick(this.initSortable.bind(this));
         },
 
@@ -184,7 +184,7 @@ export default {
         /**
          * Set the displayed layouts from the field's current value
          */
-        populateGroups() {
+        populateGroups(firstLoad = false) {
             this.order.splice(0, this.order.length);
             this.groups = {};
 
@@ -193,7 +193,8 @@ export default {
                     this.getLayout(this.value[i].layout),
                     this.value[i].attributes,
                     this.value[i].key,
-                    this.currentField.collapsed
+                    this.currentField.collapsed,
+                    firstLoad
                 );
             }
         },
@@ -209,13 +210,13 @@ export default {
         /**
          * Append the given layout to flexible content's list
          */
-        addGroup(layout, attributes, key, collapsed) {
+        addGroup(layout, attributes, key, collapsed, firstLoad) {
             if(!layout) return;
 
             collapsed = collapsed || false;
 
             let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-                group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed);
+                group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed, firstLoad);
 
             this.groups[group.key] = group;
             this.order.push(group.key);
