@@ -25,7 +25,7 @@
 
                     <p class="text-80 grow px-4">
                       <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
-                      {{ group.title }}
+                      {{ group.title }}<span v-if="collapsedPreview !== null">: <span class="mr-3 font-semibold">{{ truncate(collapsedPreview, 30) }}</span></span>
                     </p>
 
                     <div class="flex" v-if="!readonly">
@@ -85,6 +85,7 @@
                     :mode="mode"
                     :show-help-text="item.helpText != null"
                     :class="{ 'remove-bottom-border': index == group.fields.length - 1 }"
+                    @change="handleFieldChanged($event, item)"
                 />
             </div>
         </div>
@@ -113,10 +114,21 @@ export default {
             removeMessage: false,
             collapsed: this.group.collapsed,
             readonly: this.group.readonly,
+            collapsedPreview: null,
         };
     },
 
     computed: {
+        collapsedPreviewAttribute() {
+            let collapsedPreviewAttribute = null;
+            for (const [key, layout] of Object.entries(this.field.layouts)) {
+                if (layout.name === this.group.name) {
+                    collapsedPreviewAttribute = layout.collapsedPreviewAttribute;
+                }
+            }
+
+            return collapsedPreviewAttribute;
+        },
         titleStyle() {
             let classes = ['border-t', 'border-r', 'border-l', 'border-gray-200', 'dark:border-gray-700', 'rounded-t-lg'];
 
@@ -142,7 +154,23 @@ export default {
         }
     },
 
+    mounted() {
+        Object.values(this.group.fields).forEach(field => {
+          let attribute = field.attribute.split('__').pop();
+          if (this.collapsedPreviewAttribute && attribute === this.collapsedPreviewAttribute) {
+            this.collapsedPreview = field.value;
+          }
+        });
+    },
+
     methods: {
+        truncate(value, length) {
+            if (value.length > length) {
+                return value.substring(0, length) + "...";
+            } else {
+                return value;
+            }
+        },
         /**
          * Move this group up
          */
@@ -187,7 +215,13 @@ export default {
          */
         collapse() {
             this.collapsed = true;
-        }
+        },
+
+        handleFieldChanged(event, item) {
+            if (item.attribute.split('__').pop() === this.collapsedPreviewAttribute) {
+                this.collapsedPreview = event.target.value;
+            }
+        },
     },
 }
 </script>
