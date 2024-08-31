@@ -11,6 +11,7 @@
                     :resourceName="resourceName"
                     :resourceId="resourceId"
                     :attribute="field.attribute"
+                    :previewStylesheet="field.enablePreview"
                 />
             </div>
         </template>
@@ -87,6 +88,7 @@ export default {
                     fields,
                     this.field,
                     key,
+                    layout.preview,
                     collapsed,
                     layout,
                     resolved_title
@@ -94,6 +96,7 @@ export default {
 
             this.groups[group.key] = group;
             this.order.push(group.key);
+
         },
     },
 };
