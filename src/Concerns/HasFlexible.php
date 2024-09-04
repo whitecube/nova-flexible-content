@@ -7,6 +7,7 @@ use Laravel\Nova\NovaServiceProvider;
 use Dwarfhq\NovaFlexibleContent\Layouts\Collection;
 use Dwarfhq\NovaFlexibleContent\Layouts\Layout;
 use Dwarfhq\NovaFlexibleContent\Value\FlexibleCast;
+use Laravel\Nova\Support\Fluent;
 
 trait HasFlexible
 {
@@ -27,7 +28,7 @@ trait HasFlexible
     /**
      * Cast a Flexible Content value
      *
-     * @param  array  $value
+     * @param  mixed  $value
      * @param  array  $layoutMapping
      * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
@@ -43,7 +44,7 @@ trait HasFlexible
     /**
      * Parse a Flexible Content from value
      *
-     * @param  mixed  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @param  array  $layoutMapping
      * @return \Dwarfhq\NovaFlexibleContent\Layouts\Collection
      */
@@ -63,7 +64,7 @@ trait HasFlexible
     /**
      * Transform incoming value into an array of usable layouts
      *
-     * @param  mixed  $value
+     * @param  array|string|\Illuminate\Support\Collection|null  $value
      * @return array|null
      */
     protected function getFlexibleArrayFromValue($value)
@@ -105,6 +106,7 @@ trait HasFlexible
      * @param  mixed  $item
      * @param  array  $layoutMapping
      * @return null|Dwarfhq\NovaFlexibleContent\Layouts\LayoutInterface
+
      */
     protected function getMappedLayout($item, array $layoutMapping)
     {
@@ -119,8 +121,8 @@ trait HasFlexible
         if (is_array($item)) {
             $name = $item['layout'] ?? null;
             $key = $item['key'] ?? null;
-            $attributes = (array) $item['attributes'] ?? [];
-        } elseif (is_a($item, \stdClass::class)) {
+            $attributes = (array) ($item['attributes'] ?? []);
+        } elseif (is_a($item, \stdClass::class) || is_a($item, Fluent::class)) {
             $name = $item->layout ?? null;
             $key = $item->key ?? null;
             $attributes = (array) ($item->attributes ?? []);
@@ -131,7 +133,7 @@ trait HasFlexible
         }
 
         if (is_null($name)) {
-            return;
+            return null;
         }
 
         return $this->createMappedLayout($name, $key, $attributes, $layoutMapping);

@@ -8,6 +8,10 @@ An easy & complete Flexible Field for Laravel Nova, perfect for repeated and fle
 
 ![Laravel Nova Flexible Content in action](https://user-images.githubusercontent.com/9298484/164532562-6e4e4179-8a53-470c-97c8-237e9a2c2ebb.gif)
 
+## We are looking for someone to help us maintain this package!
+
+We'd love to accept someone who uses this package a lot to help us review and merge incoming PRs. Shoot us a message at hello@whitecube.be if you're willing to help!
+
 ## Quick start
 
 Here's a very condensed guide to get you started asap.

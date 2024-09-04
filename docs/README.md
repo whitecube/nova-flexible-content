@@ -412,8 +412,8 @@ The `get` method is used to resolve the field's content. It is responsible to re
  *
  * @param  mixed  $resource
  * @param  string $attribute
- * @param  Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
- * @return Illuminate\Support\Collection
+ * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection $layouts
+ * @return \Illuminate\Support\Collection
  */
 public function get($resource, $attribute, $layouts) {
     $blocks = $resource->blocks()->orderBy('order')->get();
@@ -438,7 +438,7 @@ The `set` method is responsible for saving the Flexible's content somewhere the 
  *
  * @param  mixed  $model
  * @param  string $attribute
- * @param  Illuminate\Support\Collection $groups
+ * @param  \Illuminate\Support\Collection $groups
  * @return void
  */
 public function set($model, $attribute, $groups)
