@@ -14,7 +14,7 @@
                 '-mx-8 -mt-6' : currentField.enablePreview && !fullScreen,
                 'fixed inset-0 bg-gray-50 z-50 flex flex-col' : fullScreen
     
-                }">
+                }" style="padding-bottom: 12rem">
                 <div v-if="fullScreen" class="px-4 py-2 z-20 bg-white border-b text-center">
                     <button class="shadow relative bg-primary-500 hover:bg-primary-400 text-white dark:text-gray-900 cursor-pointer rounded text-sm font-bold focus:outline-none focus:ring ring-primary-200 dark:ring-gray-600 inline-flex items-center justify-center h-9 px-3" @click="selectGroup(null)">Exit full screen mode</button>
                 </div>
@@ -136,6 +136,17 @@ export default {
     },
 
     methods: {
+
+       array_move(arr, old_index, new_index) {
+    if (new_index >= arr.length) {
+        var k = new_index - arr.length + 1;
+        while (k--) {
+            arr.push(undefined);
+        }
+    }
+    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+    return arr; // for testing
+},
 
         /**
          * Select the current group
@@ -335,16 +346,7 @@ export default {
                 scrollSpeed: 5,
                 animation: 500,
                 onEnd: (evt) => {
-                    const item = evt.item;
-                    const key = item.id;
-                    const oldIndex = evt.oldIndex;
-                    const newIndex = evt.newIndex;
-
-                    if (newIndex < oldIndex) {
-                        this.moveUp(key);
-                    } else if (newIndex > oldIndex) {
-                        this.moveDown(key);
-                    }
+                    this.order = this.array_move(this.order, evt.oldIndex, evt.newIndex);
                  }
             });
         },

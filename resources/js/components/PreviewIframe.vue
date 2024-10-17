@@ -16,12 +16,41 @@
                 <base target='_blank' />
                 <link rel='stylesheet' href='${stylesheet}' />
                 <script type='module'>
+
+                function findVhElements() {
+                    const stylesheets = Array.from(document.styleSheets);
+                    const hasVh = str => str && str.includes('vh');
+                    return stylesheets.reduce((acc, sheet) => {
+                    const targetRules = Array.from(sheet.cssRules).filter(({ style }) =>
+                        style && ((hasVh(style.minHeight) && parseInt(style.minHeight) > 100) || (hasVh(style.height) && parseInt(style.height) > 100))
+                    );
+                    if (!targetRules.length) return acc;
+                    return acc.concat(
+                        targetRules.map(({ selectorText, style }) => {
+                            
+                                return { selector: selectorText, height: style.height, minHeight: style.minHeight };
+                        
+                        }).filter(el => el));
+                    }, []);
+                }
+
+                function resizeVhElements() {
+                    findVhElements().forEach((item) => {
+                        console.log('resizing all: ' + item.selector);
+                        document.querySelectorAll(item.selector).forEach(
+                            (elem) =>  elem.style.height = parseInt(item.height) / 100  *  document.body.clientHeight + 'px'
+                        );
+                    });
+                }
+                
                 window.addEventListener('message', (event) => {
                     document.body.innerHTML = event.data;
                     window.parent.postMessage('${flexible_key}', '*');
+                    resizeVhElements();
                 });
                 window.addEventListener('load', (event)=> {
                     window.parent.postMessage('${flexible_key}', '*');
+                    resizeVhElements();
                 });
                 window.addEventListener('resize', (event)=> {
                     window.parent.postMessage('${flexible_key}', '*');
