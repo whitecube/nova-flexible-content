@@ -10,11 +10,6 @@ require may be rejected.
 
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
-## Quick start
-
-The Flexible field can be used in various ways and for different purposes, but in most cases you'll only need a few of
-its capabilities. Here's how to get started really quickly.
-
 ## Differences from original package
 
 ### Dropdown overflow fix
@@ -27,19 +22,24 @@ Fixed a bug where the dropdown menu overlaps with the Nova container using poppe
 
 Saving the current state of open/closed layout to local storage using Collapsable mixin supplied with laravel-nova
 
-![](./assets/save-collapse-state.mp4)
+[View Video](./assets/save-collapse-state.mp4)
 
 ### Add layout after the current
 
 Ability to add the content block after the current content block
 
-![](./assets/add-after-current.mp4)
+[View Video](./assets/add-after-current.mp4)
 
 ### Extra
 
 - Fixed bug of drag & drop functionality - item is moved to the position where this block really should be
 - Multiselect search dropdown is now enabled by default as a more convenient use case
 - Selecting a block with an error and expand the block if it has been collapsed
+
+## Quick start
+
+The Flexible field can be used in various ways and for different purposes, but in most cases you'll only need a few of
+its capabilities. Here's how to get started really quickly.
 
 ### Install
 
