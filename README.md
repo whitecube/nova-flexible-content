@@ -1,4 +1,4 @@
-# ![Laravel Nova Flexible Content](https://github.com/wmt-digital-dev/nova-flexible-content/raw/master/title.png)
+# Laravel Nova Flexible Content
 
 ![](https://img.shields.io/github/release/wmt-digital-dev/nova-flexible-content.svg?style=flat)
 [![](https://img.shields.io/packagist/dt/wmt-digital-dev/nova-flexible-content.svg?colorB=green&style=flat)](https://packagist.org/packages/wmt-digital-dev/nova-flexible-content)
