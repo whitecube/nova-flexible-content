@@ -1,0 +1,38 @@
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+      - ~/.ssh:/home/application/.ssh
+      - ~/.composer/auth.json:/home/application/.composer/auth.json
+    working_dir: /app
+    networks:
+      - laravel-nova-flexible-content
+    environment:
+      PHP_MEMORY_LIMIT: 1G
+      WEB_DOCUMENT_ROOT: /app/public
+      WEB_DOCUMENT_INDEX: index.php
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    networks:
+      - laravel-nova-flexible-content
+    volumes:
+      - laravel-nova-flexible-content-postgres:/var/lib/postgresql/data
+      - ./docker/dumps:/var/tmp
+    environment:
+      POSTGRES_DB: "${DB_DATABASE}"
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      PGPASSWORD: 'root'
+
+networks:
+  laravel-nova-flexible-content:
+
+volumes:
+  laravel-nova-flexible-content-postgres:
+    driver: local

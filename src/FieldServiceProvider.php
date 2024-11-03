@@ -1,41 +1,33 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent;
 
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;
-use Whitecube\NovaFlexibleContent\Commands\CreateCast;
-use Whitecube\NovaFlexibleContent\Commands\CreateLayout;
-use Whitecube\NovaFlexibleContent\Commands\CreatePreset;
-use Whitecube\NovaFlexibleContent\Commands\CreateResolver;
-use Whitecube\NovaFlexibleContent\Http\Middleware\InterceptFlexibleAttributes;
+use Wmt\NovaFlexibleContent\Commands\CreateCast;
+use Wmt\NovaFlexibleContent\Commands\CreateLayout;
+use Wmt\NovaFlexibleContent\Commands\CreatePreset;
+use Wmt\NovaFlexibleContent\Commands\CreateResolver;
+use Wmt\NovaFlexibleContent\Http\Middleware\InterceptFlexibleAttributes;
 
 class FieldServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         $this->addMiddleware();
 
         Nova::serving(function (ServingNova $event) {
-            Nova::script('nova-flexible-content', __DIR__.'/../dist/js/field.js');
-            Nova::style('nova-flexible-content', __DIR__.'/../dist/css/field.css');
+            Nova::script('nova-flexible-content', __DIR__ . '/../dist/js/field.js');
+            Nova::style('nova-flexible-content', __DIR__ . '/../dist/css/field.css');
         });
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        if (! $this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             return;
         }
 
@@ -47,12 +39,7 @@ class FieldServiceProvider extends ServiceProvider
         ]);
     }
 
-    /**
-     * Adds required middleware for Nova requests.
-     *
-     * @return void
-     */
-    public function addMiddleware()
+    public function addMiddleware(): void
     {
         $router = $this->app['router'];
 
@@ -62,7 +49,7 @@ class FieldServiceProvider extends ServiceProvider
             return;
         }
 
-        if (! $this->app->configurationIsCached()) {
+        if (!$this->app->configurationIsCached()) {
             config()->set('nova.middleware', array_merge(
                 config('nova.middleware', []),
                 [InterceptFlexibleAttributes::class]

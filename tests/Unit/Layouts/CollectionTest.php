@@ -1,14 +1,16 @@
 <?php
 
-namespace Tests\Unit\Layouts;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Tests\Unit\Layouts;
 
 use PHPUnit\Framework\TestCase;
-use Whitecube\NovaFlexibleContent\Layouts\Collection;
-use Whitecube\NovaFlexibleContent\Layouts\Layout;
+use Wmt\NovaFlexibleContent\Layouts\Collection;
+use Wmt\NovaFlexibleContent\Layouts\Layout;
 
 class CollectionTest extends TestCase
 {
-    public function testFind(): void
+    public function test_find(): void
     {
         $collection = new Collection([new Layout('Foo', 'bar')]);
 

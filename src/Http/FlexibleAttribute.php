@@ -1,6 +1,8 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Http;
 
 use Illuminate\Support\Arr;
 
@@ -66,8 +68,8 @@ class FlexibleAttribute
     /**
      * Create a new attribute instance
      *
-     * @param  string  $original
-     * @param  mixed  $group
+     * @param string $original
+     * @param mixed $group
      * @return void
      */
     public function __construct($original, $group = null)
@@ -82,18 +84,18 @@ class FlexibleAttribute
     /**
      * Build an attribute from its components
      *
-     * @param  string  $name
-     * @param  string  $group
-     * @param  mixed  $key
-     * @param  bool  $upload
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @param string $name
+     * @param string $group
+     * @param mixed $key
+     * @param bool $upload
+     * @return \Wmt\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public static function make($name, $group = null, $key = null, $upload = false)
     {
         $original = $upload ? static::FILE_INDICATOR : '';
         $original .= static::formatGroupPrefix($group) ?? '';
         $original .= $name;
-        $original .= $key ? '['.($key !== true ? $key : '').']' : '';
+        $original .= $key ? '[' . (true !== $key ? $key : '') . ']' : '';
 
         return new static($original, $group);
     }
@@ -111,12 +113,12 @@ class FlexibleAttribute
     /**
      * Check if attribute or given value match a probable file
      *
-     * @param  mixed  $value
+     * @param mixed $value
      * @return bool
      */
     public function isFlexibleFile($value = null)
     {
-        if (! is_null($value) && ! is_string($value)) {
+        if (!is_null($value) && !is_string($value)) {
             return false;
         } elseif (is_null($value)) {
             return $this->upload;
@@ -128,8 +130,8 @@ class FlexibleAttribute
     /**
      * Return a FlexibleAttribute instance matching the target upload field
      *
-     * @param  mixed  $value
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @param mixed $value
+     * @return \Wmt\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public function getFlexibleFileAttribute($value)
     {
@@ -143,7 +145,7 @@ class FlexibleAttribute
      */
     public function isAggregate()
     {
-        return ! is_null($this->key);
+        return !is_null($this->key);
     }
 
     /**
@@ -166,7 +168,7 @@ class FlexibleAttribute
     /**
      * Get the group prefix string
      *
-     * @param  string  $group
+     * @param string $group
      * @return null|string
      */
     public function groupPrefix($group = null)
@@ -177,42 +179,42 @@ class FlexibleAttribute
     /**
      * Get a group prefix string
      *
-     * @param  string  $group
+     * @param string $group
      * @return null|string
      */
     public static function formatGroupPrefix($group)
     {
-        if (! $group) {
+        if (!$group) {
             return;
         }
 
-        return $group.static::GROUP_SEPARATOR;
+        return $group . static::GROUP_SEPARATOR;
     }
 
     /**
      * Set given value in given using the current attribute definition
      *
-     * @param  array  $attributes
-     * @param  string  $value
+     * @param array $attributes
+     * @param string $value
      * @return array
      */
     public function setDataIn(&$attributes, $value)
     {
-        $value = is_string($value) && $value === '' ? null : $value;
+        $value = is_string($value) && '' === $value ? null : $value;
 
-        if (! $this->isAggregate()) {
+        if (!$this->isAggregate()) {
             $attributes[$this->name] = $value;
 
             return $attributes;
         }
 
-        if (! isset($attributes[$this->name])) {
+        if (!isset($attributes[$this->name])) {
             $attributes[$this->name] = [];
-        } elseif (! is_array($attributes[$this->name])) {
+        } elseif (!is_array($attributes[$this->name])) {
             $attributes[$this->name] = [$attributes[$this->name]];
         }
 
-        if ($this->key === true) {
+        if (true === $this->key) {
             $attributes[$this->name][] = $value;
         } else {
             data_set($attributes[$this->name], $this->key, $value);
@@ -224,18 +226,18 @@ class FlexibleAttribute
     /**
      * Remove current attribute from given array
      *
-     * @param  array  $attributes
+     * @param array $attributes
      * @return array
      */
     public function unsetDataIn(&$attributes)
     {
-        if (! $this->isAggregate() || ! is_array($attributes[$this->name])) {
+        if (!$this->isAggregate() || !is_array($attributes[$this->name])) {
             unset($attributes[$this->name]);
 
             return $attributes;
         }
 
-        if ($this->key === true) {
+        if (true === $this->key) {
             array_shift($attributes[$this->name]);
         } else {
             Arr::forget($attributes[$this->name], $this->key);
@@ -247,16 +249,16 @@ class FlexibleAttribute
     /**
      * Return a new instance with appended key
      *
-     * @param  string  $key
-     * @return \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute
+     * @param string $key
+     * @return \Wmt\NovaFlexibleContent\Http\FlexibleAttribute
      */
     public function nest($key)
     {
         $append = implode('', array_map(function ($segment) {
-            return '['.$segment.']';
+            return '[' . $segment . ']';
         }, explode('.', $key)));
 
-        return new static($this->original.$append, $this->group);
+        return new static($this->original . $append, $this->group);
     }
 
     /**
@@ -273,12 +275,12 @@ class FlexibleAttribute
      * Check if given group identifier is included in original
      * attribute. If so, set it as the group property.
      *
-     * @param  mixed  $group
+     * @param mixed $group
      * @return void
      */
     protected function setGroup($group = null)
     {
-        if (! $group) {
+        if (!$group) {
             return;
         }
 
@@ -299,7 +301,7 @@ class FlexibleAttribute
     {
         preg_match('/^.+?(\[.*\])?$/', $this->original, $arrayMatches);
 
-        if (! isset($arrayMatches[1])) {
+        if (!isset($arrayMatches[1])) {
             return;
         }
 
@@ -316,7 +318,7 @@ class FlexibleAttribute
      * Formats a key segment (removes unwanted characters, removes
      * group references from).
      *
-     * @param  string  $segment
+     * @param string $segment
      * @return string
      */
     protected function getCleanKeySegment($segment)

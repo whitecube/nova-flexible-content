@@ -7,7 +7,7 @@
                   }">
                     {{ fieldLabel }}
 
-                    <span v-if="field.required" class="text-danger text-sm">{{
+                    <span v-if="field.required" class="text-red-500 text-sm">{{
                         __('*')
                     }}</span>
                 </form-label>
@@ -20,7 +20,7 @@
             <slot name="field"/>
 
             <help-text
-                class="error-text mt-2 text-danger"
+                class="error-text mt-2 text-red-500"
                 v-if="showErrors && hasError"
             >
                 {{ firstError }}

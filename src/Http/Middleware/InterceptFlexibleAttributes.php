@@ -1,13 +1,15 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http\Middleware;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Whitecube\NovaFlexibleContent\Http\FlexibleAttribute;
-use Whitecube\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
-use Whitecube\NovaFlexibleContent\Http\TransformsFlexibleErrors;
+use Wmt\NovaFlexibleContent\Http\FlexibleAttribute;
+use Wmt\NovaFlexibleContent\Http\ParsesFlexibleAttributes;
+use Wmt\NovaFlexibleContent\Http\TransformsFlexibleErrors;
 
 class InterceptFlexibleAttributes
 {
@@ -16,14 +18,10 @@ class InterceptFlexibleAttributes
 
     /**
      * Handle the given request and get the response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $this->requestHasParsableFlexibleInputs($request)) {
+        if (!$this->requestHasParsableFlexibleInputs($request)) {
             return $next($request);
         }
 
@@ -32,7 +30,7 @@ class InterceptFlexibleAttributes
 
         $response = $next($request);
 
-        if (! $this->shouldTransformFlexibleErrors($response)) {
+        if (!$this->shouldTransformFlexibleErrors($response)) {
             return $response;
         }
 

@@ -1,0 +1,17 @@
+services:
+  app:
+    ports:
+      - "80:80"
+    environment:
+      PHP_DEBUGGER: xdebug
+      XDEBUG_MODE: debug
+      XDEBUG_DISCOVER_CLIENT_HOST: 0
+      XDEBUG_REMOTE_CONNECT_BACK: 0
+      XDEBUG_SESSION: 1
+      XDEBUG_CLIENT_HOST: docker.for.mac.localhost
+      XDEBUG_CLIENT_PORT: 9003
+      XDEBUG_START_WITH_REQUEST: 'yes'
+
+  db:
+    ports:
+      - "5432:5432"
