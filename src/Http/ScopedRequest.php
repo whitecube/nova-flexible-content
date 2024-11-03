@@ -1,6 +1,8 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Http;
 
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -23,10 +25,9 @@ class ScopedRequest extends NovaRequest
     /**
      * Create a copy of the given request, only containing the group's input
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $from
-     * @param  array  $attributes
-     * @param  string  $group
-     * @return \Whitecube\NovaFlexibleContent\Http\ScopedRequest
+     * @param array $attributes
+     * @param string $group
+     * @return \Wmt\NovaFlexibleContent\Http\ScopedRequest
      */
     public static function scopeFrom(NovaRequest $from, $attributes, $group)
     {
@@ -36,8 +37,8 @@ class ScopedRequest extends NovaRequest
     /**
      * Alter the request's input for given group key & attributes
      *
-     * @param  string  $group
-     * @param  array  $attributes
+     * @param string $group
+     * @param array $attributes
      * @return $this
      */
     public function scopeInto($group, $attributes)
@@ -60,8 +61,8 @@ class ScopedRequest extends NovaRequest
     /**
      * Get the target scope configuration array
      *
-     * @param  string  $group
-     * @param  array  $attributes
+     * @param string $group
+     * @param array $attributes
      * @return array
      */
     protected function getScopeState($group, $attributes)
@@ -97,8 +98,8 @@ class ScopedRequest extends NovaRequest
     /**
      * Get nested file attributes from given array
      *
-     * @param  array  $iterable
-     * @param  null|string  $group
+     * @param array $iterable
+     * @param null|string $group
      * @return array
      */
     protected function getNestedFiles($iterable, $group = null)
@@ -115,7 +116,7 @@ class ScopedRequest extends NovaRequest
 
             $attribute = FlexibleAttribute::make($original, $group);
 
-            if (! $attribute->isFlexibleFile($value)) {
+            if (!$attribute->isFlexibleFile($value)) {
                 continue;
             }
 
@@ -128,27 +129,27 @@ class ScopedRequest extends NovaRequest
     /**
      * Get all useful files from current files list
      *
-     * @param  array  $files
-     * @param  array  $input
-     * @param  string  $group
+     * @param array $files
+     * @param array $input
+     * @param string $group
      * @return void
      */
     protected function handleScopeFiles(&$files, &$input, $group)
     {
         $attributes = collect($files)->keyBy('original');
 
-        $this->fileAttributes = $attributes->mapWithKeys(function($attribute, $key) {
+        $this->fileAttributes = $attributes->mapWithKeys(function ($attribute, $key) {
             return [$attribute->name => $key];
         });
 
         $scope = [];
 
         foreach ($this->getFlattenedFiles() as $attribute => $file) {
-            if (! ($target = $attributes->get($attribute))) {
+            if (!($target = $attributes->get($attribute))) {
                 continue;
             }
 
-            if (! $target->group || $target->group !== $group) {
+            if (!$target->group || $target->group !== $group) {
                 $scope[$target->original] = $file;
 
                 continue;
@@ -166,14 +167,14 @@ class ScopedRequest extends NovaRequest
      *
      * @return array
      */
-    protected function getFlattenedFiles($iterable = null, FlexibleAttribute $original = null)
+    protected function getFlattenedFiles($iterable = null, ?FlexibleAttribute $original = null)
     {
         $files = [];
 
         foreach ($iterable ?? $this->files->all() as $key => $value) {
             $attribute = $original ? $original->nest($key) : FlexibleAttribute::make($key);
 
-            if (! is_array($value)) {
+            if (!is_array($value)) {
                 $files[$attribute->original] = $value;
 
                 continue;
@@ -188,7 +189,7 @@ class ScopedRequest extends NovaRequest
     /**
      * Check if the given array represents a flexible group
      *
-     * @param  array  $iterable
+     * @param array $iterable
      * @return bool
      */
     protected function isFlexibleStructure($iterable)
@@ -199,7 +200,7 @@ class ScopedRequest extends NovaRequest
             return false;
         }
 
-        return  in_array('layout', $keys, true)
+        return in_array('layout', $keys, true)
                 && in_array('key', $keys, true)
                 && in_array('attributes', $keys, true);
     }
@@ -207,7 +208,7 @@ class ScopedRequest extends NovaRequest
     /**
      * Check if the given argument is a defined file attribute.
      *
-     * @param  string  $name
+     * @param string $name
      * @return bool
      */
     public function isFileAttribute($name)
@@ -218,7 +219,7 @@ class ScopedRequest extends NovaRequest
     /**
      * Return the actual file input attribute
      *
-     * @param  string  $name
+     * @param string $name
      * @return string
      */
     public function getFileAttribute($name)

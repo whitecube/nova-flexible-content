@@ -1,9 +1,11 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Value;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Value;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
+use Wmt\NovaFlexibleContent\Concerns\HasFlexible;
 
 class FlexibleCast implements CastsAttributes
 {
@@ -20,7 +22,7 @@ class FlexibleCast implements CastsAttributes
     protected $model;
 
     /**
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection|array<\Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @return \Wmt\NovaFlexibleContent\Layouts\Collection|array<\Wmt\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($model, string $key, $value, array $attributes)
     {

@@ -7,8 +7,8 @@ $mulitselect-secondary-hover-color-25: #3c4b5f;
 $multiselect-radius: .5rem;
 $multiselect-placeholder-color: #7c858e;
 
-@import "./multiselect";
-@import "./colors";
+@use "multiselect";
+@use "colors";
 
 .nova-flexible-content-sortable-ghost {
   opacity: 0.5;

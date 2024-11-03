@@ -1,6 +1,8 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Value;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Value;
 
 use Illuminate\Support\Collection;
 
@@ -9,9 +11,9 @@ class Resolver implements ResolverInterface
     /**
      * Save the Flexible field's content somewhere the get method will be able to access it.
      *
-     * @param  mixed  $resource
-     * @param  string  $attribute
-     * @param  \Illuminate\Support\Collection  $groups
+     * @param mixed $resource
+     * @param string $attribute
+     * @param \Illuminate\Support\Collection $groups
      * @return string
      */
     public function set($resource, $attribute, $groups)
@@ -28,10 +30,10 @@ class Resolver implements ResolverInterface
     /**
      * Resolve the Flexible field's content.
      *
-     * @param  mixed  $resource
-     * @param  string  $attribute
-     * @param  \Whitecube\NovaFlexibleContent\Layouts\Collection  $layouts
-     * @return \Illuminate\Support\Collection<int, \Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @param mixed $resource
+     * @param string $attribute
+     * @param \Wmt\NovaFlexibleContent\Layouts\Collection $layouts
+     * @return \Illuminate\Support\Collection<int, \Wmt\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($resource, $attribute, $layouts)
     {
@@ -40,7 +42,7 @@ class Resolver implements ResolverInterface
         return collect($value)->map(function ($item) use ($layouts) {
             $layout = $layouts->find($item->layout);
 
-            if (! $layout) {
+            if (!$layout) {
                 return null;
             }
 
@@ -51,8 +53,8 @@ class Resolver implements ResolverInterface
     /**
      * Find the attribute's value in the given resource
      *
-     * @param  mixed  $resource
-     * @param  string  $attribute
+     * @param mixed $resource
+     * @param string $attribute
      * @return array
      */
     protected function extractValueFromResource($resource, $attribute)
@@ -66,7 +68,7 @@ class Resolver implements ResolverInterface
         }
 
         // Fail silently in case data is invalid
-        if (! is_array($value)) {
+        if (!is_array($value)) {
             return [];
         }
 

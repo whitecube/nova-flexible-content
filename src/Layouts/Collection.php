@@ -1,12 +1,14 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Layouts;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Layouts;
 
 use Illuminate\Support\Collection as BaseCollection;
 
 /**
  * @template TKey of array-key
- * @template TLayout of \Whitecube\NovaFlexibleContent\Layouts\Layout
+ * @template TLayout of \Wmt\NovaFlexibleContent\Layouts\Layout
  *
  * @extends \Illuminate\Support\Collection<TKey, TLayout>
  */
@@ -15,8 +17,8 @@ class Collection extends BaseCollection
     /**
      * Find a layout based on its name
      *
-     * @param  string  $name
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Layout|null
+     * @param string $name
+     * @return \Wmt\NovaFlexibleContent\Layouts\Layout|null
      *
      * @psalm-return TLayout|null
      */

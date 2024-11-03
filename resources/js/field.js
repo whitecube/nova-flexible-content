@@ -1,5 +1,4 @@
 Nova.booting((Vue) => {
-    // Vue.component('index-nova-flexible-content', require('./components/IndexField').default)
     Vue.component('detail-nova-flexible-content', require('./components/DetailField.vue').default)
     Vue.component('detail-nova-flexible-content-group', require('./components/DetailGroup.vue').default)
     Vue.component('form-nova-flexible-content', require('./components/FormField.vue').default)

@@ -1,0 +1,39 @@
+name: Pint
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.php'
+      - 'composer*'
+      - '.pint.cache'
+
+jobs:
+  pint:
+    name: Pint
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          coverage: none
+
+      - name: Install composer dependencies
+        run: |
+          composer config --ansi -- http-basic.nova.laravel.com ${{ secrets.NOVA_USERNAME }} ${{ secrets.NOVA_LICENSE_KEY }}
+          composer install --no-interaction --no-progress --no-scripts
+
+      - name: Retrieve Pint’s cache
+        uses: actions/cache@v3
+        with:
+          path: ./.pint.cache
+          key: ${{ runner.os }}-pint-cache-${{ hashFiles('.pint.cache', './composer.json') }}
+
+      - name: Run Pint
+        run: ./vendor/bin/pint --config pint.json --cache-file=.pint.cache --test

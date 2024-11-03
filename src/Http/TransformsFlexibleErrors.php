@@ -1,31 +1,31 @@
 <?php
 
-namespace Whitecube\NovaFlexibleContent\Http;
+declare(strict_types=1);
+
+namespace Wmt\NovaFlexibleContent\Http;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
-use Whitecube\NovaFlexibleContent\Flexible;
+use Wmt\NovaFlexibleContent\Flexible;
 
 trait TransformsFlexibleErrors
 {
     /**
      * Checks whether the given response's flexible errors can and should be transformed
      *
-     * @param  \Symfony\Component\HttpFoundation\Response  $response
      * @return bool
      */
     protected function shouldTransformFlexibleErrors(Response $response)
     {
-        return  $response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY
+        return $response->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY
                 && is_a($response, JsonResponse::class);
     }
 
     /**
      * Updates given response's errors for the concerned flexible fields
      *
-     * @param  Response  $response
      * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function transformFlexibleErrors(Response $response)
@@ -40,12 +40,12 @@ trait TransformsFlexibleErrors
     /**
      * Run response errors parsing if necessary
      *
-     * @param  array  $data
+     * @param array $data
      * @return array
      */
     protected function updateResponseErrors($data)
     {
-        if (! ($data['errors'] ?? null)) {
+        if (!($data['errors'] ?? null)) {
             return $data;
         }
 
@@ -58,7 +58,7 @@ trait TransformsFlexibleErrors
      * Transforms the original errors array in a nested
      * array structure.
      *
-     * @param  array  $errors
+     * @param array $errors
      * @return array
      */
     protected function getTransformedErrors($errors)
@@ -68,7 +68,7 @@ trait TransformsFlexibleErrors
         foreach ($errors as $key => $messages) {
             $attribute = Flexible::getValidationKey($key);
 
-            if (! $attribute) {
+            if (!$attribute) {
                 $parsed[$key] = $messages;
 
                 continue;
@@ -83,9 +83,9 @@ trait TransformsFlexibleErrors
     /**
      * Update human error messages with correct field names
      *
-     * @param  array  $messages
-     * @param  string  $key
-     * @param  \Whitecube\NovaFlexibleContent\Http\FlexibleAttribute  $attribute
+     * @param array $messages
+     * @param string $key
+     * @param \Wmt\NovaFlexibleContent\Http\FlexibleAttribute $attribute
      * @return array
      */
     protected function transformMessages($messages, $key, $attribute)
@@ -94,8 +94,8 @@ trait TransformsFlexibleErrors
         $attribute = str_replace('_', ' ', Str::snake($attribute->name));
 
         // We translate the attribute if it exists
-        if (Lang::has('validation.attributes.'.$attribute)) {
-            $attribute = trans('validation.attributes.'.$attribute);
+        if (Lang::has('validation.attributes.' . $attribute)) {
+            $attribute = trans('validation.attributes.' . $attribute);
         }
 
         return array_map(function ($message) use ($search, $attribute) {

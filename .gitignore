@@ -10,3 +10,7 @@ phpunit.xml
 Thumbs.db
 yarn-error.log
 webpack.mix.js
+.pint.cache
+docker-compose.override.yml
+.env
+.pnpm-store

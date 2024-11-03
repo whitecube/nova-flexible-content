@@ -15,6 +15,6 @@ mix
             'laravel-nova': 'LaravelNova',
         },
         output: {
-            uniqueName: 'whitecube/nova-flexible-content',
+            uniqueName: 'wmt/nova-flexible-content',
         },
     });
