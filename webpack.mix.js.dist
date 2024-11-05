@@ -9,6 +9,7 @@ mix
     .alias({
         'nova-mixins': path.join(__dirname,'./vendor/laravel/nova/resources/js/mixins')
     })
+    .version()
     .webpackConfig({
         externals: {
             vue: 'Vue',

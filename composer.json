@@ -1,8 +1,8 @@
 {
   "name": "wmt/nova-flexible-content",
   "description": "Flexible Content & Repeater Fields for Laravel Nova.",
-  "homepage": "https://github.com/wmt-digital-dev/nova-flexible-content",
-  "issues": "https://github.com/wmt-digital-dev/nova-flexible-content",
+  "homepage": "https://github.com/wmt-digital/nova-flexible-content",
+  "issues": "https://github.com/wmt-digital/nova-flexible-content",
   "license": "MIT",
   "keywords": [
     "laravel",

@@ -29,13 +29,24 @@
             <button
                 dusk="add-block"
                 type="button"
-                class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
+                class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                 :title="__('Add New Block')"
                 v-tooltip="__('Add New Block')"
                 ref="addBlockButton"
                 @click.prevent="toggleAddBlockPopup"
             >
               <icon type="plus" class="align-top" width="16" height="16"/>
+            </button>
+            <button
+                dusk="duplicate-block"
+                type="button"
+                class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                :title="__('Duplicate Block')"
+                v-tooltip="__('Duplicate Block')"
+                ref="duplicateBlockButton"
+                @click.prevent="duplicateBlock"
+            >
+              <icon type="duplicate" class="align-top" width="16" height="16"/>
             </button>
             <button
                 dusk="drag-group"
@@ -139,6 +150,7 @@ export default {
     'move-up',
     'move-down',
     'remove',
+    'duplicate'
   ],
 
   data() {
@@ -160,6 +172,10 @@ export default {
     })
 
     Nova.$on('nova-flexible-content-group-added', () => {
+      this.addBlockPopupVisible = false;
+    });
+
+    Nova.$on('nova-flexible-content.add-block-clicked', () => {
       this.addBlockPopupVisible = false;
     });
   },
@@ -247,11 +263,16 @@ export default {
       }
     },
     toggleAddBlockPopup() {
+      Nova.$emit('nova-flexible-content.add-block-clicked');
+
       this.addBlockPopupVisible = !this.addBlockPopupVisible;
 
       this.$nextTick(() => {
         this.addBlockPopper?.update()
       })
+    },
+    duplicateBlock() {
+      this.$emit('duplicate')
     }
   },
 }

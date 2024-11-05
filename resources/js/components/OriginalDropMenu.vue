@@ -78,6 +78,14 @@ export default {
     }
   },
 
+  created() {
+    Nova.$on('nova-flexible-content.add-block-clicked', () => {
+      if (this.isLayoutsDropdownOpen) {
+        this.isLayoutsDropdownOpen = false;
+      }
+    });
+  },
+
   methods: {
     toggleLayoutsDropdownOrAddDefault() {
       if (this.layouts.length === 1) {
