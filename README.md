@@ -1,8 +1,8 @@
 # Laravel Nova Flexible Content
 
-![](https://img.shields.io/github/release/wmt-digital-dev/nova-flexible-content.svg?style=flat)
-[![](https://img.shields.io/packagist/dt/wmt-digital-dev/nova-flexible-content.svg?colorB=green&style=flat)](https://packagist.org/packages/wmt-digital-dev/nova-flexible-content)
-[![](https://img.shields.io/github/license/wmt-digital-dev/nova-flexible-content.svg?style=flat)](https://github.com/wmt-digital-dev/nova-flexible-content/blob/master/LICENSE)
+![](https://img.shields.io/github/release/wmt-digital/nova-flexible-content.svg?style=flat)
+[![](https://img.shields.io/packagist/dt/wmt-digital/nova-flexible-content.svg?colorB=green&style=flat)](https://packagist.org/packages/wmt-digital/nova-flexible-content)
+[![](https://img.shields.io/github/license/wmt-digital/nova-flexible-content.svg?style=flat)](https://github.com/wmt-digital/nova-flexible-content/blob/master/LICENSE)
 
 An easy & complete Flexible Field for Laravel Nova, perfect for repeated and flexible field groups.
 
@@ -82,7 +82,7 @@ Flexible::make('Content')
 ### Using Flexible values in views
 
 If you are using Laravel 6 and under, or don't want to use casts,
-please [use an accessor on your model with the HasFlexible trait](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=with-the-hasflexible-trait).
+please [use an accessor on your model with the HasFlexible trait](https://wmt-digital.github.io/nova-flexible-content/#/?id=with-the-hasflexible-trait).
 
 Laravel 7 brings custom casts to the table, and flexible content fields are the perfect use case for them. The field
 stores its values as a single JSON string, meaning this string needs to be parsed before it can be used in your
@@ -103,7 +103,7 @@ class MyModel extends Model
 ```
 
 By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts
-into [Custom Layout instances](https://github.com/wmt-digital-dev/nova-flexible-content#custom-layout-classes), it is
+into [Custom Layout instances](https://github.com/wmt-digital/nova-flexible-content#custom-layout-classes), it is
 also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will
 create the file in the `App\Casts` directory.
 
@@ -122,7 +122,7 @@ class MyFlexibleCast extends FlexibleCast
 ```
 
 If you need more control, you can [override the
-`getLayoutMappings` method](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings)
+`getLayoutMappings` method](https://wmt-digital.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings)
 instead.
 
 #### The Layouts Collection
@@ -159,7 +159,7 @@ and/or capabilities to Field and its output.
 
 Sometimes, `addLayout` definitions can get quite long, or maybe you want them to be shared with other `Flexible` fields.
 The answer to this is to extract your Layout into its own
-class. [See the docs for more information on this](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+class. [See the docs for more information on this](https://wmt-digital.github.io/nova-flexible-content/#/?id=custom-layout-classes).
 
 ### Predefined Preset Classes
 
@@ -167,7 +167,7 @@ In addition to reusable Layout classes, you can go a step further and create `Pr
 These allow you to reuse your whole Flexible field anywhere you want. They also make it easier to make your Flexible
 fields dynamic, for example if you want to add Layouts conditionally. And last but not least, they also have the added
 benefit of cleaning up your Nova Resource classes, if your Flexible field has a lot of `addLayout`
-definitions. [See the docs for more information on this](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=predefined-preset-classes).
+definitions. [See the docs for more information on this](https://wmt-digital.github.io/nova-flexible-content/#/?id=predefined-preset-classes).
 
 ### Custom Resolver Classes
 
@@ -178,7 +178,7 @@ HasMany field). No worries, we've got you covered!
 
 Tell the field how to store and retrieve its content by creating your own Resolver class, which basically just contains
 two simple methods: `get` and
-`set`. [See the docs for more information on this](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
+`set`. [See the docs for more information on this](https://wmt-digital.github.io/nova-flexible-content/#/?id=custom-resolver-classes).
 
 ### Usage with nova-page
 
@@ -186,7 +186,7 @@ Maybe you heard of one of our other packages, [nova-page](https://github.com/whi
 that allows to edit static pages such as an _"About"_ page (or similar) without having to declare a model for it
 individually. More often than not, the Flexible Content Field comes in handy. Don't worry, both packages work well
 together! First create a [nova page template](https://github.com/whitecube/nova-page#creating-templates) and add
-a [flexible content](https://github.com/wmt-digital-dev/nova-flexible-content#adding-layouts) to the template's fields.
+a [flexible content](https://github.com/wmt-digital/nova-flexible-content#adding-layouts) to the template's fields.
 
 As explained in the documentation, you
 can [access nova-page's static content](https://github.com/whitecube/nova-page#accessing-the-data-in-your-views) in your

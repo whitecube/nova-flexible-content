@@ -20,10 +20,11 @@
             :resource-id="resourceId"
             :errors="errors"
             :mode="mode"
+            class="nova-flexible-content-item"
             @move-up="moveUp(group.key)"
             @move-down="moveDown(group.key)"
             @remove="remove(group.key)"
-            @add-block="addBlockAfterIndex"
+            @duplicate="duplicateBlock(group.key, index)"
         >
           <template #add-block-popup>
             <component
@@ -250,6 +251,28 @@ export default {
       delete this.groups[key];
     },
 
+    duplicateBlock(key, index) {
+      const cleanAttributes = function (attributes) {
+        attributes.forEach((element, index, array) => {
+          element.attribute = element.attribute.split('__')[1] ?? element.attribute;
+          element.validationKey = element.validationKey.split('__')[1] ?? element.validationKey;
+          if (element.component === 'nova-flexible-content') {
+            element.value.forEach((value, index, array) => {
+              array[index].attributes = cleanAttributes(value.attributes);
+            });
+          }
+          array[index] = element;
+        });
+        return attributes;
+      }
+
+      const group = this.groups[key];
+      const layout = this.getLayout(group.name);
+      const attributes = cleanAttributes(JSON.parse(JSON.stringify(group.fields)));
+
+      this.addGroup(layout, attributes, null, null, index);
+    },
+
 
     initSortable() {
       const containerRef = this.$refs['flexibleFieldContainer']
@@ -280,6 +303,8 @@ export default {
           this.order.splice(newIndex, 0, this.order.splice(oldIndex, 1)[0]);
         }
       });
+
+      console.log(this.sortableInstance);
     },
   }
 }

@@ -3,7 +3,7 @@
 ## Disclaimer
 
 This package is an independent fork of Laravel Nova Flexible Content, which is developed independently.
-Thanks to the [original author](https://github.com/wmt-digital-dev/nova-flexible-content) for developing the original
+Thanks to the [original author](https://github.com/wmt-digital/nova-flexible-content) for developing the original
 package.
 You can create issue, but we only maintain this package to meet our needs, so any functionality that we don't personally
 require may be rejected.
@@ -187,7 +187,7 @@ class MyModel extends Model
 #### Writing a custom flexible cast
 
 By default, the `FlexibleCast` class will collect basic `Layout` instances. If you want to map the layouts
-into [Custom Layout instances](https://github.com/wmt-digital-dev/nova-flexible-content#custom-layout-classes), it is
+into [Custom Layout instances](https://github.com/wmt-digital/nova-flexible-content#custom-layout-classes), it is
 also possible. First, create a custom flexible cast by running `php artisan flexible:cast MyFlexibleCast`. This will
 create the file in the `App\Casts` directory.
 
@@ -251,7 +251,7 @@ class MyModel extends Model
 ```
 
 By default, the `HasFlexible` trait will collect basic `Layout` instances. If you want to map the layouts
-into [Custom Layout instances](https://github.com/wmt-digital-dev/nova-flexible-content#custom-layout-classes), it is
+into [Custom Layout instances](https://github.com/wmt-digital/nova-flexible-content#custom-layout-classes), it is
 also possible to specify the mapping rules as follows:
 
 ```php
@@ -527,7 +527,7 @@ public function set($model, $attribute, $groups)
 By popular demand, we have added compatibility with the advanced-nova-media-library field.
 This requires a few extra steps, as follows:
 
-1. You must use a [custom layout class](https://wmt-digital-dev.github.io/nova-flexible-content/#/?id=custom-layout-classes).
+1. You must use a [custom layout class](https://wmt-digital.github.io/nova-flexible-content/#/?id=custom-layout-classes).
 2. Your custom layout class must implement `Spatie\MediaLibrary\HasMedia` and use the
    `Wmt\NovaFlexibleContent\Concerns\HasMediaLibrary` trait.
 3. The parent model must implement `Spatie\MediaLibrary\HasMedia` and use the `Spatie\MediaLibrary\InteractsWithMedia`

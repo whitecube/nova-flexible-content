@@ -7,6 +7,7 @@ $mulitselect-secondary-hover-color-25: #3c4b5f;
 $multiselect-radius: .5rem;
 $multiselect-placeholder-color: #7c858e;
 
+@use "tailwind";
 @use "multiselect";
 @use "colors";
 
@@ -21,4 +22,12 @@ $multiselect-placeholder-color: #7c858e;
 
 .dark .nova-flexible-content-sortable-drag {
   background-color: rgba(var(--colors-gray-900),var(--tw-bg-opacity));
+}
+
+.nova-flexible-content-drag-button {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 }
