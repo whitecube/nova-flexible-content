@@ -60,6 +60,20 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $title;
 
     /**
+     * The layout's preview
+     *
+     * @var string
+     */
+    protected $preview;
+
+    /**
+     * The layout's preview attribute
+     *
+     * @var string
+     */
+    protected $collapsedPreviewAttribute;
+
+    /**
      * The layout's registered fields
      *
      * @var \Laravel\Nova\Fields\FieldCollection
@@ -138,7 +152,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  int|null  $limit
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null, $preview = false)
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
@@ -146,6 +160,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
+        $this->preview = $preview;
     }
 
     /**
@@ -199,6 +214,16 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function fields()
     {
         return $this->fields ? $this->fields->all() : [];
+    }
+
+    /**
+     * Retrieve the layout's collapsed preview attribute
+     *
+     * @return string
+     */
+    public function collapsedPreviewAttribute()
+    {
+        return $this->collapsedPreviewAttribute;
     }
 
     /**
@@ -392,11 +417,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return  $this->fields->map(function ($field) use ($request) {
             return $field->fill($request, $this);
         })
-                ->filter(function ($callback) {
-                    return is_callable($callback);
-                })
-                ->values()
-                ->all();
+            ->filter(function ($callback) {
+                return is_callable($callback);
+            })
+            ->values()
+            ->all();
     }
 
     /**
@@ -428,8 +453,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return  $this->fields->map(function ($field) use ($request, $specificty, $key) {
             return $this->getScopedFieldRules($field, $request, $specificty, $key);
         })
-                ->collapse()
-                ->all();
+            ->collapse()
+            ->all();
     }
 
     /**
@@ -443,17 +468,17 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected function getScopedFieldRules($field, ScopedRequest $request, $specificty, $key)
     {
-        $method = 'get'.ucfirst($specificty).'Rules';
+        $method = 'get' . ucfirst($specificty) . 'Rules';
 
         $rules = call_user_func([$field, $method], $request);
 
-        return collect($rules)->mapWithKeys(function($validatorRules, $attribute) use ($key, $field, $request) {
-                $key = $request->isFileAttribute($attribute)
-                    ? $request->getFileAttribute($attribute)
-                    : $key.'.attributes.'.$attribute;
+        return collect($rules)->mapWithKeys(function ($validatorRules, $attribute) use ($key, $field, $request) {
+            $key = $request->isFileAttribute($attribute)
+                ? $request->getFileAttribute($attribute)
+                : $key . '.attributes.' . $attribute;
 
-                return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
-            })->filter()->all();
+            return [$key => $this->wrapScopedFieldRules($field, $validatorRules)];
+        })->filter()->all();
     }
 
     /**
@@ -478,9 +503,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  \Whitecube\NovaFlexibleContent\Layout  $layout
      * @return mixed
      */
-    protected function removeCallback(Flexible $flexible, $layout)
-    {
-    }
+    protected function removeCallback(Flexible $flexible, $layout) {}
 
     /**
      * Wrap the rules in an array containing field information for later use
@@ -686,7 +709,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'name' => $this->name,
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize(),
+            'collapsedPreviewAttribute' => $this->collapsedPreviewAttribute(),
             'limit' => $this->limit,
+            'preview' => $this->preview,
         ];
     }
 
@@ -717,7 +742,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             throw new \Exception('No cryptographically secure random function available');
         }
 
-        return 'c'.substr(bin2hex($bytes), 0, 15);
+        return 'c' . substr(bin2hex($bytes), 0, 15);
     }
 
     /**

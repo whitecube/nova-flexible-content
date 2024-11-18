@@ -10,3 +10,4 @@ phpunit.xml
 Thumbs.db
 yarn-error.log
 webpack.mix.js
+auth.json

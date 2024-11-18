@@ -22,7 +22,7 @@ trait ParsesFlexibleAttributes
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
         return in_array($request->method(), ['POST', 'PUT']) &&
-                is_string($request->input(FlexibleAttribute::REGISTER));
+            is_string($request->input(FlexibleAttribute::REGISTER));
     }
 
     /**

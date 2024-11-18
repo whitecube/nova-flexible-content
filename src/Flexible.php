@@ -149,6 +149,26 @@ class Flexible extends Field
     }
 
     /**
+     * Set the preview stylesheet
+     *
+     * @param  string  $stylesheetPath
+     * @return $this
+     */
+    public function enablePreview($stylesheetPath)
+    {
+        return $this->withMeta([
+            'enablePreview' => $stylesheetPath
+        ]);
+    }
+
+    public function defaultLayouts($layouts)
+    {
+        return $this->withMeta([
+            'defaultLayouts' => $layouts
+        ]);
+    }
+
+    /**
      * Set the field's resolver
      *
      * @param  mixed  $resolver
@@ -161,7 +181,7 @@ class Flexible extends Field
         }
 
         if (! ($resolver instanceof ResolverInterface)) {
-            throw new \Exception('Resolver Class "'.get_class($resolver).'" does not implement ResolverInterface.');
+            throw new \Exception('Resolver Class "' . get_class($resolver) . '" does not implement ResolverInterface.');
         }
 
         $this->resolver = $resolver;
@@ -192,7 +212,7 @@ class Flexible extends Field
         }
 
         if (! ($layout instanceof LayoutInterface)) {
-            throw new \Exception('Layout Class "'.get_class($layout).'" does not implement LayoutInterface.');
+            throw new \Exception('Layout Class "' . get_class($layout) . '" does not implement LayoutInterface.');
         }
 
         $this->registerLayout($layout);
@@ -227,6 +247,16 @@ class Flexible extends Field
         return $this;
     }
 
+    public function drawer(bool $value = true)
+    {
+        $this->withMeta([
+            'collapsed' => $value,
+            'drawer' => $value
+        ]);
+
+        return $this;
+    }
+
     /**
      * Push a layout instance into the layouts collection
      *
@@ -252,6 +282,7 @@ class Flexible extends Field
      */
     public function resolve($resource, $attribute = null)
     {
+
         $attribute = $attribute ?? $this->attribute;
 
         $this->registerOriginModel($resource);
@@ -576,10 +607,10 @@ class Flexible extends Field
 
             $scope = ScopedRequest::scopeFrom($request, $item['attributes'], $item['key']);
 
-            return $group->generateRules($scope, $specificty, $this->attribute.'.'.$key);
+            return $group->generateRules($scope, $specificty, $this->attribute . '.' . $key);
         })
-                ->collapse()
-                ->all();
+            ->collapse()
+            ->all();
     }
 
     /**
@@ -609,7 +640,8 @@ class Flexible extends Field
         }, $rules);
 
         static::$validatedKeys = array_merge(
-            static::$validatedKeys, $validatedKeys
+            static::$validatedKeys,
+            $validatedKeys
         );
     }
 

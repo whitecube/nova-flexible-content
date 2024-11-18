@@ -22,3 +22,24 @@ $multiselect-placeholder-color: #7c858e;
 .dark .nova-flexible-content-sortable-drag {
   background-color: rgba(var(--colors-gray-900),var(--tw-bg-opacity));
 }
+
+
+.sticky {
+  position: sticky;
+}
+
+.top-0 {
+  top: 0;
+}
+
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+.-mb-px {
+  margin-bottom: -1px;
+}
