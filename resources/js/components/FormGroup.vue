@@ -110,7 +110,7 @@ export default {
     data() {
         return {
             removeMessage: false,
-            collapsed: this.group.collapsed,
+            collapsed: this.group.collapsed && (window.location.hash.indexOf(`${this.group.name}_${this.group.key}`) == -1),
             readonly: this.group.readonly,
             collapsedPreview: null,
         };
@@ -151,6 +151,9 @@ export default {
         //     this.collapsedPreview = field.value;
         //   }
         // });
+
+        console.log('collapsed',this.group.collapsed && (window.location.hash.indexOf(`${this.group.name}_${this.group.key}`) == -1)       );
+
 
         this.collapsedPreview = Object.values(this.group.fields).find(field => {
           return this.getFieldAttribute(field) === this.collapsedPreviewAttribute;
