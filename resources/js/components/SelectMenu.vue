@@ -78,7 +78,7 @@
                             > 
                                 <div class="widget-item__preview">
                                     <img 
-                                        :src="layout.preview || '/images/widgets/default-preview.png'" 
+                                        :src="layout.metadata['preview'] || '/images/widgets/default-preview.png'" 
                                         :alt="layout.title"
                                         class="w-full h-full object-contain"
                                     >
