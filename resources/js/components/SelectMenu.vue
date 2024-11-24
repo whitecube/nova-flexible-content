@@ -217,7 +217,6 @@ export default {
 }
 
 .widget-item__preview {
-    height: 180px;
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
     display: flex;
