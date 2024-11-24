@@ -70,7 +70,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      *
      * @var string
      */
-    protected $preview;
+    protected $metadata;
 
     /**
      * The layout's registered fields
@@ -137,11 +137,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param int|null $limit
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null, $preview = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null, $metadata = [])
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
-        $this->preview = $preview ?? $this->preview();
+        $this->metadata = $metadata ?? $this->metadata();
         $this->fields = new FieldCollection($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
@@ -655,7 +655,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'title' => $this->title,
             'fields' => $this->fields->jsonSerialize(),
             'limit' => $this->limit,
-            'preview' => $this->preview
+            'metadata' => $this->metadata
         ];
     }
 
@@ -698,9 +698,9 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return $this->attributesToArray();
     }
 
-    public function preview()
+    public function metadata()
     {
-        return $this->preview;
+        return $this->metadata;
     }
     
 }

@@ -8,7 +8,7 @@ interface LayoutInterface
 {
     public function name();
     public function title();
-    public function preview();
+    public function metadata();
     public function fields();
     public function key();
     public function getResolved();

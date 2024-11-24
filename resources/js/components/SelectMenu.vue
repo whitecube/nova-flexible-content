@@ -29,52 +29,72 @@
                         </button>
                     </div>
                     
-                    <!-- Search Bar -->
-                    <div class="relative">
-                        <input 
-                            type="text" 
-                            v-model="searchQuery"
-                            placeholder="Search widgets..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    <!-- Search and Category Filter -->
+                    <div class="flex gap-4">
+                        <!-- Search Bar -->
+                        <div class="relative flex-1">
+                            <input 
+                                type="text" 
+                                v-model="searchQuery"
+                                placeholder="Search widgets..."
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                            <svg 
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                            >
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <select 
+                            v-model="selectedCategory"
+                            class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                         >
-                        <svg 
-                            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
+                            <option value="">All Categories</option>
+                            <option v-for="category in categories" :key="category" :value="category">
+                                {{ category }}
+                            </option>
+                        </select>
                     </div>
                 </div>
 
                 <!-- Content - Scrollable -->
                 <div class="flex-1 overflow-y-auto p-6">
-                    <div class="widget-grid">
-                        <div
-                            v-for="layout in filteredLayouts"
-                            :key="layout.name"
-                            class="widget-item"
-                            @click="selectLayout(layout)"
-                        >
-                            <div class="widget-item__preview">
-                                <img 
-                                    :src="layout.preview || '/images/widgets/default-preview.png'" 
-                                    :alt="layout.title"
-                                    class="w-full h-full object-contain"
-                                >
-                            </div>
-                            <div class="widget-item__content">
-                                <h4 class="widget-item__title">{{ layout.title }}</h4>
-                                <p v-if="layout.description" class="widget-item__description">
-                                    {{ layout.description }}
-                                </p>
+                    <div v-for="(widgets, category) in groupedAndFilteredLayouts" 
+                         :key="category" 
+                         class="mb-8"
+                    >
+                        <h3 class="text-lg font-semibold mb-4 text-gray-700">{{ category }}</h3>
+                        <div class="widget-grid">
+                            <div
+                                v-for="layout in widgets"
+                                :key="layout.name"
+                                class="widget-item"
+                                @click="selectLayout(layout)"
+                            > 
+                                <div class="widget-item__preview">
+                                    <img 
+                                        :src="layout.preview || '/images/widgets/default-preview.png'" 
+                                        :alt="layout.title"
+                                        class="w-full h-full object-contain"
+                                    >
+                                </div>
+                                <div class="widget-item__content">
+                                    <h4 class="widget-item__title">{{ layout.title }}</h4>
+                                    <p v-if="layout.description" class="widget-item__description">
+                                        {{ layout.description }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- No Results Message -->
-                    <div v-if="filteredLayouts.length === 0" class="text-center py-8 text-gray-500">
+                    <div v-if="Object.keys(groupedAndFilteredLayouts).length === 0" class="text-center py-8 text-gray-500">
                         No widgets found matching your search.
                     </div>
                 </div>
@@ -95,19 +115,38 @@ export default {
     data() {
         return { 
             showModal: false,
-            searchQuery: ''
+            searchQuery: '',
+            selectedCategory: ''
         }
     },
 
     computed: {
-        filteredLayouts() {
-            if (!this.searchQuery) return this.layouts;
-            
-            const query = this.searchQuery.toLowerCase();
-            return this.layouts.filter(layout => {
-                return layout.title.toLowerCase().includes(query) || 
-                       (layout.description && layout.description.toLowerCase().includes(query));
+        // Get unique categories from layouts
+        categories() {
+            return [...new Set(this.layouts.map(layout => layout.metadata['category'] || 'Uncategorized'))].sort();
+        },
+
+        // Group and filter layouts by category
+        groupedAndFilteredLayouts() {
+            const filtered = this.layouts.filter(layout => {
+                const matchesSearch = !this.searchQuery || 
+                    layout.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    (layout.description && layout.description.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                
+                const category = layout.metadata['category'] || 'Uncategorized';
+                const matchesCategory = !this.selectedCategory || category === this.selectedCategory;
+
+                return matchesSearch && matchesCategory;
             });
+
+            return filtered.reduce((groups, layout) => {
+                const category = layout.metadata['category'] || 'Uncategorized';
+                if (!groups[category]) {
+                    groups[category] = [];
+                }
+                groups[category].push(layout);
+                return groups;
+            }, {});
         }
     },
 
@@ -116,6 +155,7 @@ export default {
             console.log('Opening modal');
             this.showModal = true;
             this.searchQuery = ''; // Reset search when opening modal
+            this.selectedCategory = ''; // Reset category filter
         },
 
         selectLayout(layout) {
@@ -123,6 +163,7 @@ export default {
             this.$emit('addGroup', layout);
             this.showModal = false;
             this.searchQuery = ''; // Reset search when closing modal
+            this.selectedCategory = ''; // Reset category filter
         }
     }
 }
@@ -182,6 +223,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
 }
 
 .widget-item__preview img {
