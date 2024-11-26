@@ -34,7 +34,7 @@ class FileAdder extends OriginalFileAdder
     public function determineDiskName(string $diskName, string $collectionName): string
     {
         if ($this->media_collection_suffix) {
-            $collectionName = rtrim($collectionName, $this->media_collection_suffix);
+            $collectionName = str_replace($this->media_collection_suffix, '', $collectionName);
         }
 
         return parent::determineDiskName($diskName, $collectionName);
