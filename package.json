@@ -27,5 +27,8 @@
         "sortablejs": "^1.15.0",
         "vue-loader": "^16.8.3",
         "vuex": "^4.0.2"
+    },
+    "dependencies": {
+        "laravel-nova-ui": "^0.4.12"
     }
 }

@@ -3,6 +3,7 @@
 namespace Whitecube\NovaFlexibleContent\Http;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 trait ParsesFlexibleAttributes
 {
@@ -22,7 +23,24 @@ trait ParsesFlexibleAttributes
     protected function requestHasParsableFlexibleInputs(Request $request)
     {
         return in_array($request->method(), ['POST', 'PUT']) &&
-                is_string($request->input(FlexibleAttribute::REGISTER));
+            $this->hasParsableFlexibleInputs($request->input());
+    }
+
+    /**
+     * Check if the given array contains parsable flexible inputs
+     *
+     * @param  array  $request
+     * @return bool
+     */
+    protected function hasParsableFlexibleInputs(array $array)
+    {
+        $inputs = collect($array)
+            ->flatMap(function ($value, $key) {
+                return [$key => $value];
+            })
+            ->toArray();
+        return isset($inputs[FlexibleAttribute::REGISTER]) &&
+            is_string($inputs[FlexibleAttribute::REGISTER]);
     }
 
     /**
@@ -31,12 +49,14 @@ trait ParsesFlexibleAttributes
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function getParsedFlexibleInputs(Request $request)
+    protected function getParsedFlexibleInputs(array $array)
     {
-        $this->registerFlexibleFields($request->input(FlexibleAttribute::REGISTER));
+        $input = collect($array);
 
-        return array_reduce(array_keys($request->all()), function ($carry, $attribute) use ($request) {
-            $value = $request->input($attribute);
+        $this->registerFlexibleFields($input->get(FlexibleAttribute::REGISTER));
+
+        return array_reduce(array_keys($array), function ($carry, $attribute) use ($input) {
+            $value = $input->get($attribute);
 
             if (! $this->isFlexibleAttribute($attribute, $value)) {
                 return $carry;

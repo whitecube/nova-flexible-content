@@ -15,6 +15,32 @@ class InterceptFlexibleAttributes
     use TransformsFlexibleErrors;
 
     /**
+     * Parse any flexible inputs within the given request
+     *
+     * @param  array  $inputs
+     * @return array
+     */
+    protected function parseRequestInput($inputs)
+    {
+        if ($this->hasParsableFlexibleInputs($inputs)) {
+            foreach ($this->getParsedFlexibleInputs($inputs) as $input => $value) {
+                $inputs[$input] = $value;
+            }
+        }
+
+        foreach ($inputs as $input => $value) {
+            if (is_array($value)) {
+                $inputs[$input] = $this->parseRequestInput($value);
+            }
+            if ($input === FlexibleAttribute::REGISTER) {
+                unset($inputs[$input]);
+            }
+        }
+
+        return $inputs;
+    }
+
+    /**
      * Handle the given request and get the response.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -27,8 +53,7 @@ class InterceptFlexibleAttributes
             return $next($request);
         }
 
-        $request->merge($this->getParsedFlexibleInputs($request));
-        $request->request->remove(FlexibleAttribute::REGISTER);
+        $request->request->replace($this->parseRequestInput($request->input()));
 
         $response = $next($request);
 
