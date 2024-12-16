@@ -11,13 +11,13 @@
         "nova:install": "npm --prefix='../../vendor/laravel/nova' ci"
     },
     "devDependencies": {
+        "laravel-nova-devtool": "file:../bbsys/vendor/laravel/nova-devtool",
         "@inertiajs/inertia": "^0.11.0",
         "@vue/babel-plugin-jsx": "^1.1.1",
         "@vue/compiler-sfc": "^3.2.22",
         "@vueform/multiselect": "^2.3.3",
         "browser-sync": "^2.27.10",
         "browser-sync-webpack-plugin": "^2.3.0",
-        "form-backend-validation": "^2.4.0",
         "laravel-mix": "^6.0.41",
         "lodash": "^4.17.21",
         "postcss": "^8.3.11",

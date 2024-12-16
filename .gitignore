@@ -9,4 +9,3 @@ phpunit.xml
 .DS_Store
 Thumbs.db
 yarn-error.log
-webpack.mix.js

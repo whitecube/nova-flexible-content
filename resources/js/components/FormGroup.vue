@@ -11,7 +11,7 @@
                         :title="__('Expand')"
                         @click.prevent="expand"
                         v-if="collapsed">
-                        <icon type="plus" class="align-top" width="16" height="16" />
+                        <Icon name="plus" class="align-top" width="16" height="16" />
                     </button>
                     <button
                         dusk="collapse-group"
@@ -20,7 +20,7 @@
                         :title="__('Collapse')"
                         @click.prevent="collapse"
                         v-else>
-                        <icon type="minus" class="align-top" width="16" height="16" />
+                        <Icon name="minus" class="align-top" width="16" height="16" />
                     </button>
 
                     <p class="text-80 grow px-4">
@@ -35,7 +35,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
                             :title="__('Drag')"
                             >
-                            <icon type="selector" class="align-top" width="16" height="16" />
+                            <Icon name="selector" class="align-top" width="16" height="16" />
                         </button>
                         <button
                             dusk="move-up-group"
@@ -43,7 +43,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                             :title="__('Move up')"
                             @click.prevent="moveUp">
-                            <icon type="arrow-up" class="align-top" width="16" height="16" />
+                            <Icon name="arrow-up" class="align-top" width="16" height="16" />
                         </button>
                         <button
                             dusk="move-down-group"
@@ -51,7 +51,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                             :title="__('Move down')"
                             @click.prevent="moveDown">
-                            <icon type="arrow-down" class="align-top" width="16" height="16" />
+                            <Icon name="arrow-down" class="align-top" width="16" height="16" />
                         </button>
                         <button
                             dusk="delete-group"
@@ -59,7 +59,7 @@
                             class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
                             :title="__('Delete')"
                             @click.prevent="confirmRemove">
-                            <icon type="trash" width="16" height="16" />
+                            <Icon name="trash" width="16" height="16" />
                         </button>
                         <delete-flexible-content-group-modal
                             v-if="removeMessage"
@@ -92,11 +92,10 @@
 </template>
 
 <script>
-import BehavesAsPanel from 'nova-mixins/BehavesAsPanel';
-import { mapProps } from 'laravel-nova';
+import { mapProps, BehavesAsPanel, Icon } from 'laravel-nova';
 
 export default {
-    mixins: [BehavesAsPanel],
+    mixins: [BehavesAsPanel, Icon],
 
     props: {
         errors: {},
