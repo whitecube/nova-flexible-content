@@ -92,7 +92,8 @@
 </template>
 
 <script>
-import { mapProps, BehavesAsPanel, Icon } from 'laravel-nova';
+import { mapProps, BehavesAsPanel } from 'laravel-nova';
+import { Icon } from 'laravel-nova-ui';
 
 export default {
     mixins: [BehavesAsPanel, Icon],
