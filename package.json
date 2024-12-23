@@ -7,8 +7,7 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production",
-        "nova:install": "npm --prefix='../../vendor/laravel/nova' ci"
+        "production": "mix --production"
     },
     "devDependencies": {
         "laravel-nova-devtool": "file:vendor/laravel/nova-devtool",
