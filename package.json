@@ -10,7 +10,7 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "laravel-nova-devtool": "file:../bbsys/vendor/laravel/nova-devtool",
+        "laravel-nova-devtool": "file:vendor/laravel/nova-devtool",
         "@vue/babel-plugin-jsx": "^1.1.1",
         "@vueform/multiselect": "^2.3.3",
         "browser-sync": "^2.27.10",
