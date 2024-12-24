@@ -23,10 +23,10 @@
         "laravel/nova": "^5.0"
     },
     "require-dev": {
+        "laravel/nova-devtool": "^1.1.5",
         "laravel/pint": "^1.2",
-        "phpunit/phpunit": "^9.5",
-        "psalm/plugin-laravel": "^2.0",
-        "laravel/nova-devtool": "^1.1.4"
+        "phpunit/phpunit": "^10.5",
+        "psalm/plugin-laravel": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,7 +35,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "repositories": [
@@ -56,11 +59,25 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-
     "scripts": {
         "psalm": "psalm --find-unused-psalm-suppress --output-format=phpstorm",
         "psalm-update-baseline": "psalm --set-baseline=psalm-baseline.xml",
         "test": "phpunit --colors=always tests",
-        "fix-style": "./vendor/bin/pint"
+        "fix-style": "./vendor/bin/pint",
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve --ansi"
+        ],
+        "lint": [
+            "@php vendor/bin/pint --ansi"
+        ]
     }
 }
