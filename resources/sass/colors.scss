@@ -7,3 +7,7 @@
     --tw-bg-opacity: 1;
     background-color: rgba(var(--colors-gray-900), var(--tw-bg-opacity));
 }
+
+div.relative.overflow-hidden:has(div > div > label[for$="nova-flexible-content"]) {
+    overflow: visible;
+}
