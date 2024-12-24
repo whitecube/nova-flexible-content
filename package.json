@@ -7,7 +7,9 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "check-format": "prettier --list-different 'resources/**/*.{css,js,vue}'",
+        "format": "prettier --write 'resources/js/**/*.{css,js,vue}'"
     },
     "devDependencies": {
         "@vueform/multiselect": "^2.3.3",
@@ -18,5 +20,8 @@
         "sass-loader": "10.*",
         "sortablejs": "^1.15.0",
         "vuex": "^4.1.0"
+    },
+    "dependencies": {
+        "prettier": "^3.4.2"
     }
 }
