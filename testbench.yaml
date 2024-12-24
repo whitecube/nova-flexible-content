@@ -3,10 +3,12 @@ laravel: '@testbench'
 providers:
   - Laravel\Nova\NovaServiceProvider
   - Laravel\Nova\NovaCoreServiceProvider
+  - Whitecube\NovaFlexibleContent\FieldServiceProvider
   - Workbench\App\Providers\NovaServiceProvider
   # - Workbench\App\Providers\WorkbenchServiceProvider
 
-migrations: true
+migrations:
+  - workbench/database/migrations
 
 seeders:
   - Workbench\Database\Seeders\DatabaseSeeder

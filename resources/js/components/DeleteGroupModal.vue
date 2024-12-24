@@ -45,22 +45,22 @@
 </template>
 
 <script>
-    import { Button } from 'laravel-nova-ui';
+import { Button } from 'laravel-nova-ui';
 
-    export default {
-        props: ["message", "yes", "no"],
+export default {
+    props: ["message", "yes", "no"],
 
-        emits: ["close", "confirm"],
+    emits: ["close", "confirm"],
 
-        components: { Button },
+    components: { Button },
 
-        /**
-         * Mount the component.
-         */
-        mounted() {
-            this.$nextTick(() => {
-                // this.$refs.confirmButton.button.focus()
-            });
-        },
-    };
+    /**
+     * Mount the component.
+     */
+    mounted() {
+        this.$nextTick(() => {
+            // this.$refs.confirmButton.button.focus()
+        });
+    },
+};
 </script>

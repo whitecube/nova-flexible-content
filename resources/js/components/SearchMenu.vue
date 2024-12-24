@@ -33,81 +33,81 @@
 </template>
 
 <script>
-    import Multiselect from '@vueform/multiselect'
-    import { Button } from 'laravel-nova-ui'
+import Multiselect from '@vueform/multiselect'
+import { Button } from 'laravel-nova-ui'
 
-    export default {
-        props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
+export default {
+    props: ['layouts', 'field', 'resourceName', 'resourceId', 'resource', 'errors', 'limitCounter', 'limitPerLayoutCounter'],
 
-        emits: ['addGroup'],
+    emits: ['addGroup'],
 
-        components: {
-            Multiselect,
-          Button
-        },
+    components: {
+        Multiselect,
+      Button
+    },
 
-        data() {
+    data() {
+        return {
+            selectedLayout: null,
+            isLayoutsDropdownOpen: false
+        };
+    },
+
+    computed: {
+        attributes() {
             return {
-                selectedLayout: null,
-                isLayoutsDropdownOpen: false
-            };
+                selectLabel: this.field.menu.data.selectLabel || this.__('Press enter to select'),
+                label: this.field.menu.data.label || 'title',
+                openDirection: this.field.menu.data.openDirection || 'bottom',
+            }
         },
 
-        computed: {
-            attributes() {
-                return {
-                    selectLabel: this.field.menu.data.selectLabel || this.__('Press enter to select'),
-                    label: this.field.menu.data.label || 'title',
-                    openDirection: this.field.menu.data.openDirection || 'bottom',
-                }
-            },
+        availableLayouts() {
+            return this.layouts.filter(layout => {
+                return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
+            }).reduce((carry, layout) => {
+                carry[layout.name] = layout.title;
 
-            availableLayouts() {
-                return this.layouts.filter(layout => {
-                    return this.limitPerLayoutCounter[layout.name] === null || this.limitPerLayoutCounter[layout.name] > 0
-                }).reduce((carry, layout) => {
-                    carry[layout.name] = layout.title;
+                return carry;
+            }, {});
+        },
+    },
 
-                    return carry;
-                }, {});
-            },
+    methods: {
+        selectLayout(layoutName){
+            let layout = this.layouts.find(layout => layout.name === layoutName);
+            this.addGroup(layout);
         },
 
-        methods: {
-            selectLayout(layoutName){
-                let layout = this.layouts.find(layout => layout.name === layoutName);
-                this.addGroup(layout);
-            },
+        /**
+         * Display or hide the layouts choice dropdown if there are multiple layouts
+         * or directly add the only available layout.
+         */
+        toggleLayoutsDropdownOrAddDefault(event) {
+            if (this.layouts.length === 1) {
+                return this.addGroup(this.layouts[0]);
+            }
 
-            /**
-             * Display or hide the layouts choice dropdown if there are multiple layouts
-             * or directly add the only available layout.
-             */
-            toggleLayoutsDropdownOrAddDefault(event) {
-                if (this.layouts.length === 1) {
-                    return this.addGroup(this.layouts[0]);
-                }
+            this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
+        },
 
-                this.isLayoutsDropdownOpen = !this.isLayoutsDropdownOpen;
-            },
+        /**
+         * Append the given layout to flexible content's list
+         */
+        addGroup(layout) {
+            if (!layout) return;
 
-            /**
-             * Append the given layout to flexible content's list
-             */
-            addGroup(layout) {
-                if (!layout) return;
+            this.$emit('addGroup', layout);
 
-                this.$emit('addGroup', layout);
+            this.isLayoutsDropdownOpen = false;
 
-                this.isLayoutsDropdownOpen = false;
-
-                setTimeout(() => {
-                    this.$refs.select.clear();
-                    this.selectedLayout = null;
-                }, 100);
-            },
-        }
+            setTimeout(() => {
+                this.$refs.select.clear();
+                this.selectedLayout = null;
+            }, 100);
+        },
     }
+}
 </script>
 
 <style lang="scss">

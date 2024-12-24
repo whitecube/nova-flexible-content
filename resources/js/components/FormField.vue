@@ -10,12 +10,12 @@
 
             <div ref="flexibleFieldContainer">
                 <form-nova-flexible-content-group
-                    v-for="(group, index) in orderedGroups"
-                    :dusk="currentField.attribute + '-' + index"
+                    v-for="(group, groupIndex) in orderedGroups"
+                    :dusk="currentField.attribute + '-' + groupIndex"
                     :key="group.key"
                     :field="currentField"
                     :group="group"
-                    :index="index"
+                    :index="groupIndex"
                     :resource-name="resourceName"
                     :resource-id="resourceId"
                     :errors="errors"
@@ -43,7 +43,6 @@
 </template>
 
 <script>
-
 import FullWidthField from './FullWidthField';
 import Sortable from 'sortablejs'
 import { DependentFormField, HandlesValidationErrors, mapProps } from 'laravel-nova';
@@ -53,7 +52,7 @@ export default {
     mixins: [HandlesValidationErrors, DependentFormField],
 
     props: {
-        ...mapProps(['mode']),
+        ...mapProps(['resourceName', 'resourceId', 'mode']),
     },
 
     components: { FullWidthField },

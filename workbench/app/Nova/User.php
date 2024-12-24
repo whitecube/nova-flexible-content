@@ -5,9 +5,12 @@ namespace Workbench\App\Nova;
 use Illuminate\Http\Request;
 use Laravel\Nova\Auth\PasswordValidationRules;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
 
 class User extends Resource
 {
@@ -60,6 +63,17 @@ class User extends Resource
                 ->onlyOnForms()
                 ->creationRules($this->passwordRules())
                 ->updateRules($this->optionalPasswordRules()),
+
+            Flexible::make('Content')
+                ->button('Add Content Block')
+                ->addLayout('Image on the left', 'image_left', [
+                    Textarea::make('Content'),
+                    Image::make('Image'),
+                ])
+                ->addLayout('Image on the right', 'image_right', [
+                    Textarea::make('Content'),
+                    Image::make('Image'),
+                ])
         ];
     }
 

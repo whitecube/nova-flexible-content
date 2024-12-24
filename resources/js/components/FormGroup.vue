@@ -70,7 +70,6 @@
                             :no="field.confirmRemoveNo"
                         />
                     </div>
-
                 </div>
             </div>
             <div :class="containerStyle">
@@ -92,18 +91,17 @@
 </template>
 
 <script>
-import { mapProps, BehavesAsPanel } from 'laravel-nova';
+import { mapProps } from 'laravel-nova';
 import { Icon } from 'laravel-nova-ui';
 
 export default {
-    mixins: [BehavesAsPanel, Icon],
-
+    components: {Icon},
     props: {
         errors: {},
         group: {},
         index: {},
         field: {},
-        ...mapProps(['mode'])
+        ...mapProps(['resourceName', 'resourceId', 'mode'])
     },
 
     emits: ['move-up', 'move-down', 'remove'],
