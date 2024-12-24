@@ -7,21 +7,21 @@
         "watch-poll": "mix watch -- --watch-options-poll=1000",
         "hot": "mix watch --hot",
         "prod": "npm run production",
-        "production": "mix --production"
+        "production": "mix --production",
+        "check-format": "prettier --list-different 'resources/**/*.{css,js,vue}'",
+        "format": "prettier --write 'resources/js/**/*.{css,js,vue}'"
     },
     "devDependencies": {
-        "laravel-nova-devtool": "file:vendor/laravel/nova-devtool",
-        "@vue/babel-plugin-jsx": "^1.1.1",
         "@vueform/multiselect": "^2.3.3",
-        "browser-sync": "^2.27.10",
-        "browser-sync-webpack-plugin": "^2.3.0",
+        "laravel-nova-devtool": "file:vendor/laravel/nova-devtool",
         "lodash": "^4.17.21",
-        "postcss": "^8.3.11",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.32.8",
         "sass-loader": "10.*",
         "sortablejs": "^1.15.0",
-        "vue-loader": "^16.8.3",
-        "vuex": "^4.0.2"
+        "vuex": "^4.1.0"
+    },
+    "dependencies": {
+        "prettier": "^3.4.2"
     }
 }
