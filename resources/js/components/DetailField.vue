@@ -58,7 +58,8 @@ export default {
                     this.value[i].attributes,
                     this.value[i].key,
                     this.field.collapsed,
-                    this.value[i].title_data
+                    this.value[i].title_data,
+                    this.value[i].show
                 );
             }
         },

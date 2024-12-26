@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Wmt\NovaFlexibleContent\Value;
 
 use Illuminate\Support\Collection;
+use Wmt\NovaFlexibleContent\Layouts\LayoutInterface;
 
 class Resolver implements ResolverInterface
 {
@@ -13,7 +14,7 @@ class Resolver implements ResolverInterface
      *
      * @param mixed $resource
      * @param string $attribute
-     * @param \Illuminate\Support\Collection $groups
+     * @param \Illuminate\Support\Collection<LayoutInterface> $groups
      * @return string
      */
     public function set($resource, $attribute, $groups)
@@ -22,6 +23,7 @@ class Resolver implements ResolverInterface
             return [
                 'layout' => $group->name(),
                 'key' => $group->key(),
+                'show' => $group->show(),
                 'attributes' => $group->getAttributes(),
             ];
         });
@@ -46,7 +48,7 @@ class Resolver implements ResolverInterface
                 return null;
             }
 
-            return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
+            return $layout->duplicateAndHydrate($item->key, (array) $item->attributes, (bool) $item->show);
         })->filter()->values();
     }
 

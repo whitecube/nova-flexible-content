@@ -48,6 +48,13 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
     protected $key;
 
     /**
+     * The layout's show state
+     *
+     * @var bool
+     */
+    protected $show;
+
+    /**
      * The layout's temporary identifier
      *
      * @var string
@@ -139,12 +146,13 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
      * @param int|null $limit
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], ?callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], ?callable $removeCallbackMethod = null, bool $show = true)
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
         $this->fields = new FieldCollection($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
+        $this->show = $show;
         $this->removeCallbackMethod = $removeCallbackMethod;
         $this->setRawAttributes($this->cleanAttributes($attributes));
     }
@@ -212,6 +220,16 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
         return $this->key;
     }
 
+    public function show()
+    {
+        return $this->show;
+    }
+
+    public function setShow(bool $show)
+    {
+        $this->show = $show;
+    }
+
     /**
      * Retrieve the key currently in use in the views
      *
@@ -259,11 +277,12 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
      * Get an empty cloned instance
      *
      * @param string $key
+     * @param bool $show
      * @return Layout
      */
     public function duplicate($key)
     {
-        return $this->duplicateAndHydrate($key);
+        return $this->duplicateAndHydrate($key, [], true);
     }
 
     /**
@@ -272,7 +291,7 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
      * @param string $key
      * @return Layout
      */
-    public function duplicateAndHydrate($key, array $attributes = [])
+    public function duplicateAndHydrate($key, array $attributes, bool $show)
     {
         $fields = $this->fields->map(function (Field $field) {
             return $this->cloneField($field);
@@ -285,8 +304,9 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
             $key,
             $attributes,
             $this->removeCallbackMethod,
-            $this->limit
+            $show,
         );
+        $clone->limit = $this->limit;
 
         if (!is_null($this->model)) {
             $clone->setModel($this->model);
@@ -367,6 +387,9 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
             // attributes during the next fill request that will override
             // the key with a new, stronger & definitive one.
             'key' => $this->inUseKey(),
+
+            // The Layout's show state
+            'show' => $this->show,
 
             // The layout's fields now temporarily contain the resolved
             // values from the current group's attributes. If multiple

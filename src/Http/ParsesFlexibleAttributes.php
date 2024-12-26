@@ -82,6 +82,7 @@ trait ParsesFlexibleAttributes
         $clean = [
             'layout' => $group['layout'] ?? null,
             'key' => $group['key'] ?? null,
+            'show' => (bool) ($group['show'] ?? true),
             'attributes' => [],
         ];
 

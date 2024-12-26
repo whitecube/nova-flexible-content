@@ -16,6 +16,11 @@ interface LayoutInterface
 
     public function key();
 
+    /**
+     * @return bool
+     */
+    public function show();
+
     public function getResolved();
 
     public function resolve($empty = false);
@@ -24,5 +29,5 @@ interface LayoutInterface
 
     public function duplicate($key);
 
-    public function duplicateAndHydrate($key, array $attributes = []);
+    public function duplicateAndHydrate($key, array $attributes, bool $show);
 }

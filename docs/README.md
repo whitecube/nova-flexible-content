@@ -12,6 +12,13 @@ An easy & complete Flexible Field for Laravel Nova, perfect for repeated and fle
 
 ## Differences from original package
 
+
+### Ability to hide layouts
+
+Added ability to hide layouts. It's represented as a new field called `show`.
+
+![Screenshot 2024-12-26 ckZf9QTT.gif](./assets/show-layout.gif)
+
 ### Dropdown overflow fix
 
 Fixed a bug where the dropdown menu overlaps with the Nova container using popperjs
@@ -510,6 +517,7 @@ public function set($model, $attribute, $groups)
         $blocks = $groups->map(function($group, $index) {
             return [
                 'name' => $group->name(),
+                'show' => $group->show(),
                 'value' => json_encode($group->getAttributes()),
                 'order' => $index
             ];

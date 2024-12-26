@@ -21,10 +21,12 @@
             :errors="errors"
             :mode="mode"
             class="nova-flexible-content-item"
+            :class="{'nova-flexible-content-hidden-state': !group.show}"
             @move-up="moveUp(group.key)"
             @move-down="moveDown(group.key)"
             @remove="remove(group.key)"
             @duplicate="duplicateBlock(group.key, index)"
+            @change-visibility="changeVisibility(group.key)"
         >
           <template #add-block-popup>
             <component
@@ -148,7 +150,8 @@ export default {
         this.value.push({
           layout: group.layout,
           key: group.key,
-          attributes: group.attributes
+          show: group.show,
+          attributes: group.attributes,
         });
 
         // Attach the files for formData appending
@@ -197,7 +200,10 @@ export default {
             this.getLayout(this.value[i].layout),
             this.value[i].attributes,
             this.value[i].key,
-            this.currentField.collapsed
+            this.currentField.collapsed,
+            undefined,
+            this.value[i].show
+
         );
       }
     },
@@ -207,13 +213,13 @@ export default {
       return this.layouts.find(layout => layout.name === name);
     },
 
-    addGroup(layout, attributes, key, collapsed, previousPosition) {
+    addGroup(layout, attributes, key, collapsed, previousPosition, show) {
       if (!layout) return;
 
       collapsed = collapsed || false;
 
       let fields = attributes || JSON.parse(JSON.stringify(layout.fields)),
-          group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed);
+          group = new Group(layout.name, layout.title, fields, this.currentField, key, collapsed, show);
 
       this.groups[group.key] = group;
 
@@ -270,9 +276,16 @@ export default {
       const layout = this.getLayout(group.name);
       const attributes = cleanAttributes(JSON.parse(JSON.stringify(group.fields)));
 
-      this.addGroup(layout, attributes, null, null, index);
+      this.addGroup(layout, attributes, null, null, index, group.show);
     },
 
+    changeVisibility(key) {
+      let group = this.groups[key];
+
+      group.changeVisibility()
+
+      this.groups[key] = group
+    },
 
     initSortable() {
       const containerRef = this.$refs['flexibleFieldContainer']
@@ -303,8 +316,6 @@ export default {
           this.order.splice(newIndex, 0, this.order.splice(oldIndex, 1)[0]);
         }
       });
-
-      console.log(this.sortableInstance);
     },
   }
 }

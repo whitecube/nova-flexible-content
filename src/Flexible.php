@@ -351,6 +351,7 @@ class Flexible extends Field
             if (!$group instanceof Layout) {
                 return [];
             }
+            $group->setShow($item['show']);
 
             $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
             $callbacks = array_merge($callbacks, $group->fill($scope));

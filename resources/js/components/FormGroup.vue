@@ -58,6 +58,15 @@
               <icon type="selector" class="align-top" width="16" height="16"/>
             </button>
             <button
+                dusk="hide-group"
+                type="button"
+                class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+                :title="group.show ? __('Hide') : __('Show')"
+                v-tooltip="group.show ? __('Hide') : __('Show')"
+                @click.prevent="changeVisibility">
+              <icon :type="group.show ? 'eye' : 'eye-off'" width="16" height="16"/>
+            </button>
+            <button
                 dusk="move-up-group"
                 type="button"
                 class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
@@ -150,7 +159,8 @@ export default {
     'move-up',
     'move-down',
     'remove',
-    'duplicate'
+    'duplicate',
+    'change-visibility',
   ],
 
   data() {
@@ -261,6 +271,9 @@ export default {
       } else {
         this.remove()
       }
+    },
+    changeVisibility() {
+      this.$emit('change-visibility');
     },
     toggleAddBlockPopup() {
       Nova.$emit('nova-flexible-content.add-block-clicked');

@@ -1,12 +1,13 @@
 export default class Group {
 
-    constructor(name, title, fields, field, key, collapsed = true) {
+    constructor(name, title, fields, field, key, collapsed = true, show = true) {
         this.name = name;
         this.title = title;
         this.fields = fields;
         this.key = key || this.getTemporaryUniqueKey(field.attribute);
         this.collapsed = collapsed;
         this.readonly = field.readonly;
+        this.show = show;
 
         this.renameFields();
     }
@@ -24,6 +25,10 @@ export default class Group {
         return formData;
     }
 
+    changeVisibility() {
+        this.show = !this.show;
+    }
+
     /**
      * Retrieve the layout's filled object
      */
@@ -32,6 +37,7 @@ export default class Group {
             layout: this.name,
             key: this.key,
             attributes: {},
+            show: this.show,
             files: {}
         };
 
