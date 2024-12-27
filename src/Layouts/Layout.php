@@ -721,10 +721,12 @@ class Layout implements Arrayable, ArrayAccess, JsonSerializable, LayoutInterfac
         // in order to keep it usable in a Flexible::findGroup($key) search.
         $this->_key = $key;
 
+        $length = (int) ceil(16 / 2);
+
         if (function_exists('random_bytes')) {
-            $bytes = random_bytes(ceil(16 / 2));
+            $bytes = random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
-            $bytes = openssl_random_pseudo_bytes(ceil(16 / 2));
+            $bytes = openssl_random_pseudo_bytes($length);
         } else {
             throw new \Exception('No cryptographically secure random function available');
         }
