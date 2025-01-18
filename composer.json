@@ -25,6 +25,7 @@
     "require-dev": {
         "laravel/nova-devtool": "^1.1.5",
         "laravel/pint": "^1.2",
+        "phpunit/phpunit": "^9.6",
         "psalm/plugin-laravel": "^2.0"
     },
     "autoload": {
