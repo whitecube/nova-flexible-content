@@ -138,7 +138,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  int|null  $limit
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], ?callable $removeCallbackMethod = null)
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
