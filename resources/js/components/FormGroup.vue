@@ -11,22 +11,28 @@
           <button
             dusk="expand-group"
             type="button"
-            class="shrink-0 group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
+            class="shrink-0 group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
             :title="__('Expand')"
             @click.prevent="expand"
             v-if="collapsed"
           >
-            <Icon name="plus" class="align-top" width="16" height="16" />
+            <Icon 
+              name="plus"
+              type="micro" 
+              class="align-top" />
           </button>
           <button
             dusk="collapse-group"
             type="button"
-            class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 block"
+            class="group-control btn border-r border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
             :title="__('Collapse')"
             @click.prevent="collapse"
             v-else
           >
-            <Icon name="minus" class="align-top" width="16" height="16" />
+            <Icon 
+              name="minus"
+              type="micro" 
+              class="align-top" />
           </button>
 
           <p class="text-80 grow px-4">
@@ -38,42 +44,49 @@
             <button
               dusk="drag-group"
               type="button"
-              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block nova-flexible-content-drag-button"
+              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center nova-flexible-content-drag-button"
               :title="__('Drag')"
             >
-              <Icon name="selector" class="align-top" width="16" height="16" />
+              <Icon 
+                name="selector" 
+                type="micro"
+                class="align-top" />
             </button>
             <button
               dusk="move-up-group"
               type="button"
-              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
               :title="__('Move up')"
               @click.prevent="moveUp"
             >
-              <Icon name="arrow-up" class="align-top" width="16" height="16" />
+              <Icon 
+                name="arrow-up" 
+                type="micro"
+                class="align-top" />
             </button>
             <button
               dusk="move-down-group"
               type="button"
-              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
               :title="__('Move down')"
               @click.prevent="moveDown"
             >
               <Icon
                 name="arrow-down"
                 class="align-top"
-                width="16"
-                height="16"
-              />
+                type="micro" />
             </button>
             <button
               dusk="delete-group"
               type="button"
-              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 block"
+              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
               :title="__('Delete')"
               @click.prevent="confirmRemove"
             >
-              <Icon name="trash" width="16" height="16" />
+              <Icon 
+                name="trash" 
+                class="align-top" 
+                type="micro" />
             </button>
             <delete-flexible-content-group-modal
               v-if="removeMessage"
