@@ -310,7 +310,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             if (! is_a($field->$callable ?? null, \Closure::class)) {
                 continue;
             }
-            $field->$callable = $field->$callable->bindTo($field);
+             try {
+                $field->$callable = $field->$callable->bindTo($field);
+            } catch (\Throwable $th) {
+                // Binding an instance to a static closure will fail. Assuming
+                // that's the cause of the error here, we leave the original
+                // closure as-is.
+            }
         }
 
         return $field;
