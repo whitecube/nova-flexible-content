@@ -4,6 +4,7 @@
         v-if="searchable"
         :layouts="filteredLayouts"
         :field="field"
+        :limit-counter="limitCounter"
         @addGroup="$emit('addGroup', $event)"
     />
     <div
