@@ -73,19 +73,12 @@ export default {
     },
 
     availableLayouts() {
-      return this.layouts
-        .filter((layout) => {
-          return (
-            this.limitPerLayoutCounter[layout.name] === null ||
-            this.limitPerLayoutCounter[layout.name] > 0
-          );
-        })
-        .reduce((carry, layout) => {
-          carry[layout.name] = layout.title;
-
-          return carry;
-        }, {});
-    },
+      return this.layouts  // 直接使用传入的过滤后布局
+          .reduce((carry, layout) => {
+            carry[layout.name] = layout.title;
+            return carry;
+          }, {});
+    }
   },
 
   methods: {

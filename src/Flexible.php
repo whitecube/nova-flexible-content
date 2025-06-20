@@ -134,6 +134,17 @@ class Flexible extends Field
     }
 
     /**
+     * Choose multi-select component or button component
+     *
+     * @param bool $searchable
+     * @return \Whitecube\NovaFlexibleContent\Flexible
+     */
+    public function searchable(bool $searchable = true)
+    {
+        return $this->withMeta(['searchable' => $searchable]);
+    }
+
+    /**
      * Confirm remove
      *
      * @return $this

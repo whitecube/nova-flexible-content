@@ -32,6 +32,7 @@
         :field="currentField"
         :limit-counter="limitCounter"
         :limit-per-layout-counter="limitPerLayoutCounter"
+        :searchable="searchable"
         :errors="errors"
         :resource-name="resourceName"
         :resource-id="resourceId"
@@ -99,6 +100,10 @@ export default {
         return layoutCounts;
       }, {});
     },
+
+    searchable() {
+      return this.currentField.searchable === true;
+    }
   },
 
   data() {

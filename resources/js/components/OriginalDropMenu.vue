@@ -1,7 +1,13 @@
 <template>
   <div class="relative" v-if="layouts">
+    <SearchMenu
+        v-if="searchable"
+        :layouts="filteredLayouts"
+        :field="field"
+        @addGroup="$emit('addGroup', $event)"
+    />
     <div
-      v-if="isLayoutsDropdownOpen && layouts.length > 1"
+      v-if="isLayoutsDropdownOpen && layouts.length > 1 && !searchable"
       ref="dropdown"
       class="z-20 absolute rounded-lg shadow-lg max-w-full max-h-search overflow-y-auto border border-40"
       v-bind:class="dropdownClasses"
@@ -30,7 +36,7 @@
       tabindex="0"
       ref="dropdownButton"
       @click="toggleLayoutsDropdownOrAddDefault"
-      v-if="isBelowLayoutLimits"
+      v-if="isBelowLayoutLimits && !searchable"
     >
       <span>{{ field.button }}</span>
     </Button>
@@ -38,6 +44,7 @@
 </template>
 
 <script>
+import SearchMenu from './SearchMenu';
 import { Button } from "laravel-nova-ui";
 
 export default {
@@ -50,9 +57,10 @@ export default {
     "errors",
     "limitCounter",
     "limitPerLayoutCounter",
+      "searchable"
   ],
 
-  components: { Button },
+  components: { Button, SearchMenu },
 
   emits: ["addGroup"],
 
