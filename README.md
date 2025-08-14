@@ -117,7 +117,7 @@ class MyFlexibleCast extends FlexibleCast
 }
 ```
 
-If you need more control, you can [override the `getLayoutMappings` method](https://whitecube.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings) instead.
+If you need more control, you can [override the `getLayoutMapping` method](https://whitecube.github.io/nova-flexible-content/#/?id=having-more-control-over-the-layout-mappings) instead.
 
 #### The Layouts Collection
 
