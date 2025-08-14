@@ -173,14 +173,14 @@ class MyFlexibleCast extends FlexibleCast
 
 #### Having more control over the layout mappings
 
-If you need to do complex things with your mappings instead of having a static array as shown above, you can override the `getLayoutMappings` method on your cast.
+If you need to do complex things with your mappings instead of having a static array as shown above, you can override the `getLayoutMapping` method on your cast.
 
 ```php
 namespace App\Casts;
 
 class MyFlexibleCast extends FlexibleCast
 {
-    protected function getLayoutMappings()
+    protected function getLayoutMapping()
     {
         $mappings = [];
         
