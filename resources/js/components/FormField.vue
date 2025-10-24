@@ -294,16 +294,14 @@ export default {
         scrollSpeed: 5,
         animation: 500,
         onEnd: (evt) => {
-          const item = evt.item;
-          const key = item.id;
-          const oldIndex = evt.oldIndex;
-          const newIndex = evt.newIndex;
-
-          if (newIndex < oldIndex) {
-            this.moveUp(key);
-          } else if (newIndex > oldIndex) {
-            this.moveDown(key);
+          let neighborIndex;
+          this.order.splice(this.order.indexOf(evt.item.id), 1);
+          if (evt.oldIndex < evt.newIndex) {
+            neighborIndex = this.order.indexOf(evt.item.previousElementSibling.id) + 1;
+          } else {
+            neighborIndex = this.order.indexOf(evt.item.nextElementSibling.id);
           }
+          this.order.splice(neighborIndex, 0, evt.item.id);
         },
       });
     },
