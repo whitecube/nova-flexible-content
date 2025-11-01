@@ -8,7 +8,7 @@
         ><!--
              --><span class="text-80">{{ index + 1 }}</span>
       </span>
-      <span class="font-bold">{{ group.title }}</span>
+      <span class="font-bold"><span v-html="title"></span></span>
     </div>
     <component
       v-for="(item, index) in group.fields"
@@ -41,6 +41,9 @@ export default {
     },
     titleStyle() {
       return ["pb-4", "border-b", "border-gray-100", "dark:border-gray-700"];
+    },
+    title() {
+      return this.group.attributes?.popover || this.group.title;
     },
   },
 };

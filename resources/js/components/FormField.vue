@@ -23,6 +23,7 @@
           @move-up="moveUp(group.key)"
           @move-down="moveDown(group.key)"
           @remove="remove(group.key)"
+          @set-internal-title="setInternalTitle(group.key, group.internalTitle)"
         />
       </div>
 
@@ -145,6 +146,7 @@ export default {
         this.value.push({
           layout: group.layout,
           key: group.key,
+          internalTitle: group.internalTitle,
           attributes: group.attributes,
         });
 
@@ -209,6 +211,8 @@ export default {
           this.value[i].attributes,
           this.value[i].key,
           this.currentField.collapsed,
+          this.value[i].internalTitle,
+          this.value[i].popover,
         );
       }
     },
@@ -224,7 +228,7 @@ export default {
     /**
      * Append the given layout to flexible content's list
      */
-    addGroup(layout, attributes, key, collapsed) {
+    addGroup(layout, attributes, key, collapsed, internalTitle, popover) {
       if (!layout) return;
 
       collapsed = collapsed || false;
@@ -233,10 +237,13 @@ export default {
         group = new Group(
           layout.name,
           layout.title,
+          internalTitle,
+          popover,
           fields,
           this.currentField,
           key,
           collapsed,
+          layout.attributes,
         );
 
       this.groups[group.key] = group;
@@ -277,6 +284,10 @@ export default {
       delete this.groups[key];
     },
 
+    setInternalTitle(key, title) {
+      this.groups[key]['internalTitle'] = title;
+    },
+
     initSortable() {
       const containerRef = this.$refs["flexibleFieldContainer"];
 
@@ -293,16 +304,24 @@ export default {
         scrollSpeed: 5,
         animation: 500,
         onEnd: (evt) => {
-          const item = evt.item;
-          const key = item.id;
-          const oldIndex = evt.oldIndex;
-          const newIndex = evt.newIndex;
+          const draggedId = evt.item.id;
+          const oldPosition = this.order.indexOf(draggedId);
+          this.order.splice(oldPosition, 1);
 
-          if (newIndex < oldIndex) {
-            this.moveUp(key);
-          } else if (newIndex > oldIndex) {
-            this.moveDown(key);
+          let newPosition;
+          if (evt.oldIndex < evt.newIndex) {
+            const next = evt.item.nextElementSibling;
+            newPosition = next?.id
+                ? this.order.indexOf(next.id)
+                : this.order.length;
+          } else {
+            const prev = evt.item.previousElementSibling;
+            newPosition = prev?.id
+                ? this.order.indexOf(prev.id) + 1
+                : 0;
           }
+
+          this.order.splice(newPosition, 0, draggedId);
         },
       });
     },

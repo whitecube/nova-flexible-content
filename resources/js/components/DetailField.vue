@@ -86,6 +86,7 @@ export default {
           this.field,
           key,
           collapsed,
+          layout.attributes,
           layout,
           resolved_title,
         );

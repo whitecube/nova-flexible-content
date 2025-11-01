@@ -61,6 +61,11 @@ class Flexible extends Field
     public static $model;
 
     /**
+     * @var string|null
+     */
+    protected $popover = null;
+
+    /**
      * Create a fresh flexible field instance
      *
      * @param  string  $name
@@ -146,6 +151,15 @@ class Flexible extends Field
             'confirmRemoveYes' => $yes,
             'confirmRemoveNo' => $no,
         ]);
+    }
+
+    /**
+     * @param string|null $popover
+     * @return self
+     */
+    public function setPopover(?string $popover = null): self
+    {
+        return $this->withMeta(['popover' => $popover]);
     }
 
     /**
@@ -351,6 +365,7 @@ class Flexible extends Field
             $layout = $item['layout'];
             $key = $item['key'];
             $attributes = $item['attributes'];
+            $internalTitle = $item['internalTitle'];
 
             $group = $this->findGroup($key) ?? $this->newGroup($layout, $key);
 
@@ -361,7 +376,8 @@ class Flexible extends Field
             $scope = ScopedRequest::scopeFrom($request, $attributes, $key);
             $callbacks = array_merge($callbacks, $group->fill($scope));
 
-            return $group;
+
+            return $group->setInternalTitle($internalTitle);
         })->filter();
 
         $this->fireRemoveCallbacks($new_groups);
@@ -374,7 +390,8 @@ class Flexible extends Field
     /**
      * Fire's the remove callbacks on the layouts
      *
-     * @param  Collection  $new_groups This should be (all) the new groups to bne compared against to find the removed groups
+     * @param  Collection  $new_groups This should be (all) the new groups to bne compared against to find the removed
+     *     groups
      */
     protected function fireRemoveCallbacks(Collection $new_groups)
     {

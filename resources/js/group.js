@@ -1,11 +1,14 @@
 export default class Group {
-  constructor(name, title, fields, field, key, collapsed = true) {
+  constructor(name, title, internalTitle, popover, fields, field, key, collapsed = true, attributes = {}) {
     this.name = name;
     this.title = title;
+    this.internalTitle = internalTitle || '';
+    this.popover = popover;
     this.fields = fields;
     this.key = key || this.getTemporaryUniqueKey(field.attribute);
     this.collapsed = collapsed;
     this.readonly = field.readonly;
+    this.attributes = attributes;
 
     this.renameFields();
   }
@@ -29,6 +32,7 @@ export default class Group {
   serialize() {
     let data = {
       layout: this.name,
+      internalTitle: this.internalTitle,
       key: this.key,
       attributes: {},
       files: {},

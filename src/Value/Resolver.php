@@ -20,6 +20,7 @@ class Resolver implements ResolverInterface
             return [
                 'layout' => $group->name(),
                 'key' => $group->key(),
+                'internalTitle' => $group->internalTitle(),
                 'attributes' => $group->getAttributes(),
             ];
         });
@@ -44,7 +45,11 @@ class Resolver implements ResolverInterface
                 return null;
             }
 
-            return $layout->duplicateAndHydrate($item->key, (array) $item->attributes);
+            return $layout->duplicateAndHydrate($item->key,
+                (array) $item->attributes,
+                $item->internalTitle ?? null,
+                $item->popover ?? null
+            );
         })->filter()->values();
     }
 

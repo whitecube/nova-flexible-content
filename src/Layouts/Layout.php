@@ -60,6 +60,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $title;
 
     /**
+     * The layout's display title
+     *
+     * @var string
+     */
+    protected $internalTitle;
+
+    /**
      * The layout's registered fields
      *
      * @var \Laravel\Nova\Fields\FieldCollection
@@ -127,6 +134,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     protected $relations = [];
 
     /**
+     * Component popover image url
+     *
+     * @var string|null
+     */
+    protected $popover = null;
+
+    /**
      * Create a new base Layout instance
      *
      * @param  string  $title
@@ -135,13 +149,14 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      * @param  string  $key
      * @param  array  $attributes
      * @param  callable|null  $removeCallbackMethod
-     * @param  int|null  $limit
+     * @param string|null $internalTitle
      * @return void
      */
-    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], ?callable $removeCallbackMethod = null)
+    public function __construct($title = null, $name = null, $fields = null, $key = null, $attributes = [], ?callable $removeCallbackMethod = null, $internalTitle = null)
     {
         $this->title = $title ?? $this->title();
         $this->name = $name ?? $this->name();
+        $this->internalTitle = $internalTitle ?? null;
         $this->fields = new FieldCollection($fields ?? $this->fields());
         $this->key = is_null($key) ? null : $this->getProcessedKey($key);
         $this->removeCallbackMethod = $removeCallbackMethod;
@@ -167,6 +182,17 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function setModel($model)
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @param string|null $popover
+     * @return $this
+     */
+    public function setPopover(?string $popover = null): self
+    {
+        $this->popover = $popover;
 
         return $this;
     }
@@ -209,6 +235,21 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     public function key()
     {
         return $this->key;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function internalTitle()
+    {
+        return $this->internalTitle ?? null;
+    }
+
+    public function setInternalTitle(?string $title = null): self
+    {
+        $this->internalTitle = $title;
+
+        return $this;
     }
 
     /**
@@ -268,11 +309,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Get a cloned instance with set values
      *
-     * @param  string  $key
-     * @param  array  $attributes
+     * @param string $key
+     * @param array $attributes
+     * @param string|null $internalTitle
+     * @param string|null $popover
      * @return Layout
      */
-    public function duplicateAndHydrate($key, array $attributes = [])
+    public function duplicateAndHydrate($key, array $attributes = [], ?string $internalTitle = null, ?string $popover = null)
     {
         $fields = $this->fields->map(function ($field) {
             return $this->cloneField($field);
@@ -285,13 +328,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             $key,
             $attributes,
             $this->removeCallbackMethod,
-            $this->limit
+            $internalTitle,
         );
         if (! is_null($this->model)) {
             $clone->setModel($this->model);
         }
 
-        return $clone;
+        return $clone->setPopover($popover ?? $this->popover);
     }
 
     /**
@@ -372,6 +415,10 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     {
         return [
             'layout' => $this->name,
+
+            'internalTitle' => $this->internalTitle ?? null,
+
+            'popover' => $this->popover ?? null,
 
             // The (old) temporary key is preferred to the new one during
             // field resolving because we need to keep track of the current
@@ -692,8 +739,11 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
         return [
             'name' => $this->name,
             'title' => $this->title,
+            'internalTitle' => $this->internalTitle ?? null,
+            'popover' => $this->popover ?? null,
             'fields' => $this->fields->jsonSerialize(),
             'limit' => $this->limit,
+            'attributes' => $this->attributes,
         ];
     }
 

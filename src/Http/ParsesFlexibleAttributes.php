@@ -82,6 +82,7 @@ trait ParsesFlexibleAttributes
         $clean = [
             'layout' => $group['layout'] ?? null,
             'key' => $group['key'] ?? null,
+            'internalTitle' => $group['internalTitle'] ?? null,
             'attributes' => [],
         ];
 
