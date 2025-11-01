@@ -1,8 +1,9 @@
 export default class Group {
-  constructor(name, title, internalTitle, fields, field, key, collapsed = true, attributes = {}) {
+  constructor(name, title, internalTitle, popover, fields, field, key, collapsed = true, attributes = {}) {
     this.name = name;
     this.title = title;
     this.internalTitle = internalTitle || '';
+    this.popover = popover;
     this.fields = fields;
     this.key = key || this.getTemporaryUniqueKey(field.attribute);
     this.collapsed = collapsed;

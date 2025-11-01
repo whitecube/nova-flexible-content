@@ -37,7 +37,7 @@
 
           <p class="text-80 grow px-4">
             <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
-            <span v-if="field.popover">
+            <span v-if="group.popover">
               <button type="button"
                       tabindex="0"
                       :popovertarget="group.name + '-popover-' + group.key"
@@ -51,7 +51,7 @@
               </button>
 
               <div popover :id="group.name + '-popover-' + group.key" class="bg-white p-1 rounded-lg shadow w-24 ring ring-inset ring-black/10">
-                <img :src="field.popover" class="w-full" :alt="title">
+                <img :src="group.popover" class="w-full" :alt="title">
               </div>
             </span>
             <span v-else>{{ title }}</span>

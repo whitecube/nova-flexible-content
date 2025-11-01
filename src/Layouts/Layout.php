@@ -133,7 +133,12 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
      */
     protected $relations = [];
 
-    protected $popover;
+    /**
+     * Component popover image url
+     *
+     * @var string|null
+     */
+    protected $popover = null;
 
     /**
      * Create a new base Layout instance
@@ -182,10 +187,10 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     }
 
     /**
-     * @param string $popover
+     * @param string|null $popover
      * @return $this
      */
-    public function setPopover(string $popover): self
+    public function setPopover(?string $popover = null): self
     {
         $this->popover = $popover;
 
@@ -304,11 +309,13 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * Get a cloned instance with set values
      *
-     * @param  string  $key
-     * @param  array  $attributes
+     * @param string $key
+     * @param array $attributes
+     * @param string|null $internalTitle
+     * @param string|null $popover
      * @return Layout
      */
-    public function duplicateAndHydrate($key, array $attributes = [], ?string $internalTitle = null)
+    public function duplicateAndHydrate($key, array $attributes = [], ?string $internalTitle = null, ?string $popover = null)
     {
         $fields = $this->fields->map(function ($field) {
             return $this->cloneField($field);
@@ -327,7 +334,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             $clone->setModel($this->model);
         }
 
-        return $clone;
+        return $clone->setPopover($popover ?? $this->popover);
     }
 
     /**
@@ -410,6 +417,8 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
             'layout' => $this->name,
 
             'internalTitle' => $this->internalTitle ?? null,
+
+            'popover' => $this->popover ?? null,
 
             // The (old) temporary key is preferred to the new one during
             // field resolving because we need to keep track of the current

@@ -45,7 +45,11 @@ class Resolver implements ResolverInterface
                 return null;
             }
 
-            return $layout->duplicateAndHydrate($item->key, (array) $item->attributes, $item->internalTitle ?? null);
+            return $layout->duplicateAndHydrate($item->key,
+                (array) $item->attributes,
+                $item->internalTitle ?? null,
+                $item->popover ?? null
+            );
         })->filter()->values();
     }
 

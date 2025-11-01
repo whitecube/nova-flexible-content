@@ -212,6 +212,7 @@ export default {
           this.value[i].key,
           this.currentField.collapsed,
           this.value[i].internalTitle,
+          this.value[i].popover,
         );
       }
     },
@@ -227,7 +228,7 @@ export default {
     /**
      * Append the given layout to flexible content's list
      */
-    addGroup(layout, attributes, key, collapsed, internalTitle) {
+    addGroup(layout, attributes, key, collapsed, internalTitle, popover) {
       if (!layout) return;
 
       collapsed = collapsed || false;
@@ -237,6 +238,7 @@ export default {
           layout.name,
           layout.title,
           internalTitle,
+          popover,
           fields,
           this.currentField,
           key,
