@@ -37,7 +37,24 @@
 
           <p class="text-80 grow px-4">
             <span class="mr-3 font-semibold">#{{ index + 1 }}</span>
-            <span v-html="title"></span>
+            <span v-if="field.popover">
+              <button type="button"
+                      tabindex="0"
+                      :popovertarget="group.name + '-popover-' + group.key"
+                      popovertargetaction="toggle"
+                      style="cursor: pointer;"
+                      data-popover-toggle
+                      :data-image-url="field.popover"
+                      :data-slug="group.name"
+                      data-image-check="pending">
+                <span v-text="title"></span>
+              </button>
+
+              <div popover :id="group.name + '-popover-' + group.key" class="bg-white p-1 rounded-lg shadow w-24 ring ring-inset ring-black/10">
+                <img :src="field.popover" class="w-full" :alt="title">
+              </div>
+            </span>
+            <span v-else>{{ title }}</span>
           </p>
 
           <div class="flex" v-if="!readonly">
@@ -77,6 +94,18 @@
                 type="micro" />
             </button>
             <button
+              dusk="title-group"
+              type="button"
+              class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
+              :title="__('Title')"
+              @click.prevent="setInternalTitle"
+            >
+              <Icon
+                name="document-text"
+                class="align-top"
+                type="mini" />
+            </button>
+            <button
               dusk="delete-group"
               type="button"
               class="group-control btn border-l border-gray-200 dark:border-gray-700 w-8 h-8 flex justify-center items-center"
@@ -96,6 +125,58 @@
               :yes="field.confirmRemoveYes"
               :no="field.confirmRemoveNo"
             />
+            
+            <!-- Internal Title Modal -->
+            <Modal
+              :show="showTitleModal"
+              @close-via-escape="cancelInternalTitle"
+              role="dialog"
+              size="md"
+            >
+              <form @submit.prevent="saveInternalTitle" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                <ModalHeader class="flex items-center">
+                  <h2 class="text-xl text-gray-800 dark:text-gray-200">
+                    {{ __('Set Internal Title') }}
+                  </h2>
+                </ModalHeader>
+                
+                <ModalContent class="px-8 py-6">
+                  <div class="mb-6">
+                    <label class="inline-block text-gray-800 dark:text-gray-200 mb-2">
+                      {{ __('Internal Title') }}
+                    </label>
+                    <input
+                      ref="titleInput"
+                      v-model="tempInternalTitle"
+                      type="text"
+                      class="w-full form-control form-input form-control-bordered"
+                      :placeholder="__('Enter internal title...')"
+                      @keyup.enter="saveInternalTitle"
+                      @keyup.escape="cancelInternalTitle"
+                    />
+                  </div>
+                </ModalContent>
+                
+                <ModalFooter>
+                  <div class="ml-auto">
+                    <Button
+                      type="button"
+                      @click="cancelInternalTitle"
+                      class="mr-3"
+                    >
+                      {{ __('Cancel') }}
+                    </Button>
+                    
+                    <Button
+                      type="submit"
+                      :loading="false"
+                    >
+                      {{ __('Save') }}
+                    </Button>
+                  </div>
+                </ModalFooter>
+              </form>
+            </Modal>
           </div>
         </div>
       </div>
@@ -119,10 +200,10 @@
 
 <script>
 import { mapProps } from "laravel-nova";
-import { Icon } from "laravel-nova-ui";
+import { Icon, Button } from "laravel-nova-ui";
 
 export default {
-  components: { Icon },
+  components: { Icon, Button },
   props: {
     errors: {},
     group: {},
@@ -131,13 +212,16 @@ export default {
     ...mapProps(["resourceName", "resourceId", "mode"]),
   },
 
-  emits: ["move-up", "move-down", "remove"],
+  emits: ["move-up", "move-down", "remove", "set-internal-title"],
 
   data() {
     return {
       removeMessage: false,
       collapsed: this.group.collapsed,
       readonly: this.group.readonly,
+      showTitleModal: false,
+      tempInternalTitle: '',
+      internalTitle: this.group.internalTitle || '',
     };
   },
 
@@ -182,7 +266,11 @@ export default {
     },
 
     title() {
-      return this.group.attributes?.popover || this.group.title;
+      if (this.internalTitle) {
+        return `${this.internalTitle} [${this.group.title}]`;
+      } else {
+        return this.group.title;
+      }
     }
   },
 
@@ -231,6 +319,41 @@ export default {
      */
     collapse() {
       this.collapsed = true;
+    },
+
+    /**
+     * Set internal title for this group
+     */
+    setInternalTitle() {
+      this.tempInternalTitle = this.internalTitle;
+      this.showTitleModal = true;
+      
+      // Focus the input field after the modal is shown
+      this.$nextTick(() => {
+        if (this.$refs.titleInput) {
+          this.$refs.titleInput.focus();
+        }
+      });
+    },
+
+    /**
+     * Save the internal title
+     */
+    saveInternalTitle() {
+      this.internalTitle = this.tempInternalTitle;
+      this.showTitleModal = false;
+      
+      // Update the group object to persist the internal title (Vue 3 compatible)
+      this.group.internalTitle = this.internalTitle;
+      this.$emit("set-internal-title", this.internalTitle);
+    },
+
+    /**
+     * Cancel internal title editing
+     */
+    cancelInternalTitle() {
+      this.tempInternalTitle = '';
+      this.showTitleModal = false;
     },
   },
 };

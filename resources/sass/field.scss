@@ -22,3 +22,32 @@ $multiselect-placeholder-color: #7c858e;
 .dark .nova-flexible-content-sortable-drag {
   background-color: rgba(var(--colors-gray-900),var(--tw-bg-opacity));
 }
+
+[popover] {
+  margin: auto;
+  width: 24rem;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-2rem);
+  transition-property: opacity transform display;
+  transition-behavior: allow-discrete;
+  transition-duration: 0.2s;
+}
+
+[popover]::backdrop {
+  background-color: black;
+  opacity: .65;
+}
+
+[popover]:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-2rem);
+  }
+}
+
+[data-popover-toggle] {
+  anchor-name: --poppy
+}

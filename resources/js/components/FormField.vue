@@ -23,6 +23,7 @@
           @move-up="moveUp(group.key)"
           @move-down="moveDown(group.key)"
           @remove="remove(group.key)"
+          @set-internal-title="setInternalTitle(group.key, group.internalTitle)"
         />
       </div>
 
@@ -145,6 +146,7 @@ export default {
         this.value.push({
           layout: group.layout,
           key: group.key,
+          internalTitle: group.internalTitle,
           attributes: group.attributes,
         });
 
@@ -209,6 +211,7 @@ export default {
           this.value[i].attributes,
           this.value[i].key,
           this.currentField.collapsed,
+          this.value[i].internalTitle,
         );
       }
     },
@@ -224,7 +227,7 @@ export default {
     /**
      * Append the given layout to flexible content's list
      */
-    addGroup(layout, attributes, key, collapsed) {
+    addGroup(layout, attributes, key, collapsed, internalTitle) {
       if (!layout) return;
 
       collapsed = collapsed || false;
@@ -233,6 +236,7 @@ export default {
         group = new Group(
           layout.name,
           layout.title,
+          internalTitle,
           fields,
           this.currentField,
           key,
@@ -276,6 +280,10 @@ export default {
 
       this.order.splice(index, 1);
       delete this.groups[key];
+    },
+
+    setInternalTitle(key, title) {
+      this.groups[key]['internalTitle'] = title;
     },
 
     initSortable() {
