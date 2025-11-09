@@ -229,6 +229,11 @@ export default {
       this.collapsed = true;
     },
   },
+  watch: {
+    index(index) {
+      Nova.$emit('flexible-content-order-changed', index);
+    }
+  },
 };
 </script>
 
