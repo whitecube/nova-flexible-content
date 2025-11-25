@@ -10,6 +10,7 @@ use Whitecube\NovaFlexibleContent\Commands\CreateLayout;
 use Whitecube\NovaFlexibleContent\Commands\CreatePreset;
 use Whitecube\NovaFlexibleContent\Commands\CreateResolver;
 use Whitecube\NovaFlexibleContent\Http\Middleware\InterceptFlexibleAttributes;
+use Whitecube\NovaFlexibleContent\Http\Middleware\InterceptFlexibleDependsOnAttributes;
 
 class FieldServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,7 @@ class FieldServiceProvider extends ServiceProvider
 
         if ($router->hasMiddlewareGroup('nova')) {
             $router->pushMiddlewareToGroup('nova', InterceptFlexibleAttributes::class);
+            $router->pushMiddlewareToGroup('nova', InterceptFlexibleDependsOnAttributes::class);
 
             return;
         }
@@ -64,7 +66,7 @@ class FieldServiceProvider extends ServiceProvider
         if (! $this->app->configurationIsCached()) {
             config()->set('nova.middleware', array_merge(
                 config('nova.middleware', []),
-                [InterceptFlexibleAttributes::class]
+                [InterceptFlexibleAttributes::class, InterceptFlexibleDependsOnAttributes::class]
             ));
         }
     }
