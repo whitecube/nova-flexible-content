@@ -142,7 +142,7 @@ trait HasMediaLibrary
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {
-        if ($this->shouldDeletePreservingMedia()) {
+        if (!$this->shouldDeletePreservingMedia()) {
             return;
         }
 
