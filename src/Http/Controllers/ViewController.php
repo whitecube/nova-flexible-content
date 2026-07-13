@@ -71,9 +71,11 @@ class ViewController extends NovaActionController
         }
 
         return response()->json([
-            "view" => view("flexible." . $layoutName, [
-                "layout" => (object) $layout,
-            ])->render(),
+            "view" => view()->exists("flexible." . $layoutName)
+                ? view("flexible." . $layoutName, [
+                    "layout" => (object) $layout,
+                ])->render()
+                : null,
             "data" => $values,
             "has_uploads" => !!count($request->files),
         ]);
