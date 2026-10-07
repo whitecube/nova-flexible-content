@@ -34,4 +34,21 @@ class LayoutTest extends TestCase
         $textField->resolve(null);
         $this->assertEquals('static-name', $textField->value);
     }
+
+    /** Regression test for #464 */
+    public function testForceFillUpdatesAttributeValues(): void
+    {
+        $layout = new Layout('Any title', 'layout_name', [
+            Text::make('Name A', 'name_a'),
+            Text::make('Name B', 'name_b'),
+        ]);
+
+        $layout->forceFill([
+            'name_a' => 'modified a',
+            'name_b' => 'modified b',
+        ]);
+
+        $this->assertSame('modified a', $layout->getAttribute('name_a'));
+        $this->assertSame('modified b', $layout->getAttribute('name_b'));
+    }
 }
