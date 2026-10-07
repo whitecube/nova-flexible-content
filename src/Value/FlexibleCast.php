@@ -5,6 +5,7 @@ namespace Whitecube\NovaFlexibleContent\Value;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Whitecube\NovaFlexibleContent\Concerns\HasFlexible;
 
+/** @implements \Illuminate\Contracts\Database\Eloquent\CastsAttributes<\Whitecube\NovaFlexibleContent\Layouts\Collection<array-key, \Whitecube\NovaFlexibleContent\Layouts\Layout>, mixed> */
 class FlexibleCast implements CastsAttributes
 {
     use HasFlexible;
@@ -20,7 +21,7 @@ class FlexibleCast implements CastsAttributes
     protected $model;
 
     /**
-     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection|array<\Whitecube\NovaFlexibleContent\Layouts\Layout>
+     * @return \Whitecube\NovaFlexibleContent\Layouts\Collection<array-key, \Whitecube\NovaFlexibleContent\Layouts\Layout>
      */
     public function get($model, string $key, $value, array $attributes)
     {

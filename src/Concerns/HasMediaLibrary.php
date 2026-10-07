@@ -138,7 +138,7 @@ trait HasMediaLibrary
      *
      * @param  Flexible  $flexible
      * @param  Layout  $layout
-     * @return mixed
+     * @return void
      */
     protected function removeCallback(Flexible $flexible, $layout)
     {
