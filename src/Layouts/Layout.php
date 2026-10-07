@@ -48,7 +48,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The layout's temporary identifier
      *
-     * @var string
+     * @var string|null
      */
     protected $_key;
 
@@ -94,7 +94,7 @@ class Layout implements LayoutInterface, JsonSerializable, ArrayAccess, Arrayabl
     /**
      * The parent model instance
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var \Illuminate\Database\Eloquent\Model|null
      */
     protected $model;
 
