@@ -166,7 +166,7 @@ class ScopedRequest extends NovaRequest
      *
      * @return array
      */
-    protected function getFlattenedFiles($iterable = null, FlexibleAttribute $original = null)
+    protected function getFlattenedFiles($iterable = null, ?FlexibleAttribute $original = null)
     {
         $files = [];
 
